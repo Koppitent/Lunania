@@ -1,0 +1,7 @@
+name: Lunania
+version: ${project.version}
+main: de.koppy.lunania.Lunania.Main
+api-version: 1.16
+authors: [Koppitent]
+description: Profile-Sync for syn all Informations
+website: https://lunania.net
