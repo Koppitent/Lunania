@@ -28,7 +28,7 @@ public class Server {
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
             this.name = cfg.getString("name");
             this.motdlist = cfg.getStringList("motds");
-            this.maxplayer = cfg.getInt("maxplayer");
+            setMaxplayer(cfg.getInt("maxplayer"));
         }else {
             try {
                 initServerFile(file);
@@ -36,6 +36,11 @@ public class Server {
                 throw new RuntimeException("ServerFileInitError");
             }
         }
+    }
+
+
+    public int getMaxplayer() {
+        return maxplayer;
     }
 
     public String getPrefix() {
