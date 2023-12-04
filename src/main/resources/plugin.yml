@@ -1,0 +1,4 @@
+name: LunaniaSystem
+version: '${project.version}'
+main: de.koppy.lunaniasystem.LunaniaSystem
+api-version: '1.20'
