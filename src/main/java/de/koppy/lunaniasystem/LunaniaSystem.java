@@ -2,7 +2,9 @@ package de.koppy.lunaniasystem;
 
 import de.koppy.bansystem.BanSystem;
 import de.koppy.server.MySQL;
+import de.koppy.server.Option;
 import de.koppy.server.Server;
+import de.koppy.server.SystemController;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
 import org.bukkit.Bukkit;
@@ -13,22 +15,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class LunaniaSystem extends JavaPlugin {
 
     private static Server server;
-    private static MySQL mysql = new MySQL();
+    private static MySQL mysql;
 
     private static LunaniaSystem plugin;
 
     @Override
     public void onEnable() {
         plugin = this;
-        server = new Server();
 
+        mysql = new MySQL();
         mysql.readFile();
         mysql.connect();
 
-        new BanSystem().loadClasses();
+        server = new Server();
 
-        registerCommand("test", new test());
-        registerListener(new serverevents());
     }
 
     @Override

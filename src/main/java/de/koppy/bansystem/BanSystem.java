@@ -34,7 +34,6 @@ public class BanSystem implements SubSystem {
         table.addColumn(new Column("bannedbyuuid", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("history", ColumnType.TEXT, 40000));
         table.createTable();
-
     }
 
     public static Table getTable() {

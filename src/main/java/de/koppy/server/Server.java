@@ -1,6 +1,11 @@
 package de.koppy.server;
 
+import de.koppy.bansystem.BanSystem;
+import de.koppy.bansystem.commands.Ban;
+import de.koppy.basics.BasicSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.server.commands.test;
+import de.koppy.server.listener.serverevents;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,13 +29,52 @@ public class Server {
     private int week = 0;
     private int season = 0;
     private boolean shutdownbackup;
+    private SystemController systemController;
+    private String joinmessage = "§8§m------------------\n§7§r\n  §7Welcome to §3Lunania  \n§7\n§8§m------------------";
 
     public Server() {
         this.name = "main";
+        motdlist.add("MotD #1");
+        motdlist.add("MotD #2");
+        this.systemController = new SystemController();
         loadConfig();
+        checkSystems();
     }
 
-    public void loadConfig() {
+    private void checkSystems() {
+        LunaniaSystem.registerCommand("test", new test());
+        LunaniaSystem.registerListener(new serverevents());
+
+        systemController.addOption(new Option("Bansystem", true, "Enable/Disable the BanSystem", true));
+        systemController.addOption(new Option("Basics", true, "Enable/Disable the BasicsSystem", true));
+
+        for(Option option : systemController.getOptions()) {
+            if(option.isSystem()) {
+                if((boolean)systemController.getValue(option)) {
+                    Bukkit.getConsoleSender().sendMessage("§3"+option.getName() + "§7: §aenabled");
+                    loadSystems(option.getName());
+                }else {
+                    Bukkit.getConsoleSender().sendMessage("§3"+option.getName() + "§7: §cdisabled");
+                }
+            }
+        }
+    }
+
+    private void loadSystems(String system) {
+        switch (system) {
+            case "Bansystem":
+                new BanSystem().loadClasses();
+                break;
+            case "Basics":
+                new BasicSystem().loadClasses();
+                break;
+            default:
+                Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);
+                break;
+        }
+    }
+
+    private void loadConfig() {
         File file = new File("plugins/Lunania", "server.yml");
         if(file.exists()) {
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
@@ -40,6 +84,7 @@ public class Server {
             this.day = cfg.getInt("day");
             this.week = cfg.getInt("week");
             this.season = cfg.getInt("season");
+            this.joinmessage = cfg.getString("joinmessage");
         }else {
             try {
                 initServerFile(file);
@@ -131,13 +176,17 @@ public class Server {
 
     private void initServerFile(File file) throws IOException {
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-        cfg.set("motds", new ArrayList<>());
+        cfg.set("motds", motdlist);
         cfg.set("name", "main");
         cfg.set("maxplayer", maxplayer);
         cfg.set("day", 0);
         cfg.set("week", 0);
         cfg.set("season", 0);
+        cfg.set("joinmessage", joinmessage);
         cfg.save(file);
     }
 
+    public String getJoinMessage() {
+        return joinmessage;
+    }
 }

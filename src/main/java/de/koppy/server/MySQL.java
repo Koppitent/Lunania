@@ -25,7 +25,7 @@ public class MySQL {
         if (!isConnected()) {
             try {
                 this.con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-                Bukkit.getConsoleSender().sendMessage(LunaniaSystem.getServerInstance().getPrefix() + "§7Connection §adone§7.");
+                Bukkit.getConsoleSender().sendMessage("§3Lunania §8| §7MySQL-Connection §aestablished§7.");
             } catch (SQLException e) {
                 Bukkit.getConsoleSender().sendMessage("§8[§4CRITICAL§8] §cMySQL connection failed.");
             }
