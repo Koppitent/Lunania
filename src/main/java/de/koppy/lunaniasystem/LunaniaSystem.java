@@ -1,5 +1,6 @@
 package de.koppy.lunaniasystem;
 
+import de.koppy.bansystem.BanSystem;
 import de.koppy.server.MySQL;
 import de.koppy.server.Server;
 import de.koppy.server.commands.test;
@@ -23,6 +24,8 @@ public final class LunaniaSystem extends JavaPlugin {
 
         mysql.readFile();
         mysql.connect();
+
+        new BanSystem().loadClasses();
 
         registerCommand("test", new test());
         registerListener(new serverevents());

@@ -1,5 +1,8 @@
 package de.koppy.bansystem;
 
+import de.koppy.bansystem.commands.Ban;
+import de.koppy.bansystem.commands.Unban;
+import de.koppy.bansystem.listener.JoinListener;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.Column;
 import de.koppy.server.ColumnType;
@@ -12,17 +15,17 @@ public class BanSystem implements SubSystem {
 
     @Override
     public void loadListener() {
-
+        LunaniaSystem.registerListener(new JoinListener());
     }
 
     @Override
     public void loadCommands() {
-
+        LunaniaSystem.registerCommand("ban", new Ban());
+        LunaniaSystem.registerCommand("unban", new Unban());
     }
 
     @Override
     public void loadClasses() {
-
         loadCommands();
         loadListener();
         table = new Table("bantable", new Column("uuid", ColumnType.VARCHAR, 200));
@@ -38,8 +41,8 @@ public class BanSystem implements SubSystem {
         return table;
     }
 
-    @Override
-    public String getPrefix() {
+
+    public static String getPrefix() {
         return "§cBan §8| §r";
     }
 }
