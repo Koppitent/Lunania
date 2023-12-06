@@ -7,3 +7,20 @@ commands:
   test:
   ban:
   unban:
+  home:
+  help:
+  playtime:
+  back:
+  changelog:
+  collect:
+  discord:
+  gamemode:
+  heal:
+  language:
+  languageset:
+  tpa:
+  tptoggle:
+  tpaccept:
+  tpdeny:
+  msg:
+  r:

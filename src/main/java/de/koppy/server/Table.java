@@ -25,6 +25,7 @@ public class Table {
         for(Column column : columns) { columnsS = columnsS + "," + column.toString(); }
         columnsS = columnsS.substring(1);
         LunaniaSystem.getMySQLInstance().sendStatement("CREATE TABLE IF NOT EXISTS "+name+" ("+columnsS+")");
+        updateTable();
     }
 
     public void updateTable() {
@@ -76,7 +77,7 @@ public class Table {
             PreparedStatement ps = LunaniaSystem.getMySQLInstance().getConnection().prepareStatement("SELECT "+targetcolumn.getName()+" FROM "+name+" WHERE "+wherecolumn.getName()+" = ?");
             ps.setString(1, wherekey);
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            return getValue(targetcolumn, wherecolumn, wherekey) != null;
         } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage("§4Maybe no entry for user in database. (SQLException)");
         }

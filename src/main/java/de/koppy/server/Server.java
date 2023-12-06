@@ -6,12 +6,14 @@ import de.koppy.basics.BasicSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
+import io.netty.channel.epoll.Epoll;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,12 +33,32 @@ public class Server {
     private boolean shutdownbackup;
     private SystemController systemController;
     private String joinmessage = "§8§m------------------\n§7§r\n  §7Welcome to §3Lunania  \n§7\n§8§m------------------";
+    private String lunaniasymbol = "§f\uE007";
+    private String discordlink = "discord.gg";
+    private int broadcasttimer = 0;
+    private List<String> broadcastmessages = new ArrayList<>();
+    private boolean versionmessage = true;
+    private String url = "https://download.mc-packs.net/pack/2f6719d7c1041034a7dcfcf3b1368261452aff85.zip";
+    private String hash = "2f6719d7c1041034a7dcfcf3b1368261452aff85";
+    private byte[] sha1 = new byte[hash.length() / 2];
 
     public Server() {
         this.name = "main";
-        motdlist.add("MotD #1");
-        motdlist.add("MotD #2");
+        String lunania = ""+ChatColor.of("#005263")+"§lL"+ChatColor.of("#0A5B6A")+"§lu"+ChatColor.of("#146471")+"§ln"+ChatColor.of("#1E6C78")+"§la"+ChatColor.of("#277580")+"§ln"+ChatColor.of("#317E87")+"§li"+ChatColor.of("#3B878E")+"§la"+ChatColor.of("#459095")+"§l."+ChatColor.of("#4F989C")+"§ln"+ChatColor.of("#59A1A3")+"§le"+ChatColor.of("#63AAAA")+"§lt";
+        this.motdlist.clear();
+        this.motdlist.add("                §8§l» "+lunania+" §8§l«                      \n        §7» "+ChatColor.of("#166b37")+"Adventure §7and "+ChatColor.of("#156c6e")+"Building");
+        this.motdlist.add("                §8§l» "+lunania+" §8§l«                      \n        §7» "+ChatColor.of("#c4351f")+"§lPre-Alpha§r §7starting soon.");
+        this.broadcastmessages.add("     §7Willkommen auf §3Lunania.net§7!     ");
+
         this.systemController = new SystemController();
+
+        //* Some weird calc for the resourcepack
+        for (int i = 0; i < sha1.length; i++) {
+            int index = i * 2;
+            int j = Integer.parseInt(hash.substring(index, index + 2), 16);
+            sha1[i] = (byte) j;
+        }
+
         loadConfig();
         checkSystems();
     }
@@ -74,17 +96,64 @@ public class Server {
         }
     }
 
+    public byte[] getSha1() {
+        return sha1;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setPlayerListHeaderFooter(Player player) {
+        player.setPlayerListHeader("\n\n"+lunaniasymbol+"\n");
+        player.setPlayerListFooter("\n"+"§7Discord: §e"+discordlink+"\n"+"§7Website: §elunania.net"+"\n");
+    }
+
+    public String getDiscordlink() {
+        return discordlink;
+    }
+
+    public String getLunaniasymbol() {
+        return lunaniasymbol;
+    }
+
+    public boolean isVersionmessage() {
+        return versionmessage;
+    }
+
     private void loadConfig() {
         File file = new File("plugins/Lunania", "server.yml");
         if(file.exists()) {
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-            this.name = cfg.getString("name");
-            this.motdlist = cfg.getStringList("motds");
-            setMaxplayer(cfg.getInt("maxplayer"));
-            this.day = cfg.getInt("day");
-            this.week = cfg.getInt("week");
-            this.season = cfg.getInt("season");
-            this.joinmessage = cfg.getString("joinmessage");
+            if(!cfg.contains("name")) cfg.set("name", this.name);
+            else this.name = cfg.getString("name");
+            if(!cfg.contains("motds")) cfg.set("motds", this.motdlist);
+            else this.motdlist = cfg.getStringList("motds");
+            if(!cfg.contains("maxplayer")) cfg.set("maxplayer", this.maxplayer);
+            else this.maxplayer = cfg.getInt("maxplayer");
+            if(!cfg.contains("day")) cfg.set("day", this.day);
+            else this.day = cfg.getInt("day");
+            if(!cfg.contains("week")) cfg.set("week", this.week);
+            else this.week = cfg.getInt("week");
+            if(!cfg.contains("season")) cfg.set("season", this.season);
+            else this.season = cfg.getInt("season");
+            if(!cfg.contains("joinmessage")) cfg.set("joinmessage", this.joinmessage);
+            else this.joinmessage = cfg.getString("joinmessage");
+            if(!cfg.contains("broadcastmessages")) cfg.set("broadcastmessages", this.broadcastmessages);
+            else this.broadcastmessages = cfg.getStringList("broadcastmessages");
+            if(!cfg.contains("broadcasttimer")) cfg.set("broadcasttimer", this.broadcasttimer);
+            else this.broadcasttimer = cfg.getInt("broadcasttimer");
+            if(!cfg.contains("versionmessage")) cfg.set("versionmessage", this.versionmessage);
+            else this.versionmessage = cfg.getBoolean("versionmessage");
+            try {
+                cfg.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }else {
             try {
                 initServerFile(file);
@@ -120,6 +189,33 @@ public class Server {
                 }
             }
         }, 20, 20);
+
+        if(broadcasttimer > 0) {
+            Bukkit.getScheduler().runTaskTimer(LunaniaSystem.getPlugin(), new Runnable() {
+                @SuppressWarnings("deprecation")
+                public void run() {
+                    String msg = getBroadcastmessage();
+                    String pins = "§8§m";
+                    for(int i=0; i<30; i++) {
+                        pins = pins + "-";
+                    }
+                    for(Player player : Bukkit.getOnlinePlayers()) {
+                        player.sendMessage("");
+                        player.sendMessage(pins);
+                        player.sendMessage("");
+                        player.sendMessage(msg);
+                        player.sendMessage("");
+                        player.sendMessage(pins);
+                        player.sendMessage("");
+                    }
+                }
+            }, 20 * broadcasttimer, 20 * broadcasttimer);
+        }
+    }
+
+    public String getBroadcastmessage() {
+        Random rndm = new Random();
+        return broadcastmessages.get(rndm.nextInt(broadcastmessages.size()));
     }
 
     private void setValueServer(String name, Object obj) {
@@ -183,6 +279,12 @@ public class Server {
         cfg.set("week", 0);
         cfg.set("season", 0);
         cfg.set("joinmessage", joinmessage);
+        cfg.set("broadcastmessages", broadcastmessages);
+        cfg.set("broadcasttimer", 0);
+        List<String> list = new ArrayList<>();
+        list.add("Every how many seconds a message should be broadcastet");
+        list.add("Set to 0 if disabling");
+        cfg.setComments("broadcasttimer", list);
         cfg.save(file);
     }
 

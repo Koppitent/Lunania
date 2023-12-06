@@ -69,7 +69,8 @@ public class MySQL {
             PreparedStatement ps = con.prepareStatement(statement);
             ps.executeUpdate();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("§8[§4CRITICAL§8] §cCritical MySQL Error.");
+            e.printStackTrace();
+            Bukkit.getConsoleSender().sendMessage("§8[§4CRITICAL§8] §cCritical MySQL Error by sending statement.");
         }
     }
 
