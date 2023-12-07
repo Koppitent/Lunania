@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
+import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -113,17 +113,20 @@ public class PlayerAccount {
         if(table.existEntry(uuidc, uuid.toString())) {
             return (Double) table.getValue(balancec, uuidc, uuid.toString());
         }else {
-            setMoneyWithoutReason(0d);
+            setMoneyDatabase(0d);
             return 0.d;
         }
     }
 
-    public void setMoneyWithoutReason(double money) {
+    public void setMoneyDatabase(double money) {
         table.setValue(balancec, money, uuidc, uuid.toString());
+        if(Bukkit.getPlayer(uuid) != null) {
+            PlayerProfile.getProfile(uuid).getScoreboard().updateEco();
+        }
     }
 
     public void setMoney(double money, String sendto, String reason, double moneybefore, double amount) {
-        table.setValue(balancec, money, uuidc, uuid.toString());
+        setMoneyDatabase(money);
         //TODO: add to logs here
     }
 

@@ -3,10 +3,10 @@ package de.koppy.basics;
 import de.koppy.basics.commands.*;
 import de.koppy.basics.listener.*;
 import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
 import de.koppy.server.SubSystem;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Table;
 
 public class BasicSystem implements SubSystem {
 
@@ -57,6 +57,8 @@ public class BasicSystem implements SubSystem {
         table.addColumn(new Column("tptoggle", ColumnType.BOOL, 200));
         table.addColumn(new Column("msgtoggle", ColumnType.BOOL, 200));
         table.addColumn(new Column("usetexturepack", ColumnType.BOOL, 200));
+        table.addColumn(new Column("nickname", ColumnType.VARCHAR, 200));
+        table.addColumn(new Column("warptokens",  ColumnType.INT, 200));
         table.createTable();
 
         langtable = new Table("language", new Column("abbreviation", ColumnType.VARCHAR, 200));

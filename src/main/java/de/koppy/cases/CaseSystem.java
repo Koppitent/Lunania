@@ -7,10 +7,10 @@ import de.koppy.cases.api.Type;
 import de.koppy.cases.commands.CaseCmd;
 import de.koppy.cases.listener.CaseEvents;
 import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
 import de.koppy.server.SubSystem;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Table;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

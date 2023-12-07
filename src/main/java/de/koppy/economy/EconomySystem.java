@@ -3,10 +3,10 @@ package de.koppy.economy;
 import de.koppy.economy.commands.Banks;
 import de.koppy.economy.commands.Economy;
 import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
 import de.koppy.server.SubSystem;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Table;
 
 public class EconomySystem implements SubSystem {
 

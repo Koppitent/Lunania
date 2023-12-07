@@ -1,4 +1,4 @@
-package de.koppy.server;
+package de.koppy.mysql.api;
 
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;

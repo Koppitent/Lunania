@@ -1,7 +1,13 @@
-/*
+
 package de.koppy.basics.api.scoreboard;
 
 
+import de.koppy.basics.api.Rank;
+import de.koppy.economy.EconomySystem;
+import de.koppy.economy.api.PlayerAccount;
+import de.koppy.job.api.JobType;
+import de.koppy.job.api.PlayerJob;
+import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -22,48 +28,51 @@ public class DefaultScoreboard extends ScoreboardBuilder {
         updateEco();
         setScore("§5", 7);
         setScore("§7Land: ", 6);
-        updateLand(new Land(player.getLocation().getChunk()));
+//        updateLand(new Land(player.getLocation().getChunk()));
         setScore("§8", 4);
         setScore("§7Job: ", 3);
         updateJob();
         setScore("§1", 1);
     }
 
+    @Override
+    public void update() { /* updates are being done in PlayerProfiles! */ }
+
     public void updateRank() {
         setScore("§f" + Rank.getRankPrefix(Rank.getRank(player))+"                  ", 11);
     }
 
     public void updateEco() {
-        if(Main.economysys) {
-            setScore("§e" + new PlayerAccount(player.getUniqueId()).getFormatMoney() + Economy.ecosymbol, 8);
+        if(LunaniaSystem.getServerInstance().isSystemActive("Economy")) {
+            setScore("§e" + new PlayerAccount(player.getUniqueId()).getFormatMoney() + EconomySystem.getEcosymbol(), 8);
         }else {
             setScore("§c" + "§cdisabled", 8);
         }
     }
 
-    public void updateLand(Land land) {
-        if(!land.isClaimed()) {
-            String landout = "§7"+player.getLocation().getWorld().getName();
-            if(player.getLocation().getWorld().getName().equals("world")) {
-                if(land.isClaimed()) {
-                    landout = "§7" + land.getOwnerName();
-                }else {
-                    landout = "§cunclaimed";
-                }
-            }
-            setScore(landout, 5);
-        }else {
-            String landout = "§7"+player.getLocation().getWorld().getName();
-            if(player.getLocation().getWorld().getName().equals("world")) {
-                if(land.isClaimed()) {
-                    landout = "§7" + land.getOwnerName();
-                }else {
-                    landout = "§cunclaimed";
-                }
-            }
-            setScore(landout, 5);
-        }
-    }
+//    public void updateLand(Land land) {
+//        if(!land.isClaimed()) {
+//            String landout = "§7"+player.getLocation().getWorld().getName();
+//            if(player.getLocation().getWorld().getName().equals("world")) {
+//                if(land.isClaimed()) {
+//                    landout = "§7" + land.getOwnerName();
+//                }else {
+//                    landout = "§cunclaimed";
+//                }
+//            }
+//            setScore(landout, 5);
+//        }else {
+//            String landout = "§7"+player.getLocation().getWorld().getName();
+//            if(player.getLocation().getWorld().getName().equals("world")) {
+//                if(land.isClaimed()) {
+//                    landout = "§7" + land.getOwnerName();
+//                }else {
+//                    landout = "§cunclaimed";
+//                }
+//            }
+//            setScore(landout, 5);
+//        }
+//    }
 
     public void updateJob() {
         JobType job = new PlayerJob(player.getUniqueId()).getJob();
@@ -74,16 +83,4 @@ public class DefaultScoreboard extends ScoreboardBuilder {
         setScore(out+" §f", 2);
     }
 
-
-
-    @Override
-    public void update() {
-        new BukkitRunnable() {
-            public void run() {
-                updateEco();
-                updateRank();
-            }
-        }.runTaskTimer(Main.instance, 20, 20);
-    }
-
-}*/
+}

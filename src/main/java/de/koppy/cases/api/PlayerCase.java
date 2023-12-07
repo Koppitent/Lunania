@@ -1,9 +1,9 @@
 package de.koppy.cases.api;
 
 import de.koppy.cases.CaseSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
+import de.koppy.mysql.api.Table;
 
 import java.util.UUID;
 

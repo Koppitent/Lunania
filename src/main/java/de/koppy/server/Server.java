@@ -5,9 +5,15 @@ import de.koppy.bansystem.commands.Ban;
 import de.koppy.basics.BasicSystem;
 import de.koppy.cases.CaseSystem;
 import de.koppy.economy.EconomySystem;
+import de.koppy.job.JobSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.mysql.MysqlSystem;
+import de.koppy.nick.NickSystem;
+import de.koppy.npc.NpcSystem;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
+import de.koppy.shop.ShopSystem;
+import de.koppy.warp.WarpSystem;
 import io.netty.channel.epoll.Epoll;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -41,8 +47,8 @@ public class Server {
     private List<String> broadcastmessages = new ArrayList<>();
     private boolean versionmessage = true;
     private String url = "https://drive.kytress.de/index.php/s/6xGxbm49xk8R4L3/download";
-    private String hash = "2f6719d7c1041034a7dcfcf3b1368261452aff85";
-    private byte[] sha1 = new byte[hash.length() / 2];
+    private List<String> activesystems = new ArrayList<>();
+    private boolean consoledebug = false;
 
     public Server() {
         this.name = "main";
@@ -54,13 +60,6 @@ public class Server {
 
         this.systemController = new SystemController();
 
-        //* Some weird calc for the resourcepack
-        for (int i = 0; i < sha1.length; i++) {
-            int index = i * 2;
-            int j = Integer.parseInt(hash.substring(index, index + 2), 16);
-            sha1[i] = (byte) j;
-        }
-
         loadConfig();
         checkSystems();
     }
@@ -69,21 +68,59 @@ public class Server {
         LunaniaSystem.registerCommand("test", new test());
         LunaniaSystem.registerListener(new serverevents());
 
-        systemController.addOption(new Option("Bansystem", true, "Enable/Disable the BanSystem", true));
+        //* Define what should load in loadSystems() !
+        systemController.addOption(new Option("MySQL", true, "Enable/Disable the MySQLSystem", true));
         systemController.addOption(new Option("Basics", true, "Enable/Disable the BasicsSystem", true));
+        systemController.addOption(new Option("Bansystem", true, "Enable/Disable the BanSystem", true));
         systemController.addOption(new Option("Cases", true, "Enable/Disable the CaseSystem", true));
         systemController.addOption(new Option("Economy", true, "Enable/Disable the EconomySystem", true));
+        systemController.addOption(new Option("Job", true, "Enable/Disable the JobSystem", true));
+        systemController.addOption(new Option("Nick", true, "Enable/Disable the NickSystem", true));
+        systemController.addOption(new Option("NPC", true, "Enable/Disable the NPCSystem", true));
+        systemController.addOption(new Option("Shop", true, "Enable/Disable the ShopSystem", true));
+        systemController.addOption(new Option("Warp", true, "Enable/Disable the WarpSystem", true));
+
 
         for(Option option : systemController.getOptions()) {
             if(option.isSystem()) {
                 if((boolean)systemController.getValue(option)) {
                     Bukkit.getConsoleSender().sendMessage("§3"+option.getName() + "§7: §aenabled");
+                    activesystems.add(option.getName());
                     loadSystems(option.getName());
                 }else {
                     Bukkit.getConsoleSender().sendMessage("§3"+option.getName() + "§7: §cdisabled");
                 }
             }
         }
+    }
+
+    //* TODO: into server.yml
+    public void setConsoledebug(boolean consoledebug) {
+        this.consoledebug = consoledebug;
+    }
+
+    public boolean isConsoledebug() {
+        return consoledebug;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public int getWeek() {
+        return week;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public boolean isSystemActive(String system) {
+        return activesystems.contains(system);
+    }
+
+    public SystemController getSystemController() {
+        return systemController;
     }
 
     private void loadSystems(String system) {
@@ -99,6 +136,24 @@ public class Server {
                 break;
             case "Economy":
                 new EconomySystem().loadClasses();
+                break;
+            case "Job":
+                new JobSystem().loadClasses();
+                break;
+            case "Nick":
+                new NickSystem().loadClasses();
+                break;
+            case "MySQL":
+                new MysqlSystem().loadClasses();
+                break;
+            case "NPC":
+                new NpcSystem().loadClasses();
+                break;
+            case "Shop":
+                new ShopSystem().loadClasses();
+                break;
+            case "Warp":
+                new WarpSystem().loadClasses();
                 break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);

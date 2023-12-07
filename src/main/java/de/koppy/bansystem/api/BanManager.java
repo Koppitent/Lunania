@@ -1,16 +1,12 @@
 package de.koppy.bansystem.api;
 
 import de.koppy.bansystem.BanSystem;
-import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
+import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class BanManager {

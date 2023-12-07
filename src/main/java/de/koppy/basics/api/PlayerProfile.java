@@ -1,11 +1,16 @@
 package de.koppy.basics.api;
 
 import de.koppy.basics.BasicSystem;
+import de.koppy.basics.api.scoreboard.DefaultScoreboard;
 import de.koppy.economy.api.PlayerAccount;
+import de.koppy.job.JobSystem;
+import de.koppy.job.api.JobType;
+import de.koppy.job.api.PlayerJob;
+import de.koppy.job.api.TaskAmount;
 import de.koppy.lunaniasystem.LunaniaSystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
+import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,11 +34,27 @@ public class PlayerProfile {
     private final static Column tptogglec = new Column("tptoggle", ColumnType.BOOL, 200);
     private final static Column msgtogglec = new Column("msgtoggle", ColumnType.BOOL, 200);
     private final static Column usetexturepackc = new Column("usetexturepack", ColumnType.BOOL, 200);
+    private final static Column warptokensc = new Column("warptokens",  ColumnType.INT, 200);
+    private final static Column nicknamec = new Column("nickname", ColumnType.VARCHAR, 200);
     private int sessionplaytime = 0;
+    private TaskAmount taskamount;
+    private DefaultScoreboard scoreboard;
     private Language language;
 
+    /**
+     * Rules:
+     * 1. Only saving/loading data on leave/join
+     * 2. If necessary save data immediately
+     * 3. If necessary lock before executing action
+     *
+     */
     public PlayerProfile(UUID uuid) {
+        profiles.add(this);
         this.uuid = uuid;
+        this.scoreboard = new DefaultScoreboard(Bukkit.getPlayer(uuid));
+        taskamount = new TaskAmount();
+        PlayerJob pj = new PlayerJob(uuid);
+        taskamount.registerTaskAmount(pj.getJob().getTaskAmount());
         if(table.existEntry(languagec, uuidc, uuid.toString())) {
             this.language = Language.fromString((String) table.getValue(languagec, uuidc, uuid.toString()));
         }else {
@@ -49,6 +70,7 @@ public class PlayerProfile {
             @Override
             public void run() {
                 sessionplaytime++;
+                scoreboard.updateRank();
                 if(Bukkit.getPlayer(uuid) == null) cancel();
             }
         }.runTaskTimer(LunaniaSystem.getPlugin(), 20, 20);
@@ -245,8 +267,69 @@ public class PlayerProfile {
         Bukkit.getPlayer(uuid).sendMessage(getMessage(abbreviation));
     }
 
+
+    //* JobSystem
+    public TaskAmount getTaskamount() {
+        return taskamount;
+    }
+
+    public void setJob(JobType jobtype) {
+        Column currentjobc = new Column("currentjob", ColumnType.VARCHAR, 200);
+        JobSystem.getTable().setValue(currentjobc, jobtype.toString(), uuidc, uuid.toString());
+        getTaskamount().registerTaskAmount(jobtype.getTaskAmount());
+    }
+
     public UUID getUuid() {
         return uuid;
+    }
+
+    //* Scoreboard
+    public DefaultScoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    //* Nick-Data
+    public boolean isNicked() {
+        if(getNickname() == null) return false;
+        return (!getNickname().equals("none"));
+    }
+
+    public String getNickname() {
+        if(table.existEntry(nicknamec, uuidc, uuid.toString())) {
+            String nickname = (String) table.getValue(nicknamec, uuidc, uuid.toString());
+            return nickname;
+        }else {
+            setNickname("none");
+            return null;
+        }
+    }
+
+    public void setNickname(String nickname) {
+        table.setValue(nicknamec, nickname, uuidc, uuid.toString());
+    }
+
+    //* Warp-Tokens
+    public void setWarptokens(int tokens) {
+        table.setValue(warptokensc, tokens, uuidc, uuid.toString());
+    }
+
+    public int getWarptokens() {
+        if(table.existEntry(warptokensc, uuidc, uuid.toString())) {
+            return (Integer) table.getValue(warptokensc, uuidc, uuid.toString());
+        }else {
+            setWarptokens(0);
+            return 0;
+        }
+    }
+
+    //* Money
+    public double getMoney() {
+        return new PlayerAccount(uuid).getMoney();
+    }
+
+    public void remove() {
+        setPlaytime(getTotalPlaytime());
+        profiles.remove(this);
     }
 
     public static PlayerProfile getProfile(UUID uuid) {
@@ -254,11 +337,6 @@ public class PlayerProfile {
             if(profile.getUuid().equals(uuid)) return profile;
         }
         return new PlayerProfile(uuid);
-    }
-
-    public void remove() {
-        setPlaytime(getTotalPlaytime());
-        profiles.remove(this);
     }
 
     public static int getTotalPlaytimeSQL(UUID uniqueId) {
@@ -269,12 +347,29 @@ public class PlayerProfile {
         }
     }
 
-    //TODO: implement Nick-System
-    public boolean isNicked() {
-        return false;
+    public static void setWarptokens(UUID uuid, int tokens) {
+        table.setValue(warptokensc, tokens, uuidc, uuid.toString());
     }
 
-    public double getMoney() {
-        return new PlayerAccount(uuid).getMoney();
+    private static int getWarptokens(UUID uuid) {
+        if(table.existEntry(warptokensc, uuidc, uuid.toString())) {
+            return (Integer) table.getValue(warptokensc, uuidc, uuid.toString());
+        }else {
+            return 0;
+        }
     }
+
+    public static void addWarpTokens(UUID uuid, int i) {
+        int a = getWarptokens(uuid);
+        a+=i;
+        setWarptokens(uuid, a);
+    }
+
+    public static void removeWarpTokens(UUID uuid, int i) {
+        int a = getWarptokens(uuid);
+        a = a - i;
+        setWarptokens(uuid, a);
+    }
+
+
 }

@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
-import de.koppy.server.Column;
-import de.koppy.server.ColumnType;
-import de.koppy.server.Table;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
+import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
