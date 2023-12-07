@@ -1,6 +1,7 @@
 package de.koppy.basics.api;
 
 import de.koppy.basics.BasicSystem;
+import de.koppy.economy.api.PlayerAccount;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.Column;
 import de.koppy.server.ColumnType;
@@ -271,5 +272,9 @@ public class PlayerProfile {
     //TODO: implement Nick-System
     public boolean isNicked() {
         return false;
+    }
+
+    public double getMoney() {
+        return new PlayerAccount(uuid).getMoney();
     }
 }

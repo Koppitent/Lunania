@@ -3,6 +3,8 @@ package de.koppy.server;
 import de.koppy.bansystem.BanSystem;
 import de.koppy.bansystem.commands.Ban;
 import de.koppy.basics.BasicSystem;
+import de.koppy.cases.CaseSystem;
+import de.koppy.economy.EconomySystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
@@ -38,7 +40,7 @@ public class Server {
     private int broadcasttimer = 0;
     private List<String> broadcastmessages = new ArrayList<>();
     private boolean versionmessage = true;
-    private String url = "https://download.mc-packs.net/pack/2f6719d7c1041034a7dcfcf3b1368261452aff85.zip";
+    private String url = "https://drive.kytress.de/index.php/s/6xGxbm49xk8R4L3/download";
     private String hash = "2f6719d7c1041034a7dcfcf3b1368261452aff85";
     private byte[] sha1 = new byte[hash.length() / 2];
 
@@ -69,6 +71,8 @@ public class Server {
 
         systemController.addOption(new Option("Bansystem", true, "Enable/Disable the BanSystem", true));
         systemController.addOption(new Option("Basics", true, "Enable/Disable the BasicsSystem", true));
+        systemController.addOption(new Option("Cases", true, "Enable/Disable the CaseSystem", true));
+        systemController.addOption(new Option("Economy", true, "Enable/Disable the EconomySystem", true));
 
         for(Option option : systemController.getOptions()) {
             if(option.isSystem()) {
@@ -90,22 +94,20 @@ public class Server {
             case "Basics":
                 new BasicSystem().loadClasses();
                 break;
+            case "Cases":
+                new CaseSystem().loadClasses();
+                break;
+            case "Economy":
+                new EconomySystem().loadClasses();
+                break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);
                 break;
         }
     }
 
-    public byte[] getSha1() {
-        return sha1;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public String getUrl() {
-        return url;
+    public void applyTexturepack(Player player) {
+        player.setResourcePack(url);
     }
 
     public void setPlayerListHeaderFooter(Player player) {
