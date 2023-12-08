@@ -6,10 +6,13 @@ import de.koppy.basics.BasicSystem;
 import de.koppy.cases.CaseSystem;
 import de.koppy.economy.EconomySystem;
 import de.koppy.job.JobSystem;
+import de.koppy.land.LandSystem;
+import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mysql.MysqlSystem;
 import de.koppy.nick.NickSystem;
 import de.koppy.npc.NpcSystem;
+import de.koppy.quest.QuestSystem;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
 import de.koppy.shop.ShopSystem;
@@ -79,6 +82,8 @@ public class Server {
         systemController.addOption(new Option("NPC", true, "Enable/Disable the NPCSystem", true));
         systemController.addOption(new Option("Shop", true, "Enable/Disable the ShopSystem", true));
         systemController.addOption(new Option("Warp", true, "Enable/Disable the WarpSystem", true));
+        systemController.addOption(new Option("Quest", true, "Enable/Disable the QuestSystem", true));
+        systemController.addOption(new Option("Land", true, "Enable/Disable the LandSystem", true));
 
 
         for(Option option : systemController.getOptions()) {
@@ -94,34 +99,6 @@ public class Server {
         }
     }
 
-    //* TODO: into server.yml
-    public void setConsoledebug(boolean consoledebug) {
-        this.consoledebug = consoledebug;
-    }
-
-    public boolean isConsoledebug() {
-        return consoledebug;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public int getWeek() {
-        return week;
-    }
-
-    public int getSeason() {
-        return season;
-    }
-
-    public boolean isSystemActive(String system) {
-        return activesystems.contains(system);
-    }
-
-    public SystemController getSystemController() {
-        return systemController;
-    }
 
     private void loadSystems(String system) {
         switch (system) {
@@ -155,10 +132,45 @@ public class Server {
             case "Warp":
                 new WarpSystem().loadClasses();
                 break;
+            case "Quest":
+                new QuestSystem().loadClasses();
+                break;
+            case "Land":
+                new LandSystem().loadClasses();
+                break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);
                 break;
         }
+    }
+
+    //* TODO: into server.yml
+    public void setConsoledebug(boolean consoledebug) {
+        this.consoledebug = consoledebug;
+    }
+
+    public boolean isConsoledebug() {
+        return consoledebug;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public int getWeek() {
+        return week;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public boolean isSystemActive(String system) {
+        return activesystems.contains(system);
+    }
+
+    public SystemController getSystemController() {
+        return systemController;
     }
 
     public void applyTexturepack(Player player) {

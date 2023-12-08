@@ -12,9 +12,12 @@ import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +39,8 @@ public class PlayerProfile {
     private final static Column usetexturepackc = new Column("usetexturepack", ColumnType.BOOL, 200);
     private final static Column warptokensc = new Column("warptokens",  ColumnType.INT, 200);
     private final static Column nicknamec = new Column("nickname", ColumnType.VARCHAR, 200);
+    private final static Column uidc = new Column("uid", ColumnType.VARCHAR, 200);
+    private final static Column maxlandsc = new Column("maxlands", ColumnType.INT, 200);
     private int sessionplaytime = 0;
     private TaskAmount taskamount;
     private DefaultScoreboard scoreboard;
@@ -267,6 +272,29 @@ public class PlayerProfile {
         Bukkit.getPlayer(uuid).sendMessage(getMessage(abbreviation));
     }
 
+    //* Lands
+    public void setMaxLands(int maxlands) {
+        table.setValue(maxlandsc, maxlands, uuidc, this.uuid.toString());
+    }
+
+    public int getMaxLands() {
+        if(table.existEntry(maxlandsc, uuidc, uuid.toString())) {
+            return (Integer) table.getValue(maxlandsc, uuidc, uuid.toString());
+        }else {
+            setMaxLands(20);
+            return 20;
+        }
+    }
+
+    public List<String> getLands() {
+        File file2 = new File("plugins/Lunania/Landuser", uuid.toString()+".yml");
+        List<String> lands = new ArrayList<String>();
+        if(file2.exists()) {
+            FileConfiguration cfg2 = YamlConfiguration.loadConfiguration(file2);
+            lands.addAll(cfg2.getKeys(false));
+        }
+        return lands;
+    }
 
     //* JobSystem
     public TaskAmount getTaskamount() {
@@ -369,6 +397,17 @@ public class PlayerProfile {
         int a = getWarptokens(uuid);
         a = a - i;
         setWarptokens(uuid, a);
+    }
+
+    //TODO: change getLands int a databaseinput
+    public static List<String> getLands(UUID uuid) {
+        File file2 = new File("plugins/Lunania/Landuser", uuid.toString()+".yml");
+        List<String> lands = new ArrayList<String>();
+        if(file2.exists()) {
+            FileConfiguration cfg2 = YamlConfiguration.loadConfiguration(file2);
+            lands.addAll(cfg2.getKeys(false));
+        }
+        return lands;
     }
 
 

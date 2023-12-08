@@ -40,3 +40,6 @@ commands:
   shop:
   store:
   warp:
+  quest:
+  land:
+  chunk:

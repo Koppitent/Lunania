@@ -59,6 +59,8 @@ public class BasicSystem implements SubSystem {
         table.addColumn(new Column("usetexturepack", ColumnType.BOOL, 200));
         table.addColumn(new Column("nickname", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("warptokens",  ColumnType.INT, 200));
+        table.addColumn(new Column("maxlands", ColumnType.INT, 200));
+        table.addColumn(new Column("uid", ColumnType.VARCHAR, 200));
         table.createTable();
 
         langtable = new Table("language", new Column("abbreviation", ColumnType.VARCHAR, 200));
