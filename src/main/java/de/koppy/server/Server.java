@@ -7,13 +7,16 @@ import de.koppy.economy.EconomySystem;
 import de.koppy.job.JobSystem;
 import de.koppy.land.LandSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.mission.MissionSystem;
 import de.koppy.mysql.MysqlSystem;
 import de.koppy.nick.NickSystem;
 import de.koppy.npc.NpcSystem;
+import de.koppy.npc.api.NPCFile;
 import de.koppy.quest.QuestSystem;
 import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
 import de.koppy.shop.ShopSystem;
+import de.koppy.shop.api.Adminshop;
 import de.koppy.warp.WarpSystem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -63,6 +66,20 @@ public class Server {
 
         loadConfig();
         checkSystems();
+
+        File file = new File("plugins/Lunania/Adminshops");
+        if(file.listFiles() != null) {
+            for(File f : file.listFiles()) {
+                new Adminshop(f);
+            }
+        }
+
+        File file2 = new File("plugins/Lunania/Npcs");
+        if(file2.listFiles() != null) {
+            for(File f : file2.listFiles()) {
+                NPCFile.loadFile(f);
+            }
+        }
     }
 
     private void checkSystems() {
@@ -82,6 +99,7 @@ public class Server {
         systemController.addOption(new Option("Warp", true, "Enable/Disable the WarpSystem", true));
         systemController.addOption(new Option("Quest", true, "Enable/Disable the QuestSystem", true));
         systemController.addOption(new Option("Land", true, "Enable/Disable the LandSystem", true));
+        systemController.addOption(new Option("Mission", true, "Enable/Disable the MissionSystem", true));
 
 
         for(Option option : systemController.getOptions()) {
@@ -152,13 +170,15 @@ public class Server {
             case "Land":
                 new LandSystem().loadClasses();
                 break;
+            case "Mission":
+                new MissionSystem().loadClasses();
+                break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);
                 break;
         }
     }
 
-    //* TODO: into server.yml
     public void setConsoledebug(boolean consoledebug) {
         this.consoledebug = consoledebug;
     }
@@ -234,6 +254,8 @@ public class Server {
             else this.versionmessage = cfg.getBoolean("versionmessage");
             if(!cfg.contains("spawnloc")) cfg.set("spawnloc", this.spawnloc);
             else this.spawnloc = cfg.getLocation("spawnloc");
+            if(!cfg.contains("consoledebug")) cfg.set("consoledebug", this.consoledebug);
+            else this.consoledebug = cfg.getBoolean("consoledebug");
             try {
                 cfg.save(file);
             } catch (IOException e) {

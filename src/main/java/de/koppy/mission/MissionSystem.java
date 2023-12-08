@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MissionSystem implements SubSystem {
 
+    //TODO: change newdaycheck by checking and saving dates!
     //TODO: add more and unique Missions
     //TODO: add better UserInterface
     private static Table table;
@@ -59,6 +60,7 @@ public class MissionSystem implements SubSystem {
         table.addColumn(new Column("datedaily", ColumnType.INT, 200));
         table.addColumn(new Column("dateweekly", ColumnType.INT, 200));
         table.addColumn(new Column("dateseason", ColumnType.INT, 200));
+        table.createTable();
 
     }
 

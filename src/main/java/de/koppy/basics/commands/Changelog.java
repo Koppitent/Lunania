@@ -135,7 +135,7 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title8, date8, lore8));
 
         String title9 = "§3Changelog-Update (#9)";
-        String date9 = "§9§o29.08.2023 01:20";
+        String date9 = "§8§o29.08.2023 01:20";
         ArrayList<String> lore9 = new ArrayList<String>();
         lore9.add(" ");
         lore9.add("§a+ §7/warp list");
@@ -146,7 +146,7 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title9, date9, lore9));
 
         String title10 = "§3Changelog-Update (#10)";
-        String date10 = "§10§o29.08.2023 03:20";
+        String date10 = "§8§o29.08.2023 03:20";
         ArrayList<String> lore10 = new ArrayList<String>();
         lore10.add(" ");
         lore10.add("§a+ §7/land list");
@@ -208,7 +208,6 @@ public class Changelog implements CommandExecutor {
             arrowleftM.setOwner("MHF_ArrowRight");
             arrowleft.setItemMeta(arrowleftM);
             inventory.setItem(26, arrowleft);
-            //TODO: set arrow on left site and put in lore page+1 create clickevent for next site
         }
 
         //* Check if site before exist
@@ -220,7 +219,6 @@ public class Changelog implements CommandExecutor {
             arrowleftM.setOwner("MHF_ArrowLeft");
             arrowleft.setItemMeta(arrowleftM);
             inventory.setItem(18, arrowleft);
-            //TODO: set arrow on right site and put in lore page-1 create clickevent for site before
         }
 
     }

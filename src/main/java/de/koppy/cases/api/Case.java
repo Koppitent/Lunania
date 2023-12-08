@@ -8,6 +8,8 @@ import java.util.Random;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.cases.CaseSystem;
 import de.koppy.cases.listener.CaseEvents;
+import de.koppy.economy.EconomySystem;
+import de.koppy.economy.api.PlayerAccount;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -197,23 +199,20 @@ public class Case {
                 }else if(winitem.getType() == Type.LAND) {
                     int amount = (Integer) winitem.getRewardObject();
                     int maxlands = profile.getMaxhomes();
-                    //TODO: add lands on casewin
-//                    profile.setMaxLands(maxlands+amount);
+                    profile.setMaxLands(maxlands+amount);
                     player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+amount+" §7more Lands.");
                 }else if(winitem.getType() == Type.MONEY) {
                     double money = (Double) winitem.getRewardObject();
-                    //TODO: add money on casewin
-//                    new PlayerAccount(player.getUniqueId()).addMoney(money, "Server", "Won in Case.");
-//                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+new DecimalFormat("#,###.##").format(money)+de.lunania.economy.Economy.ecosymbol +"§7.");
+                    new PlayerAccount(player.getUniqueId()).addMoney(money, "Server", "Won in Case.");
+                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+new DecimalFormat("#,###.##").format(money)+ EconomySystem.getEcosymbol() +"§7.");
                 }else if(winitem.getType() == Type.PERMISSION) {
                     String perm = (String) winitem.getRewardObject();
                     //TODO: set permissions
                     player.sendMessage(CaseSystem.getPrefix() + "§7You've won the permission §e"+perm+"§7.");
                 }else if(winitem.getType() == Type.USERWARP) {
                     int amount = (Integer) winitem.getRewardObject();
-                    //TODO: add Warptokens on casewin
-//                    int warptokens = profile.getWarptokens();
-//                    profile.setWarptokens(warptokens+amount);
+                    int warptokens = profile.getWarptokens();
+                    profile.setWarptokens(warptokens+amount);
                     player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+amount+" §7more WarpTokens.");
                 }
             }

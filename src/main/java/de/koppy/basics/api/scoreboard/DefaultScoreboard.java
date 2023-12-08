@@ -7,7 +7,7 @@ import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
-import de.koppy.land.api.LandFileSystem;
+import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.entity.Player;
 
@@ -28,7 +28,7 @@ public class DefaultScoreboard extends ScoreboardBuilder {
         updateEco();
         setScore("§5", 7);
         setScore("§7Land: ", 6);
-        updateLand(new LandFileSystem(player.getLocation().getChunk()));
+        updateLand(new Land(player.getLocation().getChunk()));
         setScore("§8", 4);
         setScore("§7Job: ", 3);
         updateJob();
@@ -50,7 +50,7 @@ public class DefaultScoreboard extends ScoreboardBuilder {
         }
     }
 
-    public void updateLand(LandFileSystem land) {
+    public void updateLand(Land land) {
         if(!land.isClaimed()) {
             String landout = "§7"+player.getLocation().getWorld().getName();
             if(player.getLocation().getWorld().getName().equals("world")) {

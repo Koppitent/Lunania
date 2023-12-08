@@ -12,7 +12,7 @@ import de.koppy.economy.api.PlayerAccount;
 import de.koppy.land.api.ChunkEditor;
 import de.koppy.land.api.Direction;
 import de.koppy.land.api.Flag;
-import de.koppy.land.api.LandFileSystem;
+import de.koppy.land.api.Land;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
@@ -43,7 +43,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     }
                 }else if(args[0].equalsIgnoreCase("delete")) {
 
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(!player.hasPermission("server.admin.land")) { profile.sendMessage("noperms"); return false; }
                     if(!land.isClaimed()) { profile.sendMessage("notclaimed"); return false; }
 
@@ -53,7 +53,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                 }else if(args[0].equalsIgnoreCase("sell")) {
 
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(!land.isClaimed()) { profile.sendMessage("notclaimed"); return false; }
                     if(!land.isOwner(player.getUniqueId())) { profile.sendMessage("mustbeowner"); return false;}
                     if(!sellconfirmation.contains(land.getChunk())) { profile.sendMessage("confirmsell"); sellconfirmation.add(land.getChunk()); player.sendMessage("§7The value of ur land is " + new DecimalFormat("#").format((price * 0.1)) + EconomySystem.getEcosymbol() + "§7."); return false; }
@@ -69,7 +69,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                 }else if(args[0].equalsIgnoreCase("claim")) {
 
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(land.isClaimed()) { profile.sendMessage("alreadyclaimed"); return false; }
                     if(profile.getLands().size() >= profile.getMaxLands() && player.hasPermission("server.admin.land.bypass") == false) { profile.sendMessage("maxlandsreached"); return false; }
                     PlayerAccount pa = new PlayerAccount(player.getUniqueId());
@@ -100,17 +100,16 @@ public class Lands implements CommandExecutor, TabCompleter {
                     pa.removeMoney(price, "sendto Server", "bought Lands");
                     claimAll(chunks, player);
                     profile.sendMessage("chunksclaimed");
-                    profile.getScoreboard().updateLand(new LandFileSystem(player.getLocation().getChunk()));
+                    profile.getScoreboard().updateLand(new Land(player.getLocation().getChunk()));
 
                 }else if(args[0].equalsIgnoreCase("info")) {
-                    final LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    final Land land = new Land(player.getLocation().getChunk());
                     if(!land.isClaimed()) { profile.sendMessage("chunknotclaimed"); return false; }
 
                     new ChunkEditor(land.getChunk()).setRandParticle(Particle.FALLING_WATER, 7, player, 5);
                     player.sendMessage("§7§m---------§r§7[ §2Land §7]§r§7---------");
                     player.sendMessage("§7Chunk: §5x"+land.getChunk().getX()+",z"+land.getChunk().getZ());
                     player.sendMessage("§7");
-                    if(land.hasAlias()) player.sendMessage("§7Alias: §3" + land.getAlias());
                     player.sendMessage("§7Owner: §3" + land.getOwnerName());
 
                     List<String> memberuuids = land.getMemberUUIDs();
@@ -128,16 +127,19 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                     List<String> banneduuids = land.getBannedUUIDs();
                     String bannedout = "";
-                    for(String banneduuid : banneduuids) {
-                        UUID uuid = UUID.fromString(banneduuid);
-                        bannedout = bannedout + Bukkit.getOfflinePlayer(uuid).getName() + ", ";
-                    }
-                    if(bannedout.equals("")) {
-                        bannedout = "§cnone";
+                    if(land.getBanall()){
+                        bannedout = "§7Everyone";
                     }else {
-                        bannedout = bannedout.substring(0, bannedout.length()-2);
+                        for (String banneduuid : banneduuids) {
+                            UUID uuid = UUID.fromString(banneduuid);
+                            bannedout = bannedout + Bukkit.getOfflinePlayer(uuid).getName() + ", ";
+                        }
+                        if (bannedout.equals("")) {
+                            bannedout = "§cnone";
+                        } else {
+                            bannedout = bannedout.substring(0, bannedout.length() - 2);
+                        }
                     }
-                    if(land.getBanall()) bannedout = "§7Everyone";
                     player.sendMessage("§7Banned: §3" + bannedout);
                     player.sendMessage("§7");
                     player.sendMessage("§7Flags: PVP="+land.getFlag(Flag.PVP)+" PVE="+land.getFlag(Flag.PVE)+" TNT="+land.getFlag(Flag.TNT));
@@ -149,7 +151,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     if(!chunkselected.containsKey(player)) { profile.sendMessage("nochunksselected"); return false; }
                     List<org.bukkit.Chunk> chunks = chunkselected.get(player);
                     for(org.bukkit.Chunk chunk : chunks) {
-                        LandFileSystem land = new LandFileSystem(chunk);
+                        Land land = new Land(chunk);
                         land.claimServer();
                     }
                     profile.sendMessage("chunksclaimedforserver");
@@ -166,7 +168,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     player.sendMessage(profile.getMessage("chunksselected").replace("%amount%", ""+(xi*zi)));
 
                 }else if(args[0].equalsIgnoreCase("setowner")) {
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(land.isOwner(player.getUniqueId()) == false && player.hasPermission("server.admin.land.setowner.bypass") == false) { profile.sendMessage("mustbeowner"); return false; }
                     String playername = args[1];
                     @SuppressWarnings("deprecation")
@@ -182,23 +184,10 @@ public class Lands implements CommandExecutor, TabCompleter {
                     land.resetMember();
                     player.sendMessage("§7"+op.getName()+" §7is now the new owner of that plot.");
 
-                }else if(args[0].equalsIgnoreCase("setalias")) {
-
-                    String alias = args[1];
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
-                    if(!land.isOwner(player.getUniqueId())) { profile.sendMessage("mustbeowner"); return false; }
-                    if(land.isAlias(alias)) { profile.sendMessage("aliasalreadyset"); return false; }
-                    if(alias.length() <= 2 && alias.length() >= 15) { profile.sendMessage("wrongaliaslength"); return false; }
-                    if(!alias.matches("[a-zA-Z]+")) { profile.sendMessage("illegalcharacter"); return false; }
-                    if(LandFileSystem.existAlias(alias)) { profile.sendMessage("aliasalreadyexist"); return false; }
-
-                    land.setAlias(alias);
-                    profile.sendMessage("aliasset");
-
                 }
             }else if(args.length == 3) {
                 if(args[0].equalsIgnoreCase("setflag")) {
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(!land.isOwner(player.getUniqueId())) { profile.sendMessage("mustbeowner"); return false; }
                     String flags = args[1];
                     if(!Flag.isFlag(flags)) { profile.sendMessage("flagdoesntexist"); return false; }
@@ -219,7 +208,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     @SuppressWarnings("deprecation")
                     OfflinePlayer op = Bukkit.getOfflinePlayer(playername);
                     UUID uuidt = op.getUniqueId();
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(!land.isOwner(player.getUniqueId())) { profile.sendMessage("mustbeowner"); return false; }
                     if(op.getFirstPlayed() == 0) { profile.sendMessage("playerneveronline"); return false; }
                     List<String> memberlist = land.getMemberUUIDs();
@@ -238,7 +227,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                 }else if(args[0].equalsIgnoreCase("ban")) {
                     String playername = args[2];
-                    LandFileSystem land = new LandFileSystem(player.getLocation().getChunk());
+                    Land land = new Land(player.getLocation().getChunk());
                     if(playername.equalsIgnoreCase("*")) {
                         if(args[1].equalsIgnoreCase("add")) {
                             if(land.getBanall()) { profile.sendMessage("everyonealreadybanned"); return false; }
@@ -281,7 +270,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
     public boolean isUnclaimed(ArrayList<org.bukkit.Chunk> chunks) {
         for(org.bukkit.Chunk chunk : chunks) {
-            LandFileSystem land = new LandFileSystem(chunk);
+            Land land = new Land(chunk);
             if(land.isClaimed()) {
                 return false;
             }
@@ -291,7 +280,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
     public void claimAll(ArrayList<org.bukkit.Chunk> chunks, Player player) {
         for(org.bukkit.Chunk chunk : chunks) {
-            LandFileSystem land = new LandFileSystem(chunk);
+            Land land = new Land(chunk);
             land.claim(player.getUniqueId());
 //			new ChunkEditor(chunk).setEcken(Material.TORCH);
             new ChunkEditor(chunk).setRandParticle(Particle.VILLAGER_HAPPY, 7, player, 5);

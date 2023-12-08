@@ -10,7 +10,6 @@ public interface LandInterface {
 
     void unclaim();
     void setFlag(Flag flag, boolean bool);
-    void setAlias(String alias);
     void addMember(UUID uuid);
     void removeMember(UUID uuid);
     void resetMember();
@@ -29,7 +28,6 @@ public interface LandInterface {
     List<String> getBannedUUIDs();
     String getOwnerUUID();
     String getOwnerName();
-    String getAlias();
     Chunk getChunk();
 
 }

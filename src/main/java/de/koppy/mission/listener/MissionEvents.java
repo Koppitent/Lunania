@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 public class MissionEvents implements Listener {
 
@@ -42,13 +41,6 @@ public class MissionEvents implements Listener {
         if(Mission.inmenuweekly.contains(e.getPlayer())) {
             Mission.inmenuweekly.remove(e.getPlayer());
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onJoin(PlayerJoinEvent e) {
-        new MissionHandler().checkDailies(e.getPlayer());
-        new MissionHandler().checkWeeklies(e.getPlayer());
-        new MissionHandler().checkSeasonal(e.getPlayer());
     }
 
     @EventHandler

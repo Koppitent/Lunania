@@ -12,6 +12,7 @@ import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+@Deprecated
 public class LandFileSystem implements LandInterface {
 
     //* Do EVERYTHING into SQL!

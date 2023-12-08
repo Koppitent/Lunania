@@ -3,10 +3,12 @@ package de.koppy.economy.commands;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
+import de.koppy.economy.api.Log;
 import de.koppy.economy.api.PlayerAccount;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -39,6 +41,18 @@ public class Economy implements CommandExecutor {
                 }
             }else if(args[0].equalsIgnoreCase("top")) {
                 player.sendMessage(new PlayerAccount(player.getUniqueId()).getBaltopforyourself());
+            }else if(args[0].equalsIgnoreCase("logs")) {
+                List<Log> logs = new PlayerAccount(player.getUniqueId()).getLogs();
+                for(Log log : logs) {
+                    DecimalFormat f = new DecimalFormat("#.##");
+                    player.sendMessage("§5§lEcolog: §r§7"+log.getDate().toLocaleString());
+                    player.sendMessage("§7Amount: §3"+f.format(log.getAmount()) + EconomySystem.getEcosymbol());
+                    player.sendMessage("§7Money before: §3"+f.format(log.getMoneybefore()) + EconomySystem.getEcosymbol());
+                    player.sendMessage("§7Money after: §3"+f.format(log.getMoneybefore()+log.getAmount()) + EconomySystem.getEcosymbol());
+                    player.sendMessage("");
+                    player.sendMessage("§7Sent to/Received from: " + log.getSendto());
+                    player.sendMessage("§7Reason: " + log.getReason());
+                }
             }else {
                 String name = args[0];
                 if(Bukkit.getOfflinePlayer(name).getFirstPlayed() != 0) {
@@ -96,23 +110,18 @@ public class Economy implements CommandExecutor {
                     String playername = args[1];
 
                     if(args[2].matches("[0-9]+")) {
-                        String[] out = {""}; // get log of number args[2]
-                        if(out != null) {
-                            long datetime = Long.valueOf(out[0]);
-                            double amount = Double.valueOf(out[1]);
-                            double moneybef = Double.valueOf(out[2]);
-                            double moneyafter = Double.valueOf(out[3]);
-                            String sentto = out[4];
-                            String reason = out[5];
+                        List<Log> logs = new PlayerAccount(player.getUniqueId()).getLogs();
+                        if(logs.get(Integer.parseInt(args[2])) != null) {
 
+                            Log log =logs.get(Integer.parseInt(args[2]));
                             DecimalFormat f = new DecimalFormat("#.##");
-                            player.sendMessage("§5§lEcolog: §r§7"+new Date(datetime).toLocaleString());
-                            player.sendMessage("§7Amount: §3"+f.format(amount) + EconomySystem.getEcosymbol());
-                            player.sendMessage("§7Money before: §3"+f.format(moneybef) + EconomySystem.getEcosymbol());
-                            player.sendMessage("§7Money after: §3"+f.format(moneyafter) + EconomySystem.getEcosymbol());
+                            player.sendMessage("§5§lEcolog: §r§7"+log.getDate().toLocaleString());
+                            player.sendMessage("§7Amount: §3"+f.format(log.getAmount()) + EconomySystem.getEcosymbol());
+                            player.sendMessage("§7Money before: §3"+f.format(log.getMoneybefore()) + EconomySystem.getEcosymbol());
+                            player.sendMessage("§7Money after: §3"+f.format(log.getMoneybefore()+log.getAmount()) + EconomySystem.getEcosymbol());
                             player.sendMessage("");
-                            player.sendMessage("§7Sent to/Received from: " + sentto);
-                            player.sendMessage("§7Reason: " + reason);
+                            player.sendMessage("§7Sent to/Received from: " + log.getSendto());
+                            player.sendMessage("§7Reason: " + log.getReason());
 
                         }else {
                             player.sendMessage(EconomySystem.getPrefix() + "§cThis player does not exist or theres no ecolog for that player.");

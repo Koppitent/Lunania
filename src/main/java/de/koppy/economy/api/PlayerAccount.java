@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,7 +128,72 @@ public class PlayerAccount {
 
     public void setMoney(double money, String sendto, String reason, double moneybefore, double amount) {
         setMoneyDatabase(money);
-        //TODO: add to logs here
+        if(money > moneybefore) {
+            addLog(new Log(sendto, uuid.toString(), amount, reason, moneybefore, new Date()));
+        }else {
+            addLog(new Log(uuid.toString(), sendto, amount, reason, moneybefore, new Date()));
+        }
+    }
+
+    public List<Log> getLogs() {
+        String data = "";
+        if(table.existEntry(logsc, uuidc, uuid.toString())) {
+            data = (String) table.getValue(logsc, uuidc, uuid.toString());
+        }
+        return StringToListLog(data);
+    }
+
+    public void addLog(Log log) {
+        List<Log> logs = getLogs();
+        logs.add(log);
+        Date expiredate = new Date();
+        long time = expiredate.getTime();
+        expiredate.setTime(time-(1000l*60l*60l*24l*30l*6l));
+        List<Log> logsremove = new ArrayList<>();
+        for(int i=logs.size()-1; i>0; i--) {
+            Log checklog = logs.get(i);
+            if(checklog.getDate().before(expiredate)) {
+                logsremove.add(checklog);
+            }else {
+                break;
+            }
+        }
+        logs.removeAll(logsremove);
+        saveLogs(logs);
+    }
+
+    public void removeLog(int index) {
+        List<Log> logs = getLogs();
+        logs.remove(index);
+        saveLogs(logs);
+    }
+
+    private void saveLogs(List<Log> logs) {
+        table.setValue(logsc, ListToStringLog(logs), uuidc, uuid.toString());
+    }
+
+    private String ListToStringLog(List<Log> list) {
+        String out = "";
+        if(list.isEmpty()) return out;
+        for(Log o : list) {
+            out = out + o.toString() + ":";
+        }
+        out = out.substring(0, out.length()-1);
+        return out;
+    }
+
+    private List<Log> StringToListLog(String rawstring) {
+        List<Log> out = new ArrayList<>();
+        if(rawstring == null) return out;
+        if(rawstring.isEmpty()) return out;
+        if(!rawstring.contains(":")) {
+            out.add(Log.fromString(rawstring));
+            return out;
+        }
+        for(String o : rawstring.split(":")) {
+            out.add(Log.fromString(o));
+        }
+        return out;
     }
 
     public String getFormatMoney() {

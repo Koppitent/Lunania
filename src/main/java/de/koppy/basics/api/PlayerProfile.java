@@ -8,6 +8,7 @@ import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
 import de.koppy.job.api.TaskAmount;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.mission.api.MissionHandler;
 import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
@@ -65,6 +66,10 @@ public class PlayerProfile {
             this.language = Language.ENGLISH;
             setLanguage(this.language);
         }
+        Player player = Bukkit.getPlayer(uuid);
+        new MissionHandler().checkDailies(player);
+        new MissionHandler().checkWeeklies(player);
+        new MissionHandler().checkSeasonal(player);
 
         run();
     }

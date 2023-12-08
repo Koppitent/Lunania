@@ -20,4 +20,18 @@ public enum Flag {
         }
         return null;
     }
+
+    public boolean getDefault() {
+        switch (this) {
+            case PVE:
+                return false;
+            case PVP:
+                return false;
+            case TNT:
+                return false;
+            default:
+                return false;
+        }
+    }
+
 }
