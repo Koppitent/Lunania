@@ -6,6 +6,7 @@ import de.koppy.shop.commands.Shop;
 import de.koppy.shop.listener.ShopListener;
 
 public class ShopSystem implements SubSystem {
+    //TODO: Implementing UserShop-System
     @Override
     public void loadListener() {
         LunaniaSystem.registerListener(new ShopListener());

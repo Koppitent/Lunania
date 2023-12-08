@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class MissionSystem implements SubSystem {
 
+    //TODO: add more and unique Missions
+    //TODO: add better UserInterface
     private static Table table;
     @Override
     public void loadListener() {

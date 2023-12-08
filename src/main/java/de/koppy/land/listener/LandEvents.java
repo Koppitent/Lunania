@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.land.api.Flag;
-import de.koppy.land.api.Land;
+import de.koppy.land.api.LandFileSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -38,7 +38,7 @@ public class LandEvents implements Listener {
         if(e.getTo().getWorld().getName().equals("world")) {
             if(e.getFrom().getChunk().equals(e.getTo().getChunk()) == false) {
                 Player player = e.getPlayer();
-                Land land = new Land(e.getTo().getChunk());
+                LandFileSystem land = new LandFileSystem(e.getTo().getChunk());
                 PlayerProfile.getProfile(player.getUniqueId()).getScoreboard().updateLand(land);
                 if(land.isClaimed() && land.isBanned(e.getPlayer().getUniqueId())) {
                     if(e.getPlayer().hasPermission("server.admin") == false) e.setCancelled(true);
@@ -51,7 +51,7 @@ public class LandEvents implements Listener {
     @EventHandler
     public void BlockPlace(BlockPlaceEvent e) {
         if(e.getBlock().getLocation().getWorld().getName().equals("world")) {
-            Land land = new Land(e.getBlock().getLocation().getChunk());
+            LandFileSystem land = new LandFileSystem(e.getBlock().getLocation().getChunk());
             if(land.isClaimed()) {
                 if(land.isOwner(e.getPlayer().getUniqueId()) || land.isMember(e.getPlayer().getUniqueId())) {
                     if(e.getPlayer().hasPermission("server.admin") == false) e.setCancelled(false);
@@ -65,7 +65,7 @@ public class LandEvents implements Listener {
     @EventHandler
     public void BlockPlace(BlockBreakEvent e) {
         if(e.getBlock().getLocation().getWorld().getName().equals("world")) {
-            Land land = new Land(e.getBlock().getLocation().getChunk());
+            LandFileSystem land = new LandFileSystem(e.getBlock().getLocation().getChunk());
             if(land.isClaimed()) {
                 if(land.isOwner(e.getPlayer().getUniqueId()) || land.isMember(e.getPlayer().getUniqueId())) {
                     if(e.getPlayer().hasPermission("server.admin") == false) e.setCancelled(false);
@@ -79,7 +79,7 @@ public class LandEvents implements Listener {
     @EventHandler
     public void BlockPlace(EntityExplodeEvent e) {
         if(e.getLocation().getWorld().getName().equals("world")) {
-            Land originalland = new Land(e.getLocation().getChunk());
+            LandFileSystem originalland = new LandFileSystem(e.getLocation().getChunk());
             if(originalland.getOwnerName().equals("Server")) {
                 e.setCancelled(true);
                 return;
@@ -92,7 +92,7 @@ public class LandEvents implements Listener {
             if(ouuid.equals("") == false) uuid = UUID.fromString(ouuid);
             ArrayList<Block> blocknotexplode = new ArrayList<Block>();
             for(Block block : e.blockList()) {
-                Land land = new Land(block.getLocation().getChunk());
+                LandFileSystem land = new LandFileSystem(block.getLocation().getChunk());
                 if(land.isClaimed() && land.isOwner(uuid) == false) {
                     blocknotexplode.add(block);
                 }else {
@@ -109,7 +109,7 @@ public class LandEvents implements Listener {
     public void BlockPlace(EntityDamageByEntityEvent e) {
         if(e.getEntity() instanceof Player) {
             if(e.getEntity().getLocation().getWorld().getName().equals("world")) {
-                Land land = new Land(e.getEntity().getLocation().getChunk());
+                LandFileSystem land = new LandFileSystem(e.getEntity().getLocation().getChunk());
                 if(land.isClaimed()) {
                     if(e.getDamager() instanceof Player) {
                         if(land.getFlag(Flag.PVP) == false) {
@@ -131,7 +131,7 @@ public class LandEvents implements Listener {
                 }
             }
         }else if(e.getEntity() instanceof Animals) {
-            Land land = new Land(e.getEntity().getLocation().getChunk());
+            LandFileSystem land = new LandFileSystem(e.getEntity().getLocation().getChunk());
             if(land.isClaimed()) {
                 if(land.getFlag(Flag.PVE) == false) {
                     if(e.getDamager().hasPermission("server.admin") == false) e.setCancelled(true);
@@ -144,8 +144,8 @@ public class LandEvents implements Listener {
     public void BlockPlace(BlockFromToEvent e) {
         if(e.getBlock().getLocation().getWorld().getName().equals("world")) {
             if(e.getBlock().getChunk().equals(e.getToBlock().getChunk()) == false) {
-                Land land = new Land(e.getBlock().getLocation().getChunk());
-                Land land2 = new Land(e.getToBlock().getLocation().getChunk());
+                LandFileSystem land = new LandFileSystem(e.getBlock().getLocation().getChunk());
+                LandFileSystem land2 = new LandFileSystem(e.getToBlock().getLocation().getChunk());
                 if(land2.isClaimed() && land.isClaimed()) {
                     if(land.getOwnerUUID().equals(land2.getOwnerUUID()) == false) {
                         e.setCancelled(true);
@@ -162,7 +162,7 @@ public class LandEvents implements Listener {
     @EventHandler
     public void BlockPlace(PlayerTeleportEvent e) {
         if(e.getTo().getWorld().getName().equals("world")) {
-            Land land = new Land(e.getTo().getChunk());
+            LandFileSystem land = new LandFileSystem(e.getTo().getChunk());
             if(land.isClaimed() && land.isBanned(e.getPlayer().getUniqueId())) {
                 if(e.getPlayer().hasPermission("server.admin") == false) e.setCancelled(true);
             }
@@ -173,7 +173,7 @@ public class LandEvents implements Listener {
     public void BlockPlace(EntitySpawnEvent e) {
         if(e.getEntity() instanceof Monster) {
             if(e.getEntity().getLocation().getWorld().getName().equals("world")) {
-                Land land = new Land(e.getEntity().getLocation().getChunk());
+                LandFileSystem land = new LandFileSystem(e.getEntity().getLocation().getChunk());
                 if(land.isClaimed() && land.getOwnerName().equals("Server")) {
                     e.setCancelled(true);
                 }
@@ -186,7 +186,7 @@ public class LandEvents implements Listener {
     public void BlockPlace(final PlayerInteractEvent e) {
         if(e.getClickedBlock() == null) return;
         if(!e.getClickedBlock().getLocation().getWorld().getName().equals("world")) return;
-        Land land = new Land(e.getClickedBlock().getLocation().getChunk());
+        LandFileSystem land = new LandFileSystem(e.getClickedBlock().getLocation().getChunk());
         if(land.isClaimed()) {
             if(e.getPlayer().hasPermission("server.admin")) return;
             if(land.isOwner(e.getPlayer().getUniqueId()) || land.isMember(e.getPlayer().getUniqueId())) return;

@@ -12,12 +12,10 @@ import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +39,7 @@ public class PlayerProfile {
     private final static Column nicknamec = new Column("nickname", ColumnType.VARCHAR, 200);
     private final static Column uidc = new Column("uid", ColumnType.VARCHAR, 200);
     private final static Column maxlandsc = new Column("maxlands", ColumnType.INT, 200);
+    private final static Column landsc = new Column("lands", ColumnType.TEXT, 40000);
     private int sessionplaytime = 0;
     private TaskAmount taskamount;
     private DefaultScoreboard scoreboard;
@@ -286,15 +285,23 @@ public class PlayerProfile {
         }
     }
 
-    public List<String> getLands() {
-        File file2 = new File("plugins/Lunania/Landuser", uuid.toString()+".yml");
-        List<String> lands = new ArrayList<String>();
-        if(file2.exists()) {
-            FileConfiguration cfg2 = YamlConfiguration.loadConfiguration(file2);
-            lands.addAll(cfg2.getKeys(false));
-        }
-        return lands;
+    public void addLand(Chunk chunk) {
+        addLand(chunk, uuid.toString());
     }
+
+    public void removeLand(Chunk chunk) {
+        removeLand(chunk, uuid.toString());
+    }
+
+    public void saveLands(List<String> lands) {
+        saveLands(lands, uuid.toString());
+    }
+
+    public List<String> getLands() {
+        return getLands(uuid.toString());
+    }
+
+
 
     //* JobSystem
     public TaskAmount getTaskamount() {
@@ -399,13 +406,47 @@ public class PlayerProfile {
         setWarptokens(uuid, a);
     }
 
-    //TODO: change getLands int a databaseinput
-    public static List<String> getLands(UUID uuid) {
-        File file2 = new File("plugins/Lunania/Landuser", uuid.toString()+".yml");
-        List<String> lands = new ArrayList<String>();
-        if(file2.exists()) {
-            FileConfiguration cfg2 = YamlConfiguration.loadConfiguration(file2);
-            lands.addAll(cfg2.getKeys(false));
+    public static void addLand(Chunk chunk, String uuid) {
+        String chunkstring = chunk.getX()+"I"+chunk.getZ();
+        List<String> lands = getLands(uuid);
+        if(!lands.contains(chunkstring)) lands.add(chunkstring);
+        saveLands(lands, uuid);
+    }
+
+    public static void removeLand(Chunk chunk, String uuid) {
+        String chunkstring = chunk.getX()+"I"+chunk.getZ();
+        List<String> lands = getLands(uuid);
+        lands.remove(chunkstring);
+        saveLands(lands, uuid);
+    }
+
+    public static void saveLands(List<String> lands, String uuid) {
+        String raw = "";
+        if(!lands.isEmpty()) {
+            for (String s : lands) {
+                raw = raw + s + ":";
+            }
+            raw = raw.substring(0, raw.length()-1);
+        }
+        table.setValue(landsc, raw, uuidc, uuid);
+    }
+
+    public static List<String> getLands(String uuid) {
+        List<String> lands = new ArrayList<>();
+        String landsraw;
+        if(table.existEntry(landsc, uuidc, uuid)) {
+            landsraw = (String) table.getValue(landsc, uuidc, uuid);
+        }else {
+            saveLands(lands, uuid);
+            return lands;
+        }
+        if(landsraw == null || landsraw.isEmpty()) return lands;
+        if(!landsraw.contains(":")) {
+            lands.add(landsraw);
+            return lands;
+        }
+        for(String land : landsraw.split(":")) {
+            lands.add(land);
         }
         return lands;
     }

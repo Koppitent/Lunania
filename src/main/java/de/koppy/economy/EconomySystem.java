@@ -10,6 +10,9 @@ import de.koppy.mysql.api.Table;
 
 public class EconomySystem implements SubSystem {
 
+    //TODO: add logs for economy
+    //TODO: add UI for economy
+    //TODO: finish BankMenu
     private static Table ecotable;
     private static Table banktable;
     private static String ecosymbol = " §6§r";

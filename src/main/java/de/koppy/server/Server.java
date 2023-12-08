@@ -1,13 +1,11 @@
 package de.koppy.server;
 
 import de.koppy.bansystem.BanSystem;
-import de.koppy.bansystem.commands.Ban;
 import de.koppy.basics.BasicSystem;
 import de.koppy.cases.CaseSystem;
 import de.koppy.economy.EconomySystem;
 import de.koppy.job.JobSystem;
 import de.koppy.land.LandSystem;
-import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mysql.MysqlSystem;
 import de.koppy.nick.NickSystem;
@@ -17,14 +15,13 @@ import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
 import de.koppy.shop.ShopSystem;
 import de.koppy.warp.WarpSystem;
-import io.netty.channel.epoll.Epoll;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +49,7 @@ public class Server {
     private String url = "https://drive.kytress.de/index.php/s/6xGxbm49xk8R4L3/download";
     private List<String> activesystems = new ArrayList<>();
     private boolean consoledebug = false;
+    private Location spawnloc;
 
     public Server() {
         this.name = "main";
@@ -99,6 +97,22 @@ public class Server {
         }
     }
 
+
+    public Location getSpawnloc() {
+        return spawnloc;
+    }
+
+    public void setSpawnloc(Location spawnloc) {
+        this.spawnloc = spawnloc;
+        File file = new File("plugins/Lunania", "server.yml");
+        FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+        cfg.set("spawnloc", this.spawnloc);
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void loadSystems(String system) {
         switch (system) {
@@ -218,6 +232,8 @@ public class Server {
             else this.broadcasttimer = cfg.getInt("broadcasttimer");
             if(!cfg.contains("versionmessage")) cfg.set("versionmessage", this.versionmessage);
             else this.versionmessage = cfg.getBoolean("versionmessage");
+            if(!cfg.contains("spawnloc")) cfg.set("spawnloc", this.spawnloc);
+            else this.spawnloc = cfg.getLocation("spawnloc");
             try {
                 cfg.save(file);
             } catch (IOException e) {

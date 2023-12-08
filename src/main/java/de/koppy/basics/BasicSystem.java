@@ -10,6 +10,7 @@ import de.koppy.mysql.api.Table;
 
 public class BasicSystem implements SubSystem {
 
+    //Idea: create class OfflinePlayerProfile with offline-methods that are safe to use instead of static functions in PlayerProfile
     private static Table table;
     private static Table langtable;
 
@@ -41,6 +42,9 @@ public class BasicSystem implements SubSystem {
         LunaniaSystem.registerCommand("tptoggle", new Tpatoggle());
         LunaniaSystem.registerCommand("msg", new Msg());
         LunaniaSystem.registerCommand("r", new R());
+        LunaniaSystem.registerCommand("spawn", new Spawn());
+        LunaniaSystem.registerCommand("head", new Head());
+        LunaniaSystem.registerCommand("ping", new Ping());
     }
 
     @Override
@@ -61,6 +65,7 @@ public class BasicSystem implements SubSystem {
         table.addColumn(new Column("warptokens",  ColumnType.INT, 200));
         table.addColumn(new Column("maxlands", ColumnType.INT, 200));
         table.addColumn(new Column("uid", ColumnType.VARCHAR, 200));
+        table.addColumn(new Column("lands", ColumnType.TEXT, 40000));
         table.createTable();
 
         langtable = new Table("language", new Column("abbreviation", ColumnType.VARCHAR, 200));

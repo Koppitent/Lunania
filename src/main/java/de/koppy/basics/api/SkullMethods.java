@@ -12,6 +12,14 @@ import java.util.UUID;
 
 public class SkullMethods {
 
+    public static ItemStack getSkullName(String name) {
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (short)3);
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+        headMeta.setOwner(name);
+        head.setItemMeta(headMeta);
+        return head;
+    }
+
     public static ItemStack getSkull(String url) {
         @SuppressWarnings("deprecation")
         ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (short)3);

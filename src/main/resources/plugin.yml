@@ -43,3 +43,8 @@ commands:
   quest:
   land:
   chunk:
+  spawn:
+  head:
+  unmute:
+  mute:
+  ping:

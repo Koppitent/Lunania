@@ -1,9 +1,11 @@
 package de.koppy.basics.listener;
 
 import de.koppy.basics.api.HomeMenu;
+import de.koppy.basics.api.InventoryHelper;
 import de.koppy.basics.api.SavedItems;
 import de.koppy.basics.commands.Changelog;
 import de.koppy.basics.commands.Collect;
+import de.koppy.basics.commands.Head;
 import de.koppy.basics.commands.Home;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,11 +21,19 @@ import java.util.Objects;
 public class InventoryEvents implements Listener {
 
     public static ArrayList<Player> ininv = new ArrayList<Player>();
+    public static ArrayList<Player> headinv = new ArrayList<Player>();
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
-        if (ininv.contains(e.getWhoClicked())) {
+        if (headinv.contains(e.getWhoClicked())) {
+            e.setCancelled(true);
+            if(InventoryHelper.isArrow(e.getCurrentItem())) {
+                Head.setHeadMenu(InventoryHelper.getArrowPage(e.getCurrentItem()), e.getInventory());
+            }else {
+                InventoryHelper.isHead(e.getCurrentItem(), (Player) e.getWhoClicked());
+            }
+        }else if (ininv.contains(e.getWhoClicked())) {
             e.setCancelled(true);
             if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
                 Integer page = Integer.parseInt(e.getCurrentItem().getItemMeta().getLocalizedName());
@@ -61,6 +71,7 @@ public class InventoryEvents implements Listener {
     public void onClick(InventoryCloseEvent e) {
         ininv.remove(e.getPlayer());
         Home.inmenu.remove(e.getPlayer());
+        headinv.remove(e.getPlayer());
         if (Collect.inCollect.contains(e.getPlayer())) {
             Collect.inCollect.remove(e.getPlayer());
             new SavedItems(e.getPlayer().getUniqueId()).saveInventory(e.getInventory());
