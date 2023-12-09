@@ -78,9 +78,11 @@ public class PlayerProfile {
         new BukkitRunnable(){
             @Override
             public void run() {
-                sessionplaytime++;
-                scoreboard.updateRank();
                 if(Bukkit.getPlayer(uuid) == null) cancel();
+                sessionplaytime++;
+                if(Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).getScoreboard() != null) {
+                    scoreboard.updateRank();
+                }
             }
         }.runTaskTimer(LunaniaSystem.getPlugin(), 20, 20);
     }

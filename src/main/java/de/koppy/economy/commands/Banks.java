@@ -4,16 +4,21 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.koppy.basics.api.InventoryHelper;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.BankAccount;
+import de.koppy.economy.api.BankLog;
+import de.koppy.economy.api.BankMenu;
 import de.koppy.economy.api.PlayerAccount;
+import de.koppy.economy.listener.MenuEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class Banks implements CommandExecutor {
 
@@ -25,15 +30,22 @@ public class Banks implements CommandExecutor {
         Player player = (Player) sender;
         PlayerProfile profile = PlayerProfile.getProfile(player.getUniqueId());
 
-        if(args.length == 1) {
+        if(args.length == 0) {
+
+            BankMenu menu = new BankMenu(player.getUniqueId());
+            Inventory inventory = menu.getStartMenu();
+            MenuEvents.ininv.add(player);
+            player.openInventory(inventory);
+
+        }else if(args.length == 1) {
             if(args[0].equalsIgnoreCase("test")) {
 
                 if(player.hasPermission("server.admin.test")) {
 
                     int i = 0;
-                    List<String> logs = new BankAccount("koppyag").getLogs();
-                    for(String s : logs) {
-                        player.sendMessage(i+"  :  "+s);
+                    List<BankLog> logs = new BankAccount("koppyag").getLogs();
+                    for(BankLog s : logs) {
+                        player.sendMessage(i+"  :  "+s.toString());
                         i++;
                     }
                     new BankAccount("koppyag").addLog(player.getUniqueId(), "tested logs");
@@ -43,7 +55,7 @@ public class Banks implements CommandExecutor {
             }else if(args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("info")) {
                 PlayerAccount pa = new PlayerAccount(player.getUniqueId());
                 List<String> bankaccounts = pa.getBankaccounts();
-                if(bankaccounts.size() == 0) {
+                if(bankaccounts.isEmpty()) {
                     player.sendMessage("§cYou have no bankaccounts yet");
                 }else {
                     player.sendMessage("§7§m----------§r§7[ §3B§bank §7]§m----------");
@@ -67,7 +79,7 @@ public class Banks implements CommandExecutor {
                     if(bankname.length() <= 8) {
                         if(bankname.matches("[a-zA-Z0-9]+")) {
                             BankAccount account = new BankAccount(bankname);
-                            if(account.existName() == false) {
+                            if(!account.existName()) {
                                 account.create(player.getUniqueId());
                                 player.sendMessage("§7You have §acreated §7a new bankaccount with the name "+bankname+".");
                             }else {
@@ -176,7 +188,7 @@ public class Banks implements CommandExecutor {
             }else if(args[0].equalsIgnoreCase("resetlogs")) {
                 String bankname = args[1];
                 BankAccount account = new BankAccount(bankname);
-                if(account.existName() == false) { profile.sendMessage("bankdoesntexist"); return false; }
+                if(!account.existName()) { profile.sendMessage("bankdoesntexist"); return false; }
                 if(!player.hasPermission("server.admin.test")) { profile.sendMessage("noperms"); return false; }
 
                 account.resetLogs();
@@ -194,8 +206,8 @@ public class Banks implements CommandExecutor {
                         OfflinePlayer op = Bukkit.getOfflinePlayer(playername);
                         if(op.hasPlayedBefore()) {
                             if(account.getMember().size() > 5) { profile.sendMessage("toomanymember"); return false; }
-                            if(account.getMember().contains(op.getUniqueId().toString()) == false) {
-                                if(account.getMemberinvite().contains(op.getUniqueId().toString()) == false) {
+                            if(!account.getMember().contains(op.getUniqueId().toString())) {
+                                if(!account.getMemberinvite().contains(op.getUniqueId().toString())) {
 
                                     List<String> memberinvites = account.getMemberinvite();
                                     memberinvites.add(op.getUniqueId().toString());
@@ -224,7 +236,7 @@ public class Banks implements CommandExecutor {
                 String bankname = args[1];
                 BankAccount account = new BankAccount(bankname);
                 if(args[2].matches("[0.0-9.9]+")) {
-                    double amount = Double.valueOf(args[2]);
+                    double amount = Double.parseDouble(args[2]);
                     if(amount >= 1000) {
                         if(account.getMember().contains(player.getUniqueId().toString())) {
                             if(account.getBalance() >= amount) {
@@ -254,7 +266,7 @@ public class Banks implements CommandExecutor {
                 String bankname = args[1];
                 BankAccount account = new BankAccount(bankname);
                 if(args[2].matches("[0.0-9.9]+")) {
-                    double amount = Double.valueOf(args[2]);
+                    double amount = Double.parseDouble(args[2]);
                     if(account.getMember().contains(player.getUniqueId().toString())) {
                         PlayerAccount pa = new PlayerAccount(player.getUniqueId());
                         if(pa.getMoney() >= amount) {

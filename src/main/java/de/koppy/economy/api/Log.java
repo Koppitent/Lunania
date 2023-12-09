@@ -11,10 +11,10 @@ public class Log {
     private Date date;
 
     public Log(String sentfrom, String sendto, double amount, String reason, double moneybefore, Date date) {
-        this.sentfrom = sentfrom;
-        this.sendto = sendto;
+        this.sentfrom = sentfrom.replace(";", "").replace(":", "");
+        this.sendto = sendto.replace(";", "").replace(":", "");
         this.amount = amount;
-        this.reason = reason.replace(";", ":");
+        this.reason = reason.replace(";", "").replace(":", "");
         this.moneybefore = moneybefore;
         this.date = date;
     }

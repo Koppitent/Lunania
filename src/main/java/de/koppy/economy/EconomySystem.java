@@ -2,6 +2,7 @@ package de.koppy.economy;
 
 import de.koppy.economy.commands.Banks;
 import de.koppy.economy.commands.Economy;
+import de.koppy.economy.listener.MenuEvents;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
@@ -11,7 +12,6 @@ import de.koppy.mysql.api.Table;
 public class EconomySystem implements SubSystem {
 
     //TODO: add UI for economy
-    //TODO: finish BankMenu
     private static Table ecotable;
     private static Table banktable;
     private static String ecosymbol = " §6§r";
@@ -19,7 +19,7 @@ public class EconomySystem implements SubSystem {
 
     @Override
     public void loadListener() {
-
+        LunaniaSystem.registerListener(new MenuEvents());
     }
 
     @Override
@@ -49,7 +49,6 @@ public class EconomySystem implements SubSystem {
 
         ecotable.createTable();
         banktable.createTable();
-
     }
 
     public static String getEcosymbol() {

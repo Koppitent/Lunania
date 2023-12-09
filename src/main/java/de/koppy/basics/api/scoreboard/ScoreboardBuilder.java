@@ -29,6 +29,8 @@ public abstract class ScoreboardBuilder {
         this.obj = board.registerNewObjective("display", "dummy", "§f");
         this.obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
+        System.out.println("Checked for Players scoreboard");
+
         createScoreboard();
         update();
     }

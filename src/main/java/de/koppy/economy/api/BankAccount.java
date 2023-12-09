@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import de.koppy.bansystem.commands.Ban;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.mysql.api.Column;
@@ -41,25 +42,17 @@ public class BankAccount {
     }
 
 
-    @SuppressWarnings("deprecation")
     public void addLog(UUID who, String content) {
-        Date date = new Date();
-        List<String> logs = getLogsClean();
-        if(logs.size() > 1187) {
-            logs.remove(0);
-        }
-        logs.add(date.toLocaleString() + ": " + content + " #"+who.toString());
-        saveLogs(logs);
+        addLog(who.toString(), content);
     }
 
-    @SuppressWarnings("deprecation")
     public void addLog(String who, String content) {
         Date date = new Date();
-        List<String> logs = getLogs();
+        List<BankLog> logs = getLogs();
         if(logs.size() > 1187) {
             logs.remove(0);
         }
-        logs.add(date.toLocaleString() + ": " + content + " #"+who.toString());
+        logs.add(new BankLog(date.getTime(), who, content));
         saveLogs(logs);
     }
 
@@ -67,11 +60,11 @@ public class BankAccount {
         table.setValue(logsc, logs, accnamesc, accountname);
     }
 
-    public void saveLogs(List<String> logs) {
+    public void saveLogs(List<BankLog> logs) {
         String out = "";
-        if(logs.isEmpty() == false) {
-            for(String log : logs) {
-                out = out + ";" + log;
+        if(!logs.isEmpty()) {
+            for(BankLog log : logs) {
+                out = out + ";" + log.toString();
             }
             out = out.substring(1);
         }
@@ -83,7 +76,7 @@ public class BankAccount {
         String log = getPureLogs();
         if(log != null) {
             for(String s : log.split(";")) {
-                if(s.equals("") == false) {
+                if(!s.equals("")) {
                     logs.add(s);
                 }
             }
@@ -91,24 +84,17 @@ public class BankAccount {
         return logs;
     }
 
-    public List<String> getLogs() {
-        List<String> logs = new ArrayList<String>();
+    public List<BankLog> getLogs() {
+        List<BankLog> logs = new ArrayList<>();
         String log = getPureLogs();
         if(log != null) {
             for(String s : log.split(";")) {
-                if(s.equals("") == false) {
-                    String[] outs = s.split("#");
-                    String out = outs[0];
-                    String uuid = "Server";
-                    if(outs.length > 1) uuid = outs[1];
-                    String name = "";
-                    if(uuid.equals("Server") == false) {
-                        name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
-                    }else {
-                        name = "Server";
-                    }
-                    out = out + "(by "+ name + ")";
-                    logs.add(out);
+                if(!s.equals("")) {
+                    String[] outs = s.split(":");
+                    String time = outs[0];
+                    String out = outs[2];
+                    String name = outs[1];
+                    logs.add(new BankLog(Long.parseLong(time), name, out));
                 }
             }
         }
@@ -174,6 +160,7 @@ public class BankAccount {
             table.setValue(balancec, 0d, accnamesc, accountname);
             table.setValue(membersc, ListToString(out), accnamesc, accountname);
         }
+        addLog(uuid.toString(), "account created.");
         PlayerAccount pa = new PlayerAccount(uuid);
         List<String> bankaccounts = pa.getBankaccounts();
         bankaccounts.add(accountname);
@@ -272,7 +259,7 @@ public class BankAccount {
 
     public static String ListToString(List<String> memberlist) {
         String out = "";
-        if(memberlist.isEmpty() == false) {
+        if(!memberlist.isEmpty()) {
             for(String memberuuid : memberlist) {
                 out = out + ":" + memberuuid;
             }
@@ -282,7 +269,7 @@ public class BankAccount {
     }
 
     public void resetLogs() {
-        saveLogs(new ArrayList<String>());
+        saveLogs(new ArrayList<BankLog>());
     }
 
 }
