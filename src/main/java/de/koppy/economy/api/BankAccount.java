@@ -40,6 +40,7 @@ public class BankAccount {
         return (String) table.getValue(logsc, accnamesc, accountname);
     }
 
+
     @SuppressWarnings("deprecation")
     public void addLog(UUID who, String content) {
         Date date = new Date();

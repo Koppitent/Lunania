@@ -289,13 +289,18 @@ public class Server {
                     for(Player p : Bukkit.getOnlinePlayers()) {
                         p.kickPlayer("§cServer start Backup of the Worlds.\nServer will be back online in around 5 Minutes.");
                     }
-                    //TODO: create World-Backup HERE
+
+                    WorldManager wm = new WorldManager();
+                    wm.backupWorld(Bukkit.getWorld("world").getWorldFolder());
+
                 }
                 if(date.getHours() == 0 && date.getMinutes() == 3 && date.getSeconds() == 0 && shutdownbackup) {
                     Bukkit.getServer().shutdown();
                 }
             }
         }, 20, 20);
+
+
 
         if(broadcasttimer > 0) {
             Bukkit.getScheduler().runTaskTimer(LunaniaSystem.getPlugin(), new Runnable() {
@@ -323,6 +328,10 @@ public class Server {
     public String getBroadcastmessage() {
         Random rndm = new Random();
         return broadcastmessages.get(rndm.nextInt(broadcastmessages.size()));
+    }
+
+    public boolean isShutdownbackup() {
+        return shutdownbackup;
     }
 
     private void setValueServer(String name, Object obj) {

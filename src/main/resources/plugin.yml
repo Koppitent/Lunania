@@ -48,3 +48,4 @@ commands:
   unmute:
   mute:
   ping:
+  debug:

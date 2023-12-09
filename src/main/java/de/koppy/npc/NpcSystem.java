@@ -6,7 +6,7 @@ import de.koppy.npc.listener.NpcEvents;
 import de.koppy.server.SubSystem;
 
 public class NpcSystem implements SubSystem {
-    //TODO: Fix broken NPCs
+
     @Override
     public void loadListener() {
         LunaniaSystem.registerListener(new NpcEvents());
@@ -21,6 +21,5 @@ public class NpcSystem implements SubSystem {
     public void loadClasses() {
         loadCommands();
         loadListener();
-
     }
 }

@@ -45,6 +45,7 @@ public class BasicSystem implements SubSystem {
         LunaniaSystem.registerCommand("spawn", new Spawn());
         LunaniaSystem.registerCommand("head", new Head());
         LunaniaSystem.registerCommand("ping", new Ping());
+        LunaniaSystem.registerCommand("debug", new Debug());
     }
 
     @Override

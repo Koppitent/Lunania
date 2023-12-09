@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import net.minecraft.Optionull;
+import net.minecraft.network.chat.RemoteChatSession;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -187,6 +189,9 @@ public class Npc {
     @SuppressWarnings("deprecation")
     public void show(Player player) {
         ServerPlayerConnection connection = ((CraftPlayer) player).getHandle().connection;
+
+        Reflections.setValue(npc, "c", ((CraftPlayer) player).getHandle().connection);
+
         connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc));
         connection.send(new ClientboundAddEntityPacket(npc));
         connection.send(new ClientboundEntityEventPacket(npc, (byte) (npc.getBukkitYaw() * 256 * 360)));

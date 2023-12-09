@@ -135,6 +135,7 @@ public class PlayerAccount {
         }
     }
 
+    //* Logs
     public List<Log> getLogs() {
         String data = "";
         if(table.existEntry(logsc, uuidc, uuid.toString())) {

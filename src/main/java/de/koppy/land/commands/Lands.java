@@ -155,7 +155,6 @@ public class Lands implements CommandExecutor, TabCompleter {
                         land.claimServer();
                     }
                     profile.sendMessage("chunksclaimedforserver");
-
                 }
             }else if(args.length == 2) {
                 if(args[0].equalsIgnoreCase("select")) {

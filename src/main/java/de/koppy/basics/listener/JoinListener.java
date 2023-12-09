@@ -4,11 +4,13 @@ import de.koppy.basics.api.PlayerProfile;
 import de.koppy.basics.api.scoreboard.Tablist;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.Server;
+import de.koppy.server.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class JoinListener implements Listener {
@@ -32,7 +34,16 @@ public class JoinListener implements Listener {
         }
         Server server = LunaniaSystem.getServerInstance();
         server.applyTexturepack(e.getPlayer());
-      }
+
+    }
+
+    @EventHandler
+    public void onJoin(PlayerLoginEvent e) {
+        if(LunaniaSystem.getServerInstance().isShutdownbackup()) {
+            e.setKickMessage("§7Server restarting...");
+            e.setResult(PlayerLoginEvent.Result.KICK_OTHER);
+        }
+    }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e){

@@ -7,7 +7,6 @@ import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +149,12 @@ public class Land implements LandInterface {
     @Override
     public String getOwnerName() {
         if(!isClaimed()) return null;
-        return Bukkit.getOfflinePlayer(UUID.fromString(getOwnerUUID())).getName();
+        String trans = getOwnerUUID();
+        if(trans.equalsIgnoreCase("Server")) {
+            return trans;
+        }else {
+            return Bukkit.getOfflinePlayer(UUID.fromString(trans)).getName();
+        }
     }
 
     @Override

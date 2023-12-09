@@ -32,7 +32,7 @@ public class Chunk implements CommandExecutor, TabCompleter {
                     ce.reset();
                     PlayerProfile.getProfile(player.getUniqueId()).sendMessage("chunkresettet");
                 }else if(args[0].equalsIgnoreCase("direction")) {
-                    player.sendMessage("�7Direction: �e"+getDirectionNESW(player).toString());
+                    player.sendMessage("§7Direction: §e"+getDirectionNESW(player).toString());
                 }else if(args[0].equalsIgnoreCase("select")) {
                     ArrayList<org.bukkit.Chunk> chunks = new ArrayList<org.bukkit.Chunk>();
                     chunks.add(player.getLocation().getChunk());
