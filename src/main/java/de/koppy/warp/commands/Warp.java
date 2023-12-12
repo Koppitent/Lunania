@@ -291,7 +291,7 @@ public class Warp implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public List<String> getWarplist(int site, boolean bool) {
+    public static List<String> getWarplist(int site, boolean bool) {
         List<String> newwarplist = new ArrayList<String>();
         int showpersite = 7;
         List<String> warplist = table.getListFilter(namec, acceptedc, bool);
@@ -325,7 +325,7 @@ public class Warp implements CommandExecutor, TabCompleter {
         if(sender instanceof Player) {
             if(args.length == 1) {
                 List<String> check = new ArrayList<String>();
-                for(String w : table.getListFilter(namec, acceptedc, true)) {
+                for(String w : WarpSystem.getTable().getListFilter(namec, acceptedc, true)) {
                     check.add(w);
                 }
                 for(String s : check) if(s.startsWith(args[0])) tcomplete.add(s);

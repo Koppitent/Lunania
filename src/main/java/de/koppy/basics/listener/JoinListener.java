@@ -2,6 +2,7 @@ package de.koppy.basics.listener;
 
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.basics.api.scoreboard.Tablist;
+import de.koppy.economy.api.PlayerAccount;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.server.Server;
 import de.koppy.server.WorldManager;
@@ -20,8 +21,12 @@ public class JoinListener implements Listener {
         e.setJoinMessage(null);
         e.getPlayer().sendMessage(LunaniaSystem.getServerInstance().getJoinMessage());
         PlayerProfile profile = PlayerProfile.getProfile(e.getPlayer().getUniqueId());
-        e.getPlayer().setHealth(profile.getHeartsDatabase());
-        e.getPlayer().setFoodLevel(profile.getFoodDatabase());
+        double hearts = profile.getHeartsDatabase();
+        if(hearts == 0) hearts = 20;
+        e.getPlayer().setHealth(hearts);
+        int food = profile.getFoodDatabase();
+        if(food == 0) food = 20;
+        e.getPlayer().setFoodLevel(food);
         LunaniaSystem.getServerInstance().setPlayerListHeaderFooter(e.getPlayer());
         for(Player all : Bukkit.getOnlinePlayers()) {
             new Tablist().updateTablist(all);
@@ -34,7 +39,7 @@ public class JoinListener implements Listener {
         }
         Server server = LunaniaSystem.getServerInstance();
         server.applyTexturepack(e.getPlayer());
-
+        new PlayerAccount(e.getPlayer().getUniqueId()).checkIfMember();
     }
 
     @EventHandler

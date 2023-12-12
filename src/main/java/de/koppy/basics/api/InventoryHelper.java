@@ -115,7 +115,13 @@ public class InventoryHelper {
         ItemStack glass = InventoryHelper.getEmptyGlass(Material.GRAY_STAINED_GLASS_PANE);
         for(int i=0; i<inventory.getSize(); i++) {
             inventory.setItem(i, glass);
-            inventory.setItem(inventory.getSize()-i-1, glass);
+        }
+    }
+
+    public void fillWithGlassPane(Inventory inventory) {
+        ItemStack glass = InventoryHelper.getEmptyGlass(Material.GRAY_STAINED_GLASS_PANE);
+        for(int i=0; i<inventory.getSize(); i++) {
+            if(inventory.getItem(i) == null) inventory.setItem(i, glass);
         }
     }
 

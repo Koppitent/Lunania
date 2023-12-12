@@ -24,8 +24,6 @@ public class WarpSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
 
         table = new Table("warps", new Column("name", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("location", ColumnType.VARCHAR, 200));
@@ -35,6 +33,8 @@ public class WarpSystem implements SubSystem {
         table.addColumn(new Column("accepted", ColumnType.BOOL, 200));
         table.createTable();
 
+        loadCommands();
+        loadListener();
     }
 
     public static Table getTable() {

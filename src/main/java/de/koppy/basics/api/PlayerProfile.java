@@ -7,6 +7,7 @@ import de.koppy.job.JobSystem;
 import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
 import de.koppy.job.api.TaskAmount;
+import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mission.api.MissionHandler;
 import de.koppy.mysql.api.Column;

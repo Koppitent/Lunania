@@ -24,11 +24,11 @@ public class NickSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
-
         predefinednicknames.add("xXGamerHDXx");
         predefinednicknames.add("SchwarzerPeter");
+
+        loadCommands();
+        loadListener();
     }
 
     public static ArrayList<String> getPredefinednicknames() {

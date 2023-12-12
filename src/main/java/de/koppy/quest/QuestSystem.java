@@ -23,9 +23,6 @@ public class QuestSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
-
         new de.lunania.quest.api.Quest("tutorial", "§3Tutorial", 5);
 
         table = new Table("quests", new Column("uuid", ColumnType.VARCHAR, 200));
@@ -33,6 +30,9 @@ public class QuestSystem implements SubSystem {
             table.addColumn(new Column(quest.getName(), ColumnType.INT, 200));
         }
         table.createTable();
+
+        loadCommands();
+        loadListener();
     }
 
     public static Table getTable() {

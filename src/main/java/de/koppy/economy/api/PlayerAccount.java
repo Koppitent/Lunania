@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import de.koppy.bansystem.commands.Ban;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
@@ -40,6 +41,19 @@ public class PlayerAccount {
             outlist = StringToList(out);
         }
         return outlist;
+    }
+
+    public void checkIfMember() {
+        List<String> newbanklist = new ArrayList<>();
+        for(String s : getBankaccounts()) {
+            BankAccount ba = new BankAccount(s);
+            if(ba.existName()) {
+                if(ba.getMember().contains(uuid.toString())) {
+                    newbanklist.add(s);
+                }
+            }
+        }
+        setBankaccounts(newbanklist);
     }
 
     public String getBaltopforyourself() {
@@ -218,6 +232,7 @@ public class PlayerAccount {
 
     public static List<String> StringToList(String string) {
         List<String> out = new ArrayList<String>();
+        if(string.isEmpty()) return out;
         if(string.contains(":")) {
             for(String memberuuid : string.split(":")) {
                 out.add(memberuuid);
@@ -230,6 +245,7 @@ public class PlayerAccount {
 
     public static String ListToString(List<String> list) {
         String out = "";
+        if(list.isEmpty()) return out;
         for(String memberuuid : list) {
             out = out + ":" + memberuuid;
         }

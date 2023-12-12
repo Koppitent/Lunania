@@ -33,8 +33,6 @@ public class JobSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
         table = new Table("jobs", new Column("uuid", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("currentjob", ColumnType.VARCHAR, 200));
         for(JobType jobtype : JobType.values()) {
@@ -43,6 +41,8 @@ public class JobSystem implements SubSystem {
             }
         }
         table.createTable();
+        loadCommands();
+        loadListener();
     }
 
     public static Table getTable() {

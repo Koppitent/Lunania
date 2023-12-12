@@ -32,8 +32,6 @@ public class MissionSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
 
         ItemStack[] i = {new ItemStack(Material.IRON_INGOT, 8), Case.getCasebyName("Beta").getCase()};
         ItemStack[] rewardsdaily = {new ItemStack(Material.COBBLESTONE, 64), Case.getCasebyName("Basic").getCase(), Case.getCasebyName("Basic").getCase(), Case.getCasebyName("Basic").getCase(), Case.getCasebyName("Basic").getCase()};
@@ -62,6 +60,8 @@ public class MissionSystem implements SubSystem {
         table.addColumn(new Column("dateseason", ColumnType.INT, 200));
         table.createTable();
 
+        loadCommands();
+        loadListener();
     }
 
     public static Table getTable() {

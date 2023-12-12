@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import de.koppy.basics.api.ItemBuilder;
 import de.koppy.economy.EconomySystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,13 +27,7 @@ public class JobMenu {
     }
 
     public Inventory getMainMenu(Inventory inventory) {
-//		ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-//		ItemMeta glassM = glass.getItemMeta();
-//		glassM.setDisplayName("§4");
-//		glass.setItemMeta(glassM);
-
-//		for(int i=0; i<inventory.getSize(); i++) inventory.setItem(i, glass);
-
+        inventory.clear();
         int i = 10;
         for(JobType job : JobType.values()) {
             if(job != JobType.NONE) {
@@ -44,9 +39,11 @@ public class JobMenu {
                 }
             }
         }
-
         return inventory;
     }
+
+    public static ItemStack jobback = new ItemBuilder(Material.PAPER).setDisplayname("§cZurück").getItemStack();
+    public static ItemStack jobleave = new ItemBuilder(Material.FLINT_AND_STEEL).setDisplayname("§cLeave Job").getItemStack();
 
     public Inventory getMenuJob(JobType job, Inventory inventory) {
         inventory.clear();
@@ -115,6 +112,14 @@ public class JobMenu {
         inventory.setItem(51, glass);
         inventory.setItem(52, glass);
         inventory.setItem(53, glass);
+
+        JobType playersjob = new PlayerJob(uuid).getJob();
+        if(playersjob == job) {
+            inventory.setItem(28, jobleave);
+        }else {
+            if(playersjob == JobType.NONE) inventory.setItem(28, new ItemBuilder(Material.LIME_DYE).setDisplayname("§aJoin §7Job").setLocalizedName(job.toString()).getItemStack());
+        }
+        inventory.setItem(37, jobback);
 
         for(int i = 0; i<maxlevel; i++) {
             ItemStack lvlup = new ItemStack(Material.RED_CONCRETE_POWDER);

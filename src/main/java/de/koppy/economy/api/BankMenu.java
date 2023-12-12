@@ -188,7 +188,6 @@ public class BankMenu {
             return;
         }
         BankAccount account = new BankAccount(bankaccount);
-        System.out.println(site);
         if(account.existName()) {
             List<BankLog> logs = account.getLogs();
             int maxlogpage = logs.size() / 12;

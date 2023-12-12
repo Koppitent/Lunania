@@ -39,10 +39,15 @@ public class Debug implements CommandExecutor, TabCompleter {
                 }else if(args[0].equalsIgnoreCase("test")) {
                     new Packet(p).setViewdistance(32);
                     p.sendMessage("Viewdistance changed");
+                }else {
+                    new WorldManager().createWorld(args[0], p);
                 }
                 return false;
             }else if(args.length == 2) {
-                if(args[0].equalsIgnoreCase("scoreboard")) {
+                if(args[0].equalsIgnoreCase("tpworld")) {
+                    new WorldManager().teleportWorld(args[1], p);
+                    return false;
+                }else if(args[0].equalsIgnoreCase("scoreboard")) {
                     if(args[1].equalsIgnoreCase("hide")) {
                         PlayerProfile profile = PlayerProfile.getProfile(p.getUniqueId());
                         profile.getScoreboard().hideScoreboard();

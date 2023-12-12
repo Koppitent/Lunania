@@ -9,10 +9,7 @@ import java.util.UUID;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
-import de.koppy.land.api.ChunkEditor;
-import de.koppy.land.api.Direction;
-import de.koppy.land.api.Flag;
-import de.koppy.land.api.Land;
+import de.koppy.land.api.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
@@ -36,6 +33,8 @@ public class Lands implements CommandExecutor, TabCompleter {
 
         if(player.getLocation().getWorld().getName().equals("world")) {
             if(args.length == 1) {
+                player.openInventory(new LandMenu("§3LandMenu").getMainPage());
+            }else if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("list")) {
                     player.sendMessage(profile.getLands().size()+"");
                     for(String s : profile.getLands()) {

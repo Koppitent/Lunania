@@ -49,3 +49,4 @@ commands:
   mute:
   ping:
   debug:
+  world:

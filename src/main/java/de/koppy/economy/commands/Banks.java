@@ -39,9 +39,7 @@ public class Banks implements CommandExecutor {
 
         }else if(args.length == 1) {
             if(args[0].equalsIgnoreCase("test")) {
-
                 if(player.hasPermission("server.admin.test")) {
-
                     int i = 0;
                     List<BankLog> logs = new BankAccount("koppyag").getLogs();
                     for(BankLog s : logs) {
@@ -49,9 +47,7 @@ public class Banks implements CommandExecutor {
                         i++;
                     }
                     new BankAccount("koppyag").addLog(player.getUniqueId(), "tested logs");
-
                 }
-
             }else if(args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("info")) {
                 PlayerAccount pa = new PlayerAccount(player.getUniqueId());
                 List<String> bankaccounts = pa.getBankaccounts();

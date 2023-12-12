@@ -9,6 +9,8 @@ import de.koppy.land.LandSystem;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mission.MissionSystem;
 import de.koppy.mysql.MysqlSystem;
+import de.koppy.mysql.api.Column;
+import de.koppy.mysql.api.ColumnType;
 import de.koppy.nick.NickSystem;
 import de.koppy.npc.NpcSystem;
 import de.koppy.npc.api.NPCFile;
@@ -18,6 +20,7 @@ import de.koppy.server.listener.serverevents;
 import de.koppy.shop.ShopSystem;
 import de.koppy.shop.api.Adminshop;
 import de.koppy.warp.WarpSystem;
+import de.koppy.world.WorldSystem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -66,6 +69,7 @@ public class Server {
 
         loadConfig();
         checkSystems();
+        run();
 
         File file = new File("plugins/Lunania/Adminshops");
         if(file.listFiles() != null) {
@@ -80,6 +84,7 @@ public class Server {
                 NPCFile.loadFile(f);
             }
         }
+
     }
 
     private void checkSystems() {
@@ -100,6 +105,7 @@ public class Server {
         systemController.addOption(new Option("Quest", true, "Enable/Disable the QuestSystem", true));
         systemController.addOption(new Option("Land", true, "Enable/Disable the LandSystem", true));
         systemController.addOption(new Option("Mission", true, "Enable/Disable the MissionSystem", true));
+        systemController.addOption(new Option("World", true, "Enable/Disable the WorldSystem", true));
 
 
         for(Option option : systemController.getOptions()) {
@@ -172,6 +178,9 @@ public class Server {
                 break;
             case "Mission":
                 new MissionSystem().loadClasses();
+                break;
+            case "World":
+                new WorldSystem().loadClasses();
                 break;
             default:
                 Bukkit.getConsoleSender().sendMessage("§4ERROR §7Cant find System for §e" + system);
@@ -268,7 +277,6 @@ public class Server {
                 throw new RuntimeException("ServerFileInitError");
             }
         }
-        run();
     }
 
     private void run() {
@@ -276,6 +284,10 @@ public class Server {
             @SuppressWarnings("deprecation")
             public void run() {
                 Date date = new Date();
+                if(date.getMinutes() == 0 && date.getSeconds() == 0) {
+                    BanSystem.getTable().existEntry(new Column("uuid", ColumnType.VARCHAR, 200), "uwu");
+                }
+
                 if(date.getHours() == 4 && date.getMinutes() == 0 && date.getSeconds() == 0) {
                     day++;
                     setValueServer("day", day);

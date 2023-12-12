@@ -12,6 +12,8 @@ import de.lunania.land.listener.LandEvents;
 
 public class LandSystem implements SubSystem {
 
+    //TODO UI
+    //TODO Events ItemFrames etc.
     private static Table table;
     @Override
     public void loadListener() {
@@ -26,8 +28,6 @@ public class LandSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        loadCommands();
-        loadListener();
 
         table = new Table("landsystem", new Column("lands", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("member", ColumnType.TEXT, 10000));
@@ -39,6 +39,8 @@ public class LandSystem implements SubSystem {
         }
 
         table.createTable();
+        loadCommands();
+        loadListener();
 
     }
 

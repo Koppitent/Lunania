@@ -26,6 +26,10 @@ public class Land implements LandInterface {
         this.chunk = chunk;
     }
 
+    public static Land fromString(String format) {
+        return new Land(Bukkit.getWorld("world").getChunkAt(Integer.parseInt(format.split("I")[0]), Integer.parseInt(format.split("I")[1])));
+    }
+
     @Override
     public void claim(UUID uuid) {
         if(isClaimed()) return;
