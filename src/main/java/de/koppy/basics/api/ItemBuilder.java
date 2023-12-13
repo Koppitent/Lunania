@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemBuilder {
@@ -48,6 +49,7 @@ public class ItemBuilder {
     public ItemBuilder addLore(String text) {
         ItemMeta meta = this.istack.getItemMeta();
         List<String> lore = meta.getLore();
+        if(lore == null) lore = new ArrayList<>();
         lore.add(text);
         meta.setLore(lore);
         this.istack.setItemMeta(meta);

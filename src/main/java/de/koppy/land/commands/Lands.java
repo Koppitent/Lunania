@@ -10,6 +10,7 @@ import de.koppy.basics.api.PlayerProfile;
 import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.land.api.*;
+import de.koppy.land.listener.InventoryEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player;
 
 public class Lands implements CommandExecutor, TabCompleter {
 
-    public static double price = 10000d;
+    public static double PRICE_PER_LAND = 10000d;
     public static ArrayList<org.bukkit.Chunk> sellconfirmation = new ArrayList<org.bukkit.Chunk>();
     public static HashMap<Player, ArrayList<org.bukkit.Chunk>> chunkselected = new HashMap<Player, ArrayList<org.bukkit.Chunk>>();
 
@@ -32,7 +33,8 @@ public class Lands implements CommandExecutor, TabCompleter {
         PlayerProfile profile = PlayerProfile.getProfile(player.getUniqueId());
 
         if(player.getLocation().getWorld().getName().equals("world")) {
-            if(args.length == 1) {
+            if(args.length == 0) {
+                InventoryEvents.ininv.add(player);
                 player.openInventory(new LandMenu("§3LandMenu").getMainPage());
             }else if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("list")) {
@@ -55,13 +57,13 @@ public class Lands implements CommandExecutor, TabCompleter {
                     Land land = new Land(player.getLocation().getChunk());
                     if(!land.isClaimed()) { profile.sendMessage("notclaimed"); return false; }
                     if(!land.isOwner(player.getUniqueId())) { profile.sendMessage("mustbeowner"); return false;}
-                    if(!sellconfirmation.contains(land.getChunk())) { profile.sendMessage("confirmsell"); sellconfirmation.add(land.getChunk()); player.sendMessage("§7The value of ur land is " + new DecimalFormat("#").format((price * 0.1)) + EconomySystem.getEcosymbol() + "§7."); return false; }
+                    if(!sellconfirmation.contains(land.getChunk())) { profile.sendMessage("confirmsell"); sellconfirmation.add(land.getChunk()); player.sendMessage("§7The value of ur land is " + new DecimalFormat("#").format((PRICE_PER_LAND * 0.1)) + EconomySystem.getEcosymbol() + "§7."); return false; }
 
                     sellconfirmation.remove(land.getChunk());
                     land.unclaim();
                     PlayerAccount pa = new PlayerAccount(player.getUniqueId());
-                    pa.addMoney((price * 0.1), "from Server", "Land "+land.getChunk().getX()+":"+land.getChunk().getZ()+" sold");
-                    player.sendMessage("§7You sold ur land for " + new DecimalFormat("#").format((price * 0.1)) + EconomySystem.getEcosymbol() + "§7.");
+                    pa.addMoney((PRICE_PER_LAND * 0.1), "from Server", "Land "+land.getChunk().getX()+":"+land.getChunk().getZ()+" sold");
+                    player.sendMessage("§7You sold ur land for " + new DecimalFormat("#").format((PRICE_PER_LAND * 0.1)) + EconomySystem.getEcosymbol() + "§7.");
                     PlayerProfile.getProfile(player.getUniqueId()).getScoreboard().updateLand(land);
                     new ChunkEditor(land.getChunk()).setRandParticle(Particle.VILLAGER_ANGRY, 7, player, 5);
                     new ChunkEditor(land.getChunk()).reset();
@@ -74,12 +76,12 @@ public class Lands implements CommandExecutor, TabCompleter {
                     PlayerAccount pa = new PlayerAccount(player.getUniqueId());
                     double bal = pa.getMoney();
                     double amount = bal;
-                    if(amount < price) { player.sendMessage(profile.getMessage("notenoughmoney").replace("%missing%", new DecimalFormat("#").format((price-amount)))); return false; }
+                    if(amount < PRICE_PER_LAND) { player.sendMessage(profile.getMessage("notenoughmoney").replace("%missing%", new DecimalFormat("#").format((PRICE_PER_LAND -amount)))); return false; }
 
 //				new ChunkEditor(player.getLocation().getChunk()).setEcken(Material.TORCH);
                     new ChunkEditor(player.getLocation().getChunk()).setRandParticle(Particle.VILLAGER_HAPPY, 7, player, 5);
                     new ChunkEditor(player.getLocation().getChunk()).showSlime(player);
-                    pa.removeMoney(price, "sendto Server", "bought Land "+land.getChunk().getX()+":"+land.getChunk().getZ());
+                    pa.removeMoney(PRICE_PER_LAND, "sendto Server", "bought Land "+land.getChunk().getX()+":"+land.getChunk().getZ());
                     land.claim(player.getUniqueId());
                     profile.sendMessage("landclaimed");
                     profile.getScoreboard().updateLand(land);
@@ -287,7 +289,7 @@ public class Lands implements CommandExecutor, TabCompleter {
     }
 
     public double countPrice(ArrayList<org.bukkit.Chunk> chunks) {
-        return ((double) chunks.size()) * price;
+        return ((double) chunks.size()) * PRICE_PER_LAND;
     }
 
     public ArrayList<org.bukkit.Chunk> getChunks(Player player, int xi, int zi) {

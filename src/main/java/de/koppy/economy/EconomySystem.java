@@ -9,12 +9,15 @@ import de.koppy.mysql.api.ColumnType;
 import de.koppy.server.SubSystem;
 import de.koppy.mysql.api.Table;
 
+import java.text.NumberFormat;
+
 public class EconomySystem implements SubSystem {
 
     private static Table ecotable;
     private static Table banktable;
     private static String ecosymbol = " §6§r";
     private static String prefix = "§5Economy §8| §r";
+    private static final NumberFormat f = NumberFormat.getInstance();
 
     @Override
     public void loadListener() {
@@ -64,5 +67,9 @@ public class EconomySystem implements SubSystem {
 
     public static String getPrefix() {
         return prefix;
+    }
+
+    public static NumberFormat getFormat() {
+        return f;
     }
 }

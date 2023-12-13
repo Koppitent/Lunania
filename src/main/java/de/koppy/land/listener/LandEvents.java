@@ -1,4 +1,4 @@
-package de.lunania.land.listener;
+package de.koppy.land.listener;
 
 import java.util.ArrayList;
 import java.util.UUID;

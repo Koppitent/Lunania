@@ -128,7 +128,7 @@ public class PlayerAccount {
         if(table.existEntry(uuidc, uuid.toString())) {
             return (Double) table.getValue(balancec, uuidc, uuid.toString());
         }else {
-            setMoneyDatabase(0d);
+            setMoneyDatabaseFirstTime(0d);
             return 0.d;
         }
     }
@@ -138,6 +138,10 @@ public class PlayerAccount {
         if(Bukkit.getPlayer(uuid) != null) {
             PlayerProfile.getProfile(uuid).getScoreboard().updateEco();
         }
+    }
+
+    public void setMoneyDatabaseFirstTime(double money) {
+        table.setValue(balancec, money, uuidc, uuid.toString());
     }
 
     public void setMoney(double money, String sendto, String reason, double moneybefore, double amount) {
