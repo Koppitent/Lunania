@@ -4,29 +4,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.koppy.basics.api.PlayerProfile;
+import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
+import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.shop.api.Adminshop;
+import de.koppy.shop.api.ClientEditSignEvent;
 import de.koppy.shop.api.ShopItem;
+import de.koppy.shop.api.ShopSign;
 import de.koppy.shop.commands.Shop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Barrel;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,86 +45,178 @@ public class ShopListener implements Listener {
     public static String prefix = "§8[§3Shop§8] §r§7";
 
     ArrayList<Player> inbulkinv = new ArrayList<Player>();
-    HashMap<Location, Location> signlocs = new HashMap<Location, Location>();
+    HashMap<Location, Location> signchestlocs = new HashMap<Location, Location>();
+    HashMap<Player, Location> inedit = new HashMap<Player, Location>();
 
     @EventHandler
-    public void onSignChange(SignChangeEvent e) {
-        if(e.getSide() == Side.FRONT) {
-            if(e.getLine(0).equalsIgnoreCase("#"+e.getPlayer().getName())) {
-                if(e.getLine(1).matches("[0-9]+")) {
-//					int amount = Integer.valueOf(e.getLine(1));
-                    double[] buysellprice = checkPrice(e.getLine(2), e.getPlayer());
-                    double buyprice = buysellprice[0];
-                    double sellprice = buysellprice[1];
-                    if(buyprice > 0 || sellprice > 0) {
+    public void inSignEdit(PlayerQuitEvent e) {
+        if(inedit.containsKey(e.getPlayer())) {
+            Location location = inedit.get(e.getPlayer());
+            signchestlocs.remove(location);
+            inedit.remove(e.getPlayer());
+        }
+    }
 
+    @EventHandler
+    public void onSignEdit(ClientEditSignEvent e) {
+        if(e.getLine(0).startsWith("#")) {
+            //* PlayerAccount
+            String puid = e.getLine(0).replace("#", "");
+            PlayerProfile profile = PlayerProfile.getProfile(e.getPlayer().getUniqueId());
+            if(!puid.equals(profile.getUID())) { printErr(e.getBlock(), e.getPlayer(), "§cThats not your name."); return; }
+            if(!e.getLine(1).matches("[0-9]+")) { printErr(e.getBlock(), e.getPlayer(), "§cAmount must be an full number."); return; }
+            double[] prices = checkPrice(e.getLine(2));
+            double buyprice = prices[0];
+            double sellprice = prices[1];
+            if(buyprice <= 0 && sellprice <= 0) { printErr(e.getBlock(), e.getPlayer(), "§cAt least one must be greater zero."); return; }
+            ItemStack istack;
+            if(e.getLine(3).equals("?")) {
+                istack = getFirstItem(((Container) signchestlocs.get(e.getSign().getLocation()).getBlock().getState()).getInventory());
+            }else {
+                istack = new ItemStack(Material.valueOf(e.getLine(3)));
+            }
+            if(istack == null) { printErr(e.getBlock(), e.getPlayer(), "§cInvalid ItemStack."); return; }
 
+            e.getSign().setEditable(true);
+            e.getSign().setLine(0, "§e#§d"+puid);
+            e.getSign().setLine(1, "§7Anzahl: "+Integer.parseInt(e.getLine(1)));
+            String b = "";
+            if(buyprice > 0) {
+                b = b + "§a▲§e "+buyprice;
+                if(sellprice > 0) b = b + " §7|§e "+sellprice+" §c▼";
+            }else {
+                if(sellprice > 0) b = b + "§c▼§e "+sellprice;
+            }
+            e.getSign().setLine(2, b);
+            e.getSign().setLine(3, "§7"+istack.getType().toString());
+            e.getSign().update();
 
-                    }else {
-                        e.getPlayer().sendMessage(prefix + "§cYou need to provide buy or sell (line 3)");
-                        e.getPlayer().playSound(e.getPlayer(), Sound.ENTITY_ITEM_BREAK, 10, 0);
-                        e.getBlock().breakNaturally();
+        }
+    }
+
+    private void printErr(Block block, Player player, String err) {
+        player.sendMessage(prefix + err);
+        player.playSound(player, Sound.ENTITY_ITEM_BREAK, 10, 0);
+        block.breakNaturally();
+        signchestlocs.remove(block.getLocation());
+    }
+
+    @EventHandler
+    public void onClickSign(PlayerInteractEvent e) {
+        if(e.getClickedBlock() == null) return;
+        if(!(e.getClickedBlock().getState() instanceof Sign)) return;
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Sign sign = (Sign) e.getClickedBlock().getState();
+        if(sign.getSide(Side.FRONT).getLine(0).startsWith("§e#")) {
+            String line1 = sign.getSide(Side.FRONT).getLine(0);
+            String line2 = sign.getSide(Side.FRONT).getLine(1);
+            String line3 = sign.getSide(Side.FRONT).getLine(2);
+            String line4 = sign.getSide(Side.FRONT).getLine(3);
+            //* PlayerInteract with ShopSign
+            String puid = line1.replace("§e#§d","");
+            if(puid.equals(PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getUID())) {
+                //* Owner interacts
+                sign.setEditable(true);
+                ShopSign shopSign = new ShopSign(sign.getSide(Side.FRONT).getLines());
+                sign.getSide(Side.FRONT).setLine(0, "#"+shopSign.getPuid());
+                sign.getSide(Side.FRONT).setLine(1, ""+shopSign.getAmount());
+                sign.getSide(Side.FRONT).setLine(2, "buy: "+(int) shopSign.getBuyprice()+",sell: "+(int) shopSign.getSellprice());
+                sign.getSide(Side.FRONT).setLine(3, shopSign.getLastline());
+                sign.update();
+
+                inedit.put(e.getPlayer(), sign.getLocation());
+                Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        e.getPlayer().openSign(sign);
                     }
-                }else {
-                    e.getPlayer().sendMessage(prefix + "§cInvalid amount. (line 2)");
-                    e.getPlayer().playSound(e.getPlayer(), Sound.ENTITY_ITEM_BREAK, 10, 0);
-                    e.getBlock().breakNaturally();
-                }
+                }, 2);
             }
         }
     }
 
-//    @EventHandler
-//    public void onPlaceSign(final BlockPlaceEvent e) {
-//        if(e.getBlock().getState() instanceof Sign) {
-//            if(e.getBlockAgainst().getState() instanceof Chest || e.getBlockAgainst().getState() instanceof Barrel) {
-//                if(signlocs.containsValue(e.getBlockAgainst().getLocation()) == false) {
-//                    e.setCancelled(true);
-//                    e.getBlockReplacedState().setBlockData(e.getBlock().getBlockData());
-//                    String pid = PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getUID();
-//                    final Sign sign  = (Sign) e.getBlock().getState();
-//                    SignSide side = sign.getSide(Side.FRONT);
-//                    side.setLine(0, "#"+pid);
-//                    side.setLine(1, "1");
-//                    side.setLine(2, "B: 1,S: 1");
-//                    side.setLine(3, "?");
-//                    sign.update();
-//
-//                    Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
-//                        public void run() {
-//                            Location loc = e.getBlock().getLocation();
-//                            BlockPos blockposition = new BlockPos((int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
-//                            ClientboundOpenSignEditorPacket editor = new ClientboundOpenSignEditorPacket(blockposition, true);
-//                            ((CraftPlayer) e.getPlayer()).getHandle().connection.send(editor);
-//                        }
-//                    }, 2);
-//
-//                }else {
-//                    e.setCancelled(true);
-//                    e.getPlayer().sendMessage(prefix + "§cDiese Kiste ist bereits ein UserShop!");
-//                }
-//            }
-//        }
-//    }
+    @EventHandler
+    public void onPlaceEvent(BlockPlaceEvent e) {
+        if(e.getBlockAgainst() == null) return;
+        if(e.getBlock() == null) return;
+        if(!e.getPlayer().isSneaking()) return;
+        if(e.getBlock().getState() instanceof Sign) {
+            if (e.getBlockAgainst().getState() instanceof Chest || e.getBlockAgainst().getState() instanceof Barrel || e.getBlockAgainst().getState() instanceof DoubleChest) {
+                if(signchestlocs.containsValue(e.getBlockAgainst().getLocation())) return;
+                if(!new Land(e.getBlockAgainst().getChunk()).isOwner(e.getPlayer().getUniqueId())) return;
+                if(!e.getBlockAgainst().getChunk().equals(e.getBlock().getChunk())) return;
+                e.setCancelled(true);
+                signchestlocs.put(e.getBlock().getLocation(), e.getBlockAgainst().getLocation());
+                e.getBlockReplacedState().setBlockData(e.getBlock().getBlockData());
+                Sign sign = (Sign) e.getBlock().getState();
+                sign.setEditable(true);
+                sign.setLine(0, "#"+new PlayerProfile(e.getPlayer().getUniqueId()).getUID());
+                sign.setLine(1, "1");
+                sign.setLine(2, "buy: 1,sell: 1");
+                sign.setLine(3, "?");
+                sign.setEditable(true);
+                sign.update();
 
+                inedit.put(e.getPlayer(), sign.getLocation());
+                Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        e.getPlayer().openSign(sign);
+                    }
+                }, 2);
+            }
+        }
+    }
 
-    public double[] checkPrice(String line, Player player) {
+    @EventHandler
+    public void onBreakEvent(BlockBreakEvent e) {
+        if(signchestlocs.containsValue(e.getBlock().getLocation())) {
+            e.setCancelled(true);
+            e.getPlayer().sendMessage(prefix + "§cCant break Shopchest!");
+            return;
+        }
+
+        if(signchestlocs.containsKey(e.getBlock().getLocation())) {
+            //* Breaking sign
+            if(!e.getPlayer().isSneaking()) {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(prefix + "§cYou must sneak to break ShopSigns!");
+                return;
+            }
+            if(((Sign) e.getBlock().getState()).getSide(Side.FRONT).getLine(0).substring(5).equals(PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getUID())) {
+                signchestlocs.remove(e.getBlock().getLocation());
+            }else {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(prefix + "§cCant break others ShopSign!");
+                return;
+            }
+        }
+    }
+
+    private ItemStack getFirstItem(Inventory inventory) {
+        for(int i=0; i<inventory.getSize(); i++) {
+            if(inventory.getItem(i) != null) return inventory.getItem(i).clone();
+        }
+        return null;
+    }
+
+    public double[] checkPrice(String line) {
         double buyprice = -1d;
         double sellprice = -1d;
+        line = line.replace(" ", "");
         if(line.contains(",")) {
             String left = line.split(",")[0];
             String right = line.split(",")[1];
 
-            if(left.split(" ")[0].equals("B:") || left.split(" ")[0].equals("Buy:") || left.split(" ")[0].equals("buy:")) {
-                String num = left.split(" ")[1];
-                num = num.replace(",", ".");
-                if(num.matches("[0.0-9.9]+")) {
+            if(left.split(":")[0].equals("B") || left.split(":")[0].equals("Buy") || left.split(":")[0].equals("buy")) {
+                String num = left.split(":")[1];
+                if(num.matches("[0-9]+")) {
                     buyprice = Double.valueOf(num);
                 }
-            }else if(right.split(" ")[0].equals("S:") || right.split(" ")[0].equals("Sell:") || right.split(" ")[0].equals("sell:")) {
-                String num = right.split(" ")[1];
-                num = num.replace(",", ".");
-                if(num.matches("[0.0-9.9]+")) {
+            }
+            if(right.split(":")[0].equals("S") || right.split(":")[0].equals("Sell") || right.split(":")[0].equals("sell")) {
+                String num = right.split(":")[1];
+                if(num.matches("[0-9]+")) {
                     sellprice = Double.valueOf(num);
                 }
             }
@@ -142,7 +241,7 @@ public class ShopListener implements Listener {
                 }
             }
             Shop.ininv.remove(e.getPlayer());
-            e.getPlayer().sendMessage("§aShop sucessfully edited.");
+            e.getPlayer().sendMessage("§aShop successfully edited.");
         }else if(Shop.inshop.contains(e.getPlayer())) {
             Shop.inshop.remove(e.getPlayer());
         }else if(inbulkinv.contains(e.getPlayer())) {

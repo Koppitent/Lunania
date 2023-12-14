@@ -4,6 +4,7 @@ import de.koppy.basics.api.PlayerProfile;
 import de.koppy.basics.api.scoreboard.Tablist;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.npc.api.PacketReader;
 import de.koppy.server.Server;
 import de.koppy.server.WorldManager;
 import org.bukkit.Bukkit;

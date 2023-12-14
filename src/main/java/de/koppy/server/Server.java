@@ -2,6 +2,7 @@ package de.koppy.server;
 
 import de.koppy.bansystem.BanSystem;
 import de.koppy.basics.BasicSystem;
+import de.koppy.basics.commands.Debug;
 import de.koppy.cases.CaseSystem;
 import de.koppy.economy.EconomySystem;
 import de.koppy.job.JobSystem;
@@ -193,7 +194,7 @@ public class Server {
     }
 
     public boolean isConsoledebug() {
-        return consoledebug;
+        return Debug.consoledebug;
     }
 
     public int getDay() {

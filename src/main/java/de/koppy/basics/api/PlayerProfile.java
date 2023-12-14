@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class PlayerProfile {
@@ -460,4 +461,40 @@ public class PlayerProfile {
     }
 
 
+    public String getUID() {
+        if(table.existEntry(uidc, uuidc, uuid.toString())) {
+            String uid = (String) table.getValue(uidc, uuidc, uuid.toString());
+            if(uid != null) {
+                return uid;
+            }
+        }
+        return setUID();
+    }
+
+    private String setUID() {
+        String uid = generateNewPassword(6);
+        table.setValue(uidc, uid, uuidc, uuid.toString());
+        return uid;
+    }
+
+    public static String getRNDMstring() {
+        String[] var = {"a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G",
+                "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o",
+                "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V",
+                "w", "W", "x", "X", "y", "Y", "z", "Z", "0", "1", "2", "3", "4", "5", "6",
+                "7", "8", "9"};
+
+        Random rndm = new Random();
+        Integer rndmint = rndm.nextInt(var.length);
+
+        return var[rndmint];
+    }
+
+    public static String generateNewPassword(int length) {
+        String out="";
+        for(int i=0; i<length; i++) {
+            out = out+getRNDMstring();
+        }
+        return out;
+    }
 }

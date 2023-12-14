@@ -1,4 +1,4 @@
-package de.lunania.shop.api;
+package de.koppy.shop.api;
 
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;
@@ -12,22 +12,28 @@ public class ClientEditSignEvent extends Event{
 
     //*
     public static HandlerList handlers = new HandlerList();
-    Player player;
-    String[] lines;
-    Sign sign;
-    Block block;
+    private Player player;
+    private String[] lines;
+    private Sign sign;
+    private Block block;
+    private boolean isFrontText;
 
     //* Object CREATE
-    public ClientEditSignEvent(Player player, String lines[], Sign sign, Block block) {
+    public ClientEditSignEvent(Player player, String lines[], Sign sign, Block block, boolean isFrontText) {
         this.player = player;
         this.lines = lines;
         this.sign = sign;
         this.block = block;
+        this.isFrontText = isFrontText;
     }
 
     //* Functions
     public Player getPlayer() {
         return this.player;
+    }
+
+    public boolean isFrontText() {
+        return isFrontText;
     }
 
     public Sign getSign() {

@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.shop.api.ClientEditSignEvent;
+import net.minecraft.core.BlockPos;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -99,21 +103,18 @@ public class PacketReader {
                     }
                 }
             }
+        }else if(packet.getClass().getSimpleName().equalsIgnoreCase("PacketPlayInUpdateSign")) {
+            BlockPos blockposition = (BlockPos) getValue(packet, "b");
+            String[] lines = (String[]) getValue(packet, "c");
+            boolean isFrontText = (Boolean) getValue(packet, "d");
+            Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
+				@SuppressWarnings("deprecation")
+				public void run() {
+					Sign sign = (Sign) player.getWorld().getBlockAt(new Location(player.getWorld() ,blockposition.getX(), blockposition.getY(), blockposition.getZ())).getState();
+				    sign.setEditable(true);
+                    Bukkit.getPluginManager().callEvent(new ClientEditSignEvent(player, lines, sign, player.getWorld().getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ()), isFrontText));
+				}}, 1);
         }
-//		else if(packet.getClass().getSimpleName().equalsIgnoreCase("PacketPlayInUpdateSign")){
-//
-//			final String[] lines = (String[]) getValue(packet, "b");
-//			System.out.println(lines);
-//			Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
-//				@SuppressWarnings("deprecation")
-//				public void run() {
-//					BlockPos blockposition = (BlockPos) getValue(packet, "a");
-//					Sign sign = (Sign) player.getWorld().getBlockAt(new Location(player.getWorld() ,blockposition.getX(), blockposition.getY(), blockposition.getZ())).getState();
-//					Bukkit.getPluginManager().callEvent(new ClientEditSignEvent(player, lines, sign, player.getWorld().getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ())));
-//					Bukkit.getPluginManager().callEvent(new SignChangeEvent(player.getWorld().getBlockAt(blockposition.getX(), blockposition.getY(), blockposition.getZ()), player, lines));
-//				}}, 1);
-//
-//		}
     }
 
     public void setValue(Object obj,String name,Object value){
