@@ -39,7 +39,7 @@ public class JoinListener implements Listener {
             }
         }
         Server server = LunaniaSystem.getServerInstance();
-        server.applyTexturepack(e.getPlayer());
+        if(profile.isUseTexturepack()) server.applyTexturepack(e.getPlayer());
         new PlayerAccount(e.getPlayer().getUniqueId()).checkIfMember();
     }
 

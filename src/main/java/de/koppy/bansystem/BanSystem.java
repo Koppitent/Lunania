@@ -4,6 +4,7 @@ import de.koppy.bansystem.commands.Ban;
 import de.koppy.bansystem.commands.Mute;
 import de.koppy.bansystem.commands.Unban;
 import de.koppy.bansystem.commands.Unmute;
+import de.koppy.bansystem.listener.InventoryListener;
 import de.koppy.bansystem.listener.JoinListener;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mysql.api.Column;
@@ -19,6 +20,7 @@ public class BanSystem implements SubSystem {
     @Override
     public void loadListener() {
         LunaniaSystem.registerListener(new JoinListener());
+        LunaniaSystem.registerListener(new InventoryListener());
     }
 
     @Override

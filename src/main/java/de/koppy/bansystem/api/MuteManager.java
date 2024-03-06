@@ -84,24 +84,9 @@ public class MuteManager {
     }
 
     public String muteID(int id, String bannedby) {
-        long length = 1000;
-        String reason = "NONE";
-        switch (id) {
-            case 1:
-                reason = "Hacking/Cheating";
-                length = 1000L*60L*60L*24L*30L;
-                break;
-            case 2:
-                reason = "Peterismus";
-                length = 1000L*60L*60L*24L*30L*3L;
-                break;
-            case 99:
-                reason = "Admin";
-                length = 1000L * 60L * 60L * 24000000L;
-                break;
-            default:
-                return "§cID doesnt exist.";
-        }
+        MuteIDs muteids = MuteIDs.getMuteId(id);
+        String reason = muteids.getReason();
+        long length = muteids.getDuration();
         mute(length, reason, bannedby);
         return "§7Der Spieler §e" + Bukkit.getOfflinePlayer(uuid).getName() + " §7wurde für §3" + reason + " §7gebannt.";
     }

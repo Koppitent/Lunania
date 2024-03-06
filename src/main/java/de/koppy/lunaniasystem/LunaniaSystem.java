@@ -24,11 +24,11 @@ public final class LunaniaSystem extends JavaPlugin {
         mysql.connect();
 
         server = new Server();
-
     }
 
     @Override
     public void onDisable() {
+        server.save();
         plugin = null;
     }
 

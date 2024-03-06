@@ -27,6 +27,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setCustomModelData(int id) {
+        ItemMeta meta = this.istack.getItemMeta();
+        meta.setCustomModelData(id);
+        this.istack.setItemMeta(meta);
+        return this;
+    }
+
     public ItemBuilder setMaterial(Material material) {
         this.istack.setType(material);
         return this;
@@ -64,6 +71,16 @@ public class ItemBuilder {
         SkullMeta meta = (SkullMeta) this.istack.getItemMeta();
         meta.setOwner(playername);
         this.istack.setItemMeta(meta);
+        return this;
+    }
+
+    public ItemBuilder getSkullURL(String url) {
+        this.istack = SkullMethods.getSkull(url);
+        return this;
+    }
+
+    public ItemBuilder getSkullValue(String value) {
+        this.istack = SkullMethods.getSkullValue(value);
         return this;
     }
 

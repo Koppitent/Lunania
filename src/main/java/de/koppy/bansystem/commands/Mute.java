@@ -1,7 +1,9 @@
 package de.koppy.bansystem.commands;
 
 import de.koppy.bansystem.BanSystem;
+import de.koppy.bansystem.api.BanUI;
 import de.koppy.bansystem.api.MuteManager;
+import de.koppy.bansystem.api.MuteUI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -16,7 +18,6 @@ import java.util.UUID;
 
 public class Mute implements CommandExecutor, TabCompleter {
 
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
 
@@ -29,8 +30,9 @@ public class Mute implements CommandExecutor, TabCompleter {
                 UUID uuid = op.getUniqueId();
                 MuteManager userban = new MuteManager(uuid);
                 if(userban.isMuted()) { player.sendMessage(BanSystem.getPrefix() + "§cDieser Spieler ist bereits gemutet."); return false; }
-                userban.mute(31556952000L *10L, "§cAdmin-Mute", player.getUniqueId().toString());
-                player.sendMessage(BanSystem.getPrefix() + "§7Der Spieler §e" + op.getName() + " §7wurde §cpermanent §7gemutet.");
+                MuteUI muteui = new MuteUI(uuid, player.getUniqueId().toString());
+                player.openInventory(muteui.getInventory());
+                muteui.setMainMenu();
             }else if(args.length == 2) {
                 int id = Integer.parseInt(args[1]);
                 String playername = args[0];

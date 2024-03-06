@@ -497,4 +497,8 @@ public class PlayerProfile {
         }
         return out;
     }
+
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
+    }
 }

@@ -18,7 +18,7 @@ public class Spawn implements CommandExecutor {
         if(player.hasPermission("server.admin.spawn")) {
             if(args.length == 1 && args[0].contains("set")) {
                 LunaniaSystem.getServerInstance().setSpawnloc(player.getLocation());
-                player.sendMessage("Spawn gesetzt uwu.");
+                player.sendMessage("§7Spawn wurde gesetzt.");
                 return false;
             }
         }

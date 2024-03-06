@@ -42,4 +42,25 @@ public class SkullMethods {
         return head;
     }
 
+    public static ItemStack getSkullValue(String value) {
+        @SuppressWarnings("deprecation")
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1, (short)3);
+        if(value.isEmpty()) return head;
+
+        SkullMeta headMeta = (SkullMeta) head.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), "uwu");
+        profile.getProperties().put("textures", new Property("textures", value));
+        Field profileField = null;
+
+        try {
+            profileField = headMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(headMeta, profile);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        head.setItemMeta(headMeta);
+        return head;
+    }
+
 }

@@ -40,13 +40,13 @@ public class Tpa implements CommandExecutor {
                         p.sendMessage(LunaniaSystem.getServerInstance().getPrefix() + profile.getMessage("tpasentto").replace("%player%", sendrequestto.getName()));
                         sendrequestto.sendMessage(LunaniaSystem.getServerInstance().getPrefix() + tprofile.getMessage("tpagotfrom").replace("%player%", p.getName()));
 
-                        TextComponent tc = new TextComponent("�a[ACCEPT]");
+                        TextComponent tc = new TextComponent("§a[ACCEPT]");
                         tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + p.getName()));
                         tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(tprofile.getMessage("clickaccept")).create()));
 
-                        TextComponent tcspace = new TextComponent("�7 - ");
+                        TextComponent tcspace = new TextComponent("§7 - ");
 
-                        TextComponent tcd = new TextComponent("�c[DENY]");
+                        TextComponent tcd = new TextComponent("§c[DENY]");
                         tcd.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny " + p.getName()));
                         tcd.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(tprofile.getMessage("clickdeny")).create()));
 

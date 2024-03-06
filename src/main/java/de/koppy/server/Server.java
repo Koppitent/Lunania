@@ -1,6 +1,8 @@
 package de.koppy.server;
 
 import de.koppy.bansystem.BanSystem;
+import de.koppy.bansystem.api.BanIDs;
+import de.koppy.bansystem.api.MuteIDs;
 import de.koppy.basics.BasicSystem;
 import de.koppy.basics.commands.Debug;
 import de.koppy.cases.CaseSystem;
@@ -20,11 +22,13 @@ import de.koppy.server.commands.test;
 import de.koppy.server.listener.serverevents;
 import de.koppy.shop.ShopSystem;
 import de.koppy.shop.api.Adminshop;
+import de.koppy.shop.listener.ShopListener;
 import de.koppy.warp.WarpSystem;
 import de.koppy.world.WorldSystem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -66,7 +70,27 @@ public class Server {
         this.motdlist.add("                §8§l» "+lunania+" §8§l«                      \n        §7» "+ChatColor.of("#c4351f")+"§lPre-Alpha§r §7starting soon.");
         this.broadcastmessages.add("     §7Willkommen auf §3Lunania.net§7!     ");
 
+        new BanIDs(99, "Admin", 1000L * 60L * 60L * 24000000L, Material.REDSTONE_BLOCK);
+        new BanIDs(1, "Hacking/Cheating", 1000L*60L*60L*24L*30L, Material.IRON_SWORD);
+        new BanIDs(2, "Peterismus", 1000L*60L*60L*24L*30L*3L, Material.DIAMOND_SHOVEL);
+
+        new MuteIDs(99, "Admin", 1000L * 60L * 60L * 24000000L, Material.REDSTONE_BLOCK);
+        new MuteIDs(1, "Hacking/Cheating", 1000L*60L*60L*24L*30L, Material.IRON_SWORD);
+        new MuteIDs(2, "Peterismus", 1000L*60L*60L*24L*30L*3L, Material.DIAMOND_SHOVEL);
+
         this.systemController = new SystemController();
+
+        File fileshop = new File("plugins/Lunania", "savedshops.yml");
+        Bukkit.getConsoleSender().sendMessage("§3INFO §7Loading Shops...");
+        if(fileshop.exists()) {
+            FileConfiguration cfg = YamlConfiguration.loadConfiguration(fileshop);
+            for(String s : cfg.getKeys(false)) {
+                String[] sS = s.split("I");
+                Location location = new Location(Bukkit.getWorld("world"), Integer.parseInt(sS[0]), Integer.parseInt(sS[1]), Integer.parseInt(sS[2]));
+                ShopListener.signchestlocs.put(location, cfg.getLocation(s));
+            }
+        }
+
 
         loadConfig();
         checkSystems();
@@ -86,6 +110,24 @@ public class Server {
             }
         }
 
+    }
+
+    public void save() {
+        saveShops();
+    }
+
+    private void saveShops() {
+        Bukkit.getConsoleSender().sendMessage("§3INFO §7Saving Shops...");
+        File fileshop = new File("plugins/Lunania", "savedshops.yml");
+        FileConfiguration cfg = YamlConfiguration.loadConfiguration(fileshop);
+        for(Location location : ShopListener.signchestlocs.keySet()) {
+            cfg.set((int) location.getX()+"I"+(int) location.getY()+"I"+(int) location.getZ(), ShopListener.signchestlocs.get(location));
+        }
+        try {
+            cfg.save(fileshop);
+        } catch (IOException e) {
+            Bukkit.getConsoleSender().sendMessage("§4ERROR §7Couldnt load UserShops");
+        }
     }
 
     private void checkSystems() {

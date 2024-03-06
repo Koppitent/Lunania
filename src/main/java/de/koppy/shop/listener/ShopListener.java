@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.koppy.basics.api.PlayerProfile;
-import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
@@ -19,16 +18,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.*;
 import org.bukkit.block.sign.Side;
-import org.bukkit.block.sign.SignSide;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -37,15 +32,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
-
 public class ShopListener implements Listener {
 
-    public static String prefix = "§8[§3Shop§8] §r§7";
+    public static final String PREFIX = "§8[§3Shop§8] §r§7";
+    public static final double SHOP_SIGN_PRICE = 500d;
 
     ArrayList<Player> inbulkinv = new ArrayList<Player>();
-    HashMap<Location, Location> signchestlocs = new HashMap<Location, Location>();
+    public static HashMap<Location, Location> signchestlocs = new HashMap<Location, Location>();
     HashMap<Player, Location> inedit = new HashMap<Player, Location>();
 
     @EventHandler
@@ -69,6 +62,8 @@ public class ShopListener implements Listener {
             double buyprice = prices[0];
             double sellprice = prices[1];
             if(buyprice <= 0 && sellprice <= 0) { printErr(e.getBlock(), e.getPlayer(), "§cAt least one must be greater zero."); return; }
+            PlayerAccount pa = new PlayerAccount(e.getPlayer().getUniqueId());
+            if(pa.getMoney() < SHOP_SIGN_PRICE) { printErr(e.getBlock(), e.getPlayer(), "§cYou dont have enough money for a ShopSign"); return; }
             ItemStack istack;
             if(e.getLine(3).equals("?")) {
                 istack = getFirstItem(((Container) signchestlocs.get(e.getSign().getLocation()).getBlock().getState()).getInventory());
@@ -90,12 +85,13 @@ public class ShopListener implements Listener {
             e.getSign().setLine(2, b);
             e.getSign().setLine(3, "§7"+istack.getType().toString());
             e.getSign().update();
-
+            inedit.remove(e.getPlayer());
+            pa.removeMoney(SHOP_SIGN_PRICE, "Server", "Shopsign created/edited");
         }
     }
 
     private void printErr(Block block, Player player, String err) {
-        player.sendMessage(prefix + err);
+        player.sendMessage(PREFIX + err);
         player.playSound(player, Sound.ENTITY_ITEM_BREAK, 10, 0);
         block.breakNaturally();
         signchestlocs.remove(block.getLocation());
@@ -105,7 +101,7 @@ public class ShopListener implements Listener {
     public void onClickSign(PlayerInteractEvent e) {
         if(e.getClickedBlock() == null) return;
         if(!(e.getClickedBlock().getState() instanceof Sign)) return;
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getAction() != Action.LEFT_CLICK_BLOCK) return;
         Sign sign = (Sign) e.getClickedBlock().getState();
         if(sign.getSide(Side.FRONT).getLine(0).startsWith("§e#")) {
             String line1 = sign.getSide(Side.FRONT).getLine(0);
@@ -131,6 +127,9 @@ public class ShopListener implements Listener {
                         e.getPlayer().openSign(sign);
                     }
                 }, 2);
+            }else {
+                //* Buyer kaufen hier
+
             }
         }
     }
@@ -172,7 +171,7 @@ public class ShopListener implements Listener {
     public void onBreakEvent(BlockBreakEvent e) {
         if(signchestlocs.containsValue(e.getBlock().getLocation())) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(prefix + "§cCant break Shopchest!");
+            e.getPlayer().sendMessage(PREFIX + "§cCant break Shopchest!");
             return;
         }
 
@@ -180,14 +179,14 @@ public class ShopListener implements Listener {
             //* Breaking sign
             if(!e.getPlayer().isSneaking()) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(prefix + "§cYou must sneak to break ShopSigns!");
+                e.getPlayer().sendMessage(PREFIX + "§cYou must sneak to break ShopSigns!");
                 return;
             }
             if(((Sign) e.getBlock().getState()).getSide(Side.FRONT).getLine(0).substring(5).equals(PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getUID())) {
                 signchestlocs.remove(e.getBlock().getLocation());
             }else {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(prefix + "§cCant break others ShopSign!");
+                e.getPlayer().sendMessage(PREFIX + "§cCant break others ShopSign!");
                 return;
             }
         }

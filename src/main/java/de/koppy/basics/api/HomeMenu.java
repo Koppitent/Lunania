@@ -72,7 +72,7 @@ public class HomeMenu {
 
         ItemStack istack = new ItemStack(Material.PAPER);
         ItemMeta istackM = istack.getItemMeta();
-        istackM.setDisplayName("§8§ §3"+home.getName());
+        istackM.setDisplayName("§8» §3"+home.getName());
         istackM.setLocalizedName(home.getName());
         Random rndm = new Random();
         istackM.setCustomModelData(1010+rndm.nextInt(2));

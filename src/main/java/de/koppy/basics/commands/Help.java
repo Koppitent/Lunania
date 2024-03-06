@@ -20,6 +20,11 @@ public class Help implements CommandExecutor {
         page1.addToPage("§8§m--------------");
         page1.addToPage("§7Willkommen auf Lunania. Hier sind deiner Kreativität keine Grenzen gesetz! Auf den nächsten Seiten erhälst du alle Infos über die implementierten Systeme. Viel Spaß ;)");
         book.addPage(page1);
+        Page page2 = new Page();
+        page2.addToPage("§7We are currently still in Pre-ALPHA.");
+        page2.addToPage("§7");
+        page2.addToPage("§7If you want to see the latest changes type §d/changelog");
+        book.addPage(page2);
         player.openBook(book.getBook());
         return false;
     }

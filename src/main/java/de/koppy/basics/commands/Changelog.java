@@ -155,6 +155,14 @@ public class Changelog implements CommandExecutor {
         lore10.add("§a+ §7added Tasks for Jobs");
         changelogitems.add(new ChangelogItem(title10, date10, lore10));
 
+        String title11 = "§3Changelog-Update (#11)";
+        String date11 = "§8§o06.03.2024 06:41";
+        ArrayList<String> lore11 = new ArrayList<String>();
+        lore11.add(" ");
+        lore11.add("§a+ §7added BanUI");
+        lore11.add("§7fixed various bugs.");
+        changelogitems.add(new ChangelogItem(title11, date11, lore11));
+
         return changelogitems;
     }
 

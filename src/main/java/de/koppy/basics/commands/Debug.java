@@ -74,6 +74,12 @@ public class Debug implements CommandExecutor, TabCompleter {
                     }else if(args[1].equalsIgnoreCase("off")) {
                         consoledebug = false;
                     }
+                }else if(args[0].equalsIgnoreCase("usetp")) {
+                    if(args[1].equalsIgnoreCase("on")) {
+                        PlayerProfile.getProfile(p.getUniqueId()).setUseTP(true);
+                    }else if(args[1].equalsIgnoreCase("off")) {
+                        PlayerProfile.getProfile(p.getUniqueId()).setUseTP(false);
+                    }
                 }
                 p.sendMessage("§5Debug: §dSet §a" + args[0] + " §dto §e" + args[1]);
             }
@@ -93,10 +99,11 @@ public class Debug implements CommandExecutor, TabCompleter {
                     check.add("console");
                     check.add("scoreboard");
                     check.add("backup");
+                    check.add("usetp");
                     for(String s : check) if(s.startsWith(args[0])) tcomplete.add(s);
                 }else if(args.length == 2) {
                     List<String> check = new ArrayList<String>();
-                    if(args[0].equalsIgnoreCase("console")) {
+                    if(args[0].equalsIgnoreCase("console") || args[0].equalsIgnoreCase("usetp")) {
                         check.add("on");
                         check.add("off");
                     }else if(args[0].equalsIgnoreCase("scoreboard")) {

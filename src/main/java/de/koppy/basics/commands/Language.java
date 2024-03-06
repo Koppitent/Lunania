@@ -3,6 +3,7 @@ package de.koppy.basics.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.koppy.basics.api.LanguageUI;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.command.Command;
@@ -29,7 +30,12 @@ public class Language implements CommandExecutor, TabCompleter {
             }else {
                 player.sendMessage(LunaniaSystem.getServerInstance().getPrefix() + "§cDiese Sprache ist nicht verf§gbar oder existiert nicht.");
             }
+            return false;
         }
+
+        LanguageUI langui = new LanguageUI(player.getUniqueId());
+        langui.getLanguageSelection();
+        player.openInventory(langui.getInventory());
 
         return false;
     }

@@ -1,12 +1,19 @@
 package de.koppy.basics.listener;
 
-import de.koppy.basics.api.HomeMenu;
-import de.koppy.basics.api.InventoryHelper;
-import de.koppy.basics.api.SavedItems;
+import de.koppy.bansystem.BanSystem;
+import de.koppy.bansystem.api.BanUI;
+import de.koppy.basics.api.*;
 import de.koppy.basics.commands.Changelog;
 import de.koppy.basics.commands.Collect;
 import de.koppy.basics.commands.Head;
 import de.koppy.basics.commands.Home;
+import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.lunaniasystem.api.UI;
+import de.koppy.nick.NickSystem;
+import de.koppy.nick.api.NickManager;
+import de.koppy.nick.api.NickUI;
+import de.koppy.nick.commands.Nick;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +33,50 @@ public class InventoryEvents implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         if (e.getCurrentItem() == null) return;
+
+        if(UI.inventories.containsKey(e.getInventory())) {
+            UI ui = UI.inventories.get(e.getInventory());
+            if(ui instanceof LanguageUI) {
+                LanguageUI langui = (LanguageUI) ui;
+                if(e.getCurrentItem().getType() == Material.PAPER) {
+                    langui.select(Language.fromString(e.getCurrentItem().getItemMeta().getLocalizedName()));
+                    e.getWhoClicked().closeInventory();
+                }
+            }else if(ui instanceof NickUI) {
+                NickUI nickui = (NickUI) ui;
+                if(e.getCurrentItem().getType() == Material.RED_CONCRETE) {
+                    //* Nick randomly here
+                    e.getWhoClicked().closeInventory();
+                    PlayerProfile profile = PlayerProfile.getProfile(nickui.getUuid());
+                    if(e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        //* without Skin
+                        NickManager nm = new NickManager(profile.getPlayer());
+                        String name = nm.getRandomNickname();
+                        nm.changeName(name);
+                        profile.getPlayer().sendMessage(LunaniaSystem.getServerInstance().getPrefix() + "§7You got nicked!");
+                    }else {
+                        //* with Skin
+                        NickManager nm = new NickManager(profile.getPlayer());
+                        String name = nm.getRandomNickname();
+                        nm.changeName(name);
+                        String skin[] = nm.getRandomSkinData();
+                        nm.changeSkin(skin[0], skin[1]);
+                        profile.getPlayer().sendMessage(LunaniaSystem.getServerInstance().getPrefix() + "§7You got nicked with skin!");
+                    }
+                }else if(e.getCurrentItem().getType() == Material.GREEN_CONCRETE) {
+                    e.getWhoClicked().closeInventory();
+                    PlayerProfile profile = PlayerProfile.getProfile(nickui.getUuid());
+                    if(!profile.isNicked()) return;
+                    NickManager nm = new NickManager(Bukkit.getPlayer(nickui.getUuid()));
+                    nm.unnick();
+                    e.getWhoClicked().sendMessage(BanSystem.getPrefix() + "§cYou got unnicked.");
+                }else if(e.getCurrentItem().getType() == Material.PAPER) {
+                    e.getWhoClicked().closeInventory();
+                    e.getWhoClicked().sendMessage("brah brah, oh junge!");
+                }
+            }
+        }
+
         if (headinv.contains(e.getWhoClicked())) {
             e.setCancelled(true);
             if(InventoryHelper.isArrow(e.getCurrentItem())) {
