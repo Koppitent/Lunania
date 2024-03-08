@@ -11,6 +11,7 @@ import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import de.koppy.warp.WarpSystem;
 import de.koppy.warp.api.WarpManager;
+import de.koppy.warp.api.WarpUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -88,11 +89,9 @@ public class Warp implements CommandExecutor, TabCompleter {
             if(args[0].equalsIgnoreCase("list")) {
 
                 //* Creating list
-                p.sendMessage(LunaniaSystem.getServerInstance().getPrefix() + "§7List of available Warps:");
-                for(String w : getWarplist(1, true)) {
-                    p.sendMessage("§8§ §7"+w);
-                }
-                p.sendMessage(" ");
+                WarpUI ui = new WarpUI();
+                ui.getMainMenu();
+                p.openInventory(ui.getInventory());
 
             }else {
                 String warpname = args[0];
@@ -289,6 +288,10 @@ public class Warp implements CommandExecutor, TabCompleter {
         }
 
         return false;
+    }
+
+    public static List<String> getWarpList(boolean bool) {
+        return table.getListFilter(namec, acceptedc, bool);
     }
 
     public static List<String> getWarplist(int site, boolean bool) {

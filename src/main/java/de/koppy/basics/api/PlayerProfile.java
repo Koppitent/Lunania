@@ -285,12 +285,20 @@ public class PlayerProfile {
         table.setValue(maxlandsc, maxlands, uuidc, this.uuid.toString());
     }
 
+    public int initmaxlands = 5;
+
     public int getMaxLands() {
         if(table.existEntry(maxlandsc, uuidc, uuid.toString())) {
-            return (Integer) table.getValue(maxlandsc, uuidc, uuid.toString());
+            int amount = (Integer) table.getValue(maxlandsc, uuidc, uuid.toString());
+            if(amount < initmaxlands) {
+                setMaxLands(initmaxlands);
+                return initmaxlands;
+            }else {
+                return amount;
+            }
         }else {
-            setMaxLands(20);
-            return 20;
+            setMaxLands(initmaxlands);
+            return initmaxlands;
         }
     }
 

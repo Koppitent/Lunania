@@ -37,7 +37,9 @@ public class Lands implements CommandExecutor, TabCompleter {
                 InventoryEvents.ininv.add(player);
                 player.openInventory(new LandMenu("§3LandMenu").getMainPage());
             }else if(args.length == 1) {
-                if(args[0].equalsIgnoreCase("list")) {
+                if(args[0].equalsIgnoreCase("test")) {
+                    player.sendMessage("Maxlands: "+profile.getMaxLands());
+                }else if(args[0].equalsIgnoreCase("list")) {
                     player.sendMessage(profile.getLands().size()+"");
                     for(String s : profile.getLands()) {
                         player.sendMessage("§7> §3x" + s.split("I")[0] + " z" + s.split("I")[1]);

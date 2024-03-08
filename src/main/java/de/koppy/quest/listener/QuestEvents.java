@@ -1,4 +1,4 @@
-package de.lunania.quest.listener;
+package de.koppy.quest.listener;
 
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.npc.api.NpcHitEvent;
@@ -18,26 +18,26 @@ public class QuestEvents implements Listener {
             if(pq.getStage("tutorial") == 0) {
                 pq.addStage("tutorial");
                 final Player p = e.getPlayer();
-                p.sendMessage("§4Joe §8§ §7Oh, hey! Welcome to lunania!");
+                p.sendMessage("§4Joe §8|§r §7Oh, hey! Welcome to Lunania!");
                 p.playSound(p, Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
 
                 Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
                     public void run() {
-                        p.sendMessage("§4Joe §8§ §7I will help you to get a good start in the world!");
+                        p.sendMessage("§4Joe §8|§r §7I will help you to get a good start in the world!");
                         p.playSound(p, Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
                     }
                 }, 20*1);
 
                 Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
                     public void run() {
-                        p.sendMessage("§4Joe §8§ §7First, teleport yourself to the farmworld.");
+                        p.sendMessage("§4Joe §8|§r §7First, teleport yourself to the farmworld.");
                         p.playSound(p, Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
                     }
                 }, 20*2);
 
                 Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
                     public void run() {
-                        p.sendMessage("§4Joe §8§ §7Im going to wait there for you.");
+                        p.sendMessage("§4Joe §8|§r §7Im waiting there for you.");
                         p.playSound(p, Sound.ENTITY_VILLAGER_AMBIENT, 10, 1);
                     }
                 }, 20*3);
@@ -45,7 +45,7 @@ public class QuestEvents implements Listener {
                 Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
                     @SuppressWarnings("deprecation")
                     public void run() {
-                        p.sendTitle("§3Next Step:", "§7go to the Farmworld!");
+                        p.sendTitle("§3Next Step:", "§7Go to the Farmworld!");
                     }
                 }, 20*4);
 

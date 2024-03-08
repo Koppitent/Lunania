@@ -1,11 +1,13 @@
 package de.koppy.npc.listener;
 
+import de.koppy.basics.api.ItemBuilder;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.npc.api.*;
 import de.koppy.npc.commands.NPC;
 import de.koppy.shop.api.Adminshop;
 import de.koppy.shop.commands.Shop;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -54,6 +56,11 @@ public class NpcEvents implements Listener {
                 for(int i=0; i<inventory.getSize(); i++) {
                     if(shop.getShopItembyPosition(i) != null) {
                         inventory.setItem(i, shop.getShopItembyPosition(i).getShopItem());
+                    }
+                }
+                for(int i=0; i<inventory.getSize(); i++) {
+                    if(inventory.getItem(i) == null) {
+                        inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayname("§d").getItemStack());
                     }
                 }
                 Shop.inshop.add(e.getPlayer());

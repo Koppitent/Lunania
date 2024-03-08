@@ -1,6 +1,9 @@
 package de.koppy.mission.listener;
 
+import de.koppy.basics.api.LanguageUI;
+import de.koppy.lunaniasystem.api.UI;
 import de.koppy.mission.api.MissionHandler;
+import de.koppy.mission.api.MissionUI;
 import de.koppy.mission.commands.Mission;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -15,31 +18,21 @@ public class MissionEvents implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if(Mission.inmenudaily.contains(e.getWhoClicked())) {
-            e.setCancelled(true);
-            if(e.getCurrentItem() != null) {
-                if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith("�3")) {
-                    new MissionHandler().claimRewardDaily((Player) e.getWhoClicked(), e.getCurrentItem().getItemMeta().getLocalizedName());
+        if (e.getCurrentItem() == null) return;
+        if(UI.inventories.containsKey(e.getInventory())) {
+            UI ui = UI.inventories.get(e.getInventory());
+            if (ui instanceof MissionUI) {
+                MissionUI mui = (MissionUI) ui;
+                if(mui.getType().equalsIgnoreCase("Daily")) {
+                    if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith("§3")) {
+                        new MissionHandler().claimRewardDaily((Player) e.getWhoClicked(), e.getCurrentItem().getItemMeta().getLocalizedName());
+                    }
+                }else if(mui.getType().equalsIgnoreCase("Weekly")) {
+                    if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith("§3")) {
+                        new MissionHandler().claimRewardWeekly((Player) e.getWhoClicked(), e.getCurrentItem().getItemMeta().getLocalizedName());
+                    }
                 }
             }
-        }
-        if(Mission.inmenuweekly.contains(e.getWhoClicked())) {
-            e.setCancelled(true);
-            if(e.getCurrentItem() != null) {
-                if(e.getCurrentItem().getItemMeta().getDisplayName().startsWith("�3")) {
-                    new MissionHandler().claimRewardWeekly((Player) e.getWhoClicked(), e.getCurrentItem().getItemMeta().getLocalizedName());
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onClose(InventoryCloseEvent e) {
-        if(Mission.inmenudaily.contains(e.getPlayer())) {
-            Mission.inmenudaily.remove(e.getPlayer());
-        }
-        if(Mission.inmenuweekly.contains(e.getPlayer())) {
-            Mission.inmenuweekly.remove(e.getPlayer());
         }
     }
 

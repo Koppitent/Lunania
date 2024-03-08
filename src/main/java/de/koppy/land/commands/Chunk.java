@@ -1,4 +1,4 @@
-package de.lunania.land.commands;
+package de.koppy.land.commands;
 
 import java.util.ArrayList;
 import java.util.HashMap;

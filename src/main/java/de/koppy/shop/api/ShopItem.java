@@ -146,7 +146,7 @@ public class ShopItem {
         if(shopitem.getType() != Material.GRAY_STAINED_GLASS_PANE) {
             String currency = EconomySystem.getEcosymbol();
             ItemMeta shopitemM = shopitem.getItemMeta();
-            shopitemM.setDisplayName(getTitle().replace("&", "§"));
+            shopitemM.setDisplayName(getTitle().replace("&", "§").replace("_", " "));
             shopitemM.setLocalizedName(shop.getName());
             ArrayList<String> lore = new ArrayList<String>();
             if(this.shop.getType() == ShopType.DIRECTBUY) {

@@ -1,15 +1,17 @@
 package de.koppy.npc.commands;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.koppy.npc.api.Npc;
 import de.koppy.npc.api.NpcType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public class NPC implements CommandExecutor {
+public class NPC implements CommandExecutor, TabCompleter {
 
     public static String prefix = "§8[§cNPC§8] §r§7";
 
@@ -157,4 +159,29 @@ public class NPC implements CommandExecutor {
         return false;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        List<String> tcomplete = new ArrayList<String>();
+        if(sender instanceof Player) {
+            if(args.length == 1) {
+                List<String> check = new ArrayList<String>();
+                check.add("getID");
+                check.add("select");
+                check.add("list");
+                check.add("show");
+                check.add("look");
+                check.add("lookatme");
+                check.add("delete");
+                check.add("tp");
+                check.add("move");
+                check.add("setskin");
+                check.add("settype");
+                check.add("settypecontent");
+                check.add("setdisplayname");
+                check.add("setprefix");
+                for(String s : check) if(s.startsWith(args[0])) tcomplete.add(s);
+            }
+        }
+        return tcomplete;
+    }
 }

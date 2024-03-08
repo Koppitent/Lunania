@@ -1,6 +1,7 @@
 package de.koppy.land;
 
 import de.koppy.land.api.Flag;
+import de.koppy.land.commands.Chunk;
 import de.koppy.land.commands.Lands;
 import de.koppy.land.listener.InventoryEvents;
 import de.koppy.land.listener.LandEvents;
@@ -9,7 +10,6 @@ import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import de.koppy.server.SubSystem;
-import de.lunania.land.commands.Chunk;
 
 public class LandSystem implements SubSystem {
 

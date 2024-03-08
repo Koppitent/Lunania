@@ -30,9 +30,9 @@ public class WorldSystem implements SubSystem {
         File file = new File("plugins/Lunania", "worlds.yml");
         if(!file.exists()) {
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
-            cfg.set("world", Bukkit.getWorld("world").getSpawnLocation());
-            cfg.set("world_nether", Bukkit.getWorld("world_nether").getSpawnLocation());
-            cfg.set("world_the_end", Bukkit.getWorld("world_the_end").getSpawnLocation());
+            cfg.set("world" + ".spawnlocation", Bukkit.getWorld("world").getSpawnLocation());
+            cfg.set("world_nether" + ".spawnlocation", Bukkit.getWorld("world_nether").getSpawnLocation());
+            cfg.set("world_the_end" + ".spawnlocation", Bukkit.getWorld("world_the_end").getSpawnLocation());
             try {
                 cfg.save(file);
             } catch (IOException e) {

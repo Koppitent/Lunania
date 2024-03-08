@@ -1,7 +1,7 @@
 package de.koppy.cases.api;
 
 public enum Rarity {
-    LEGENDARY(0.001), EPIC(0.009), RARE(0.09D), UNCOMMON(0.30D), COMMON(0.60D);
+    LEGENDARY(0.005D), EPIC(0.055D), RARE(0.14D), UNCOMMON(0.30D), COMMON(0.50D);
 
     private double chance;
     private Rarity(double chance) {

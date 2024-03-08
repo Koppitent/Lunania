@@ -45,6 +45,10 @@ public class JobSystem implements SubSystem {
         loadListener();
     }
 
+    public static String getPrefix() {
+        return "§2Jobs §8| §r";
+    }
+
     public static Table getTable() {
         return table;
     }

@@ -4,6 +4,7 @@ import de.koppy.basics.api.PlayerProfile;
 import de.koppy.job.JobSystem;
 import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -36,6 +37,17 @@ public class PlayerJob {
             if(xp >= xpneeded) {
                 xp = xp - xpneeded;
                 level++;
+            }
+            if(level == 10) {
+                Bukkit.getPlayer(uuid).sendMessage(JobSystem.getPrefix() + "§7You reached max Level on §e"+job.toString().toLowerCase() + "§7.");
+                Bukkit.getPlayer(uuid).sendMessage(JobSystem.getPrefix() + "§7As a reward you'll receive +5 Lands and +1 Home Capacity.");
+                PlayerProfile profile = PlayerProfile.getProfile(uuid);
+                int maxhomes = profile.getMaxhomes();
+                maxhomes = maxhomes + 1;
+                int maxlands = profile.getMaxLands();
+                maxlands = maxlands + 5;
+                profile.setMaxhomes(maxhomes);
+                profile.setMaxLands(maxlands);
             }
             setXPandLevel(job, xp, level);
         }

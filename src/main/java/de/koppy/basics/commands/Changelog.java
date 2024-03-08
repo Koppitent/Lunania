@@ -126,7 +126,7 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title7, date7, lore7));
 
         String title8 = "§3Changelog-Update (#8)";
-        String date8 = "§8§o23.08.2023 02:11";
+        String date8 = "§7§o23.08.2023 02:11";
         ArrayList<String> lore8 = new ArrayList<String>();
         lore8.add(" ");
         lore8.add("§a+ §7added Mission-system");
@@ -135,7 +135,7 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title8, date8, lore8));
 
         String title9 = "§3Changelog-Update (#9)";
-        String date9 = "§8§o29.08.2023 01:20";
+        String date9 = "§7§o29.08.2023 01:20";
         ArrayList<String> lore9 = new ArrayList<String>();
         lore9.add(" ");
         lore9.add("§a+ §7/warp list");
@@ -146,7 +146,7 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title9, date9, lore9));
 
         String title10 = "§3Changelog-Update (#10)";
-        String date10 = "§8§o29.08.2023 03:20";
+        String date10 = "§7§o29.08.2023 03:20";
         ArrayList<String> lore10 = new ArrayList<String>();
         lore10.add(" ");
         lore10.add("§a+ §7/land list");
@@ -156,12 +156,26 @@ public class Changelog implements CommandExecutor {
         changelogitems.add(new ChangelogItem(title10, date10, lore10));
 
         String title11 = "§3Changelog-Update (#11)";
-        String date11 = "§8§o06.03.2024 06:41";
+        String date11 = "§7§o06.03.2024 06:41";
         ArrayList<String> lore11 = new ArrayList<String>();
         lore11.add(" ");
+        lore11.add("§a§l+§r §7added UI System");
         lore11.add("§a+ §7added BanUI");
+        lore11.add("§a+ §7added NickUI");
+        lore11.add("§a+ §7added LanguageUI");
+        lore11.add("§a+ §7added WarpUI");
+        lore11.add("§e- §7updated MissionUI to new System");
         lore11.add("§7fixed various bugs.");
         changelogitems.add(new ChangelogItem(title11, date11, lore11));
+
+        String title12 = "§3Changelog-Update (#12)";
+        String date12 = "§7§o07.03.2024 15:24";
+        ArrayList<String> lore12 = new ArrayList<String>();
+        lore12.add(" ");
+        lore12.add("§a+§r §7added QuestUI");
+        lore12.add("§a-§r §7fixed LandSystem");
+        lore12.add("§a-§r §7fixed ServerSystem issues");
+        changelogitems.add(new ChangelogItem(title12, date12, lore12));
 
         return changelogitems;
     }

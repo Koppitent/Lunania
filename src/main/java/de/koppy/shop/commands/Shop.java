@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.shop.ShopSystem;
 import de.koppy.shop.api.Adminshop;
 import de.koppy.shop.api.ShopType;
 import org.bukkit.Bukkit;
@@ -56,7 +57,12 @@ public class Shop implements CommandExecutor, TabCompleter {
         }else if(args.length == 2) {
             if(player.hasPermission("server.shop")) {
                 String name = args[1];
-                if(args[0].equalsIgnoreCase("edit")) {
+                if(args[0].equalsIgnoreCase("delete")) {
+                    if(!Adminshop.existAdminshop(name)) { player.sendMessage("§cShop doesnt exist."); return false; }
+                    Adminshop shop = Adminshop.getAdminshop(name);
+                    shop.delete();
+                    player.sendMessage("§7The Shop §e" + name + " §7was deleted.");
+                }else if(args[0].equalsIgnoreCase("edit")) {
                     if(Adminshop.existAdminshop(name)) {
                         Adminshop shop = Adminshop.getAdminshop(name);
                         Inventory inventory = Bukkit.createInventory(null, shop.getRows()*9, name+" edit");
@@ -206,6 +212,7 @@ public class Shop implements CommandExecutor, TabCompleter {
                     List<String> check = new ArrayList<String>();
                     check.add("create");
                     check.add("edit");
+                    check.add("delete");
                     check.add("settitle");
                     check.add("setdescription");
                     check.add("settype");

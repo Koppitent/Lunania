@@ -14,11 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.TrapDoor;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Trident;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -27,11 +23,27 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 public class LandEvents implements Listener {
+
+    @EventHandler
+    public void onArmorStand(PlayerArmorStandManipulateEvent e) {
+        Land land = new Land(e.getRightClicked().getLocation().getChunk());
+        if(land.isClaimed()) {
+            if(land.isOwner(e.getPlayer().getUniqueId()) == false && land.isMember(e.getPlayer().getUniqueId()) == false && e.getPlayer().hasPermission("server.land.bypass") == false) e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemFrame(PlayerInteractAtEntityEvent e) {
+        if(e.getRightClicked() instanceof ItemFrame || e.getRightClicked() instanceof GlowItemFrame) {
+            Land land = new Land(e.getRightClicked().getLocation().getChunk());
+            if(land.isClaimed()) {
+                if(land.isOwner(e.getPlayer().getUniqueId()) == false && land.isMember(e.getPlayer().getUniqueId()) == false && e.getPlayer().hasPermission("server.land.bypass") == false) e.setCancelled(true);
+            }
+        }
+    }
 
     @EventHandler
     public void onChunkChange(PlayerMoveEvent e) {
@@ -134,7 +146,7 @@ public class LandEvents implements Listener {
             Land land = new Land(e.getEntity().getLocation().getChunk());
             if(land.isClaimed()) {
                 if(land.getFlag(Flag.PVE) == false) {
-                    if(e.getDamager().hasPermission("server.admin") == false) e.setCancelled(true);
+                    if(e.getDamager().hasPermission("server.admin") == false && land.isOwner(e.getDamager().getUniqueId()) == false && land.isMember(e.getDamager().getUniqueId()) == false) e.setCancelled(true);
                 }
             }
         }
@@ -183,7 +195,7 @@ public class LandEvents implements Listener {
 
     public static ArrayList<Player> scur = new ArrayList<Player>();
     @EventHandler
-    public void BlockPlace(final PlayerInteractEvent e) {
+    public void landInteractEvent(final PlayerInteractEvent e) {
         if(e.getClickedBlock() == null) return;
         if(!e.getClickedBlock().getLocation().getWorld().getName().equals("world")) return;
         Land land = new Land(e.getClickedBlock().getLocation().getChunk());
@@ -192,7 +204,7 @@ public class LandEvents implements Listener {
             if(land.isOwner(e.getPlayer().getUniqueId()) || land.isMember(e.getPlayer().getUniqueId())) return;
             e.setCancelled(true);
             if(e.getClickedBlock().getState() instanceof Chest || e.getClickedBlock().getState() instanceof Barrel) {
-                e.getPlayer().spawnParticle(Particle.SMOKE_NORMAL, e.getPlayer().getLocation(), 10, 0);
+                e.getPlayer().spawnParticle(Particle.SMOKE_NORMAL, e.getClickedBlock().getLocation().add(0.5, 1.1, 0.5), 10, 0.01D, 0.01D, 0.01D, 0.02D);
                 if(scur.contains(e.getPlayer())) return;
                 scur.add(e.getPlayer());
                 e.getPlayer().sendMessage("§cYou cant use this Chest!");

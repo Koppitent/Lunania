@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Mission {
+public abstract class Mission {
 
     private String identifier;
     private String name;

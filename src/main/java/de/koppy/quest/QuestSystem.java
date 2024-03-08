@@ -5,8 +5,9 @@ import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import de.koppy.quest.commands.Quest;
+import de.koppy.quest.listener.QuestEvents;
+import de.koppy.quest.quests.TutorialQuest;
 import de.koppy.server.SubSystem;
-import de.lunania.quest.listener.QuestEvents;
 
 public class QuestSystem implements SubSystem {
 
@@ -23,11 +24,11 @@ public class QuestSystem implements SubSystem {
 
     @Override
     public void loadClasses() {
-        new de.lunania.quest.api.Quest("tutorial", "§3Tutorial", 5);
+        new TutorialQuest();
 
         table = new Table("quests", new Column("uuid", ColumnType.VARCHAR, 200));
-        for(de.lunania.quest.api.Quest quest : de.lunania.quest.api.Quest.list) {
-            table.addColumn(new Column(quest.getName(), ColumnType.INT, 200));
+        for(de.koppy.quest.api.Quest quest : de.koppy.quest.api.Quest.list) {
+            table.addColumn(new Column(quest.getIdentifierName(), ColumnType.INT, 200));
         }
         table.createTable();
 

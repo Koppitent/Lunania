@@ -20,6 +20,7 @@ import org.bukkit.block.*;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -167,7 +168,7 @@ public class ShopListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBreakEvent(BlockBreakEvent e) {
         if(signchestlocs.containsValue(e.getBlock().getLocation())) {
             e.setCancelled(true);

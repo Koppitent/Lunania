@@ -103,6 +103,7 @@ public enum JobType {
             jobxplevel.addLevel(800);
             jobxplevel.addLevel(900);
             jobxplevel.addLevel(1000);
+            jobxplevel.addLevel(1500);
         }else if(this == JobType.BUILDER) {
             jobxplevel.addLevel(20);
             jobxplevel.addLevel(50);
@@ -113,6 +114,7 @@ public enum JobType {
             jobxplevel.addLevel(800);
             jobxplevel.addLevel(900);
             jobxplevel.addLevel(1000);
+            jobxplevel.addLevel(1500);
         }else if(this == JobType.WOODCUTTER) {
             jobxplevel.addLevel(20);
             jobxplevel.addLevel(50);
@@ -123,6 +125,7 @@ public enum JobType {
             jobxplevel.addLevel(800);
             jobxplevel.addLevel(900);
             jobxplevel.addLevel(1000);
+            jobxplevel.addLevel(1500);
         }
         return jobxplevel;
     }

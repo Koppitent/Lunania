@@ -345,8 +345,10 @@ public class Server {
                         p.kickPlayer("§cServer start Backup of the Worlds.\nServer will be back online in around 5 Minutes.");
                     }
 
-                    WorldManager wm = new WorldManager();
-                    wm.backupWorld(Bukkit.getWorld("world").getWorldFolder());
+                    if(name.equalsIgnoreCase("main")) {
+                        WorldManager wm = new WorldManager();
+                        wm.backupWorld(Bukkit.getWorld("world").getWorldFolder());
+                    }
 
                 }
                 if(date.getHours() == 0 && date.getMinutes() == 3 && date.getSeconds() == 0 && shutdownbackup) {

@@ -1,6 +1,8 @@
 package de.koppy.basics.api;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -17,6 +19,20 @@ public class ItemBuilder {
 
     public ItemBuilder setAmount(int amount) {
         this.istack.setAmount(amount);
+        return this;
+    }
+
+    public ItemBuilder addEnchantment(Enchantment enchantment, int level) {
+        ItemMeta meta = this.istack.getItemMeta();
+        meta.addEnchant(enchantment, level, true);
+        this.istack.setItemMeta(meta);
+        return this;
+    }
+
+    public ItemBuilder hideEnchant() {
+        ItemMeta meta = this.istack.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        this.istack.setItemMeta(meta);
         return this;
     }
 

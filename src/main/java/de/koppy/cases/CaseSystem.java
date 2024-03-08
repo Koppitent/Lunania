@@ -1,5 +1,6 @@
 package de.koppy.cases;
 
+import de.koppy.basics.api.ItemBuilder;
 import de.koppy.cases.api.Case;
 import de.koppy.cases.api.CaseItem;
 import de.koppy.cases.api.Rarity;
@@ -12,6 +13,7 @@ import de.koppy.mysql.api.ColumnType;
 import de.koppy.server.SubSystem;
 import de.koppy.mysql.api.Table;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public class CaseSystem implements SubSystem {
@@ -41,14 +43,13 @@ public class CaseSystem implements SubSystem {
         beta.addItem(new CaseItem(new ItemStack(Material.GREEN_BANNER), "§3one more Warptoken", "§eGives you one more warptoken", Type.USERWARP, 2, Rarity.LEGENDARY));
         beta.addItem(new CaseItem(new ItemStack(Material.OAK_HANGING_SIGN), "§3Maxland +1", "§eGives you one more maxland", Type.LAND, 1, Rarity.LEGENDARY));
 
-        Case basic = new Case("Basic", new CaseItem(new ItemStack(Material.GOLD_NUGGET), "§3Small amount of money", "§egives you 100 Coins", Type.MONEY, 100d, Rarity.COMMON), false);
+        Case basic = new Case("Basic", new CaseItem(new ItemStack(Material.GOLD_NUGGET), "§3Small amount of money", "§egives you 25 Coins", Type.MONEY, 25d, Rarity.COMMON), false);
         basic.addItem(new CaseItem(new ItemStack(Material.OAK_LOG, 32), "§3Oak_Logs x32", "§egives you 32 Oak_Logs", Type.ITEM, new ItemStack(Material.OAK_LOG, 32), Rarity.COMMON));
-        basic.addItem(new CaseItem(new ItemStack(Material.GOLD_INGOT), "§3Medium amount of money", "§egives you 2.500 Coins", Type.MONEY, 2500d, Rarity.UNCOMMON));
-        basic.addItem(new CaseItem(new ItemStack(Material.RAW_GOLD_BLOCK), "§3Big amount of money", "§egives you 5.000 Coins", Type.MONEY, 10000d, Rarity.RARE));
-        basic.addItem(new CaseItem(new ItemStack(Material.GOLD_BLOCK), "§3Big amount of money", "§egives you 10.000 Coins", Type.MONEY, 10000d, Rarity.EPIC));
-        basic.addItem(new CaseItem(new ItemStack(Material.OAK_HANGING_SIGN), "§3Maxland +1", "§egives you one more land", Type.LAND, 1, Rarity.LEGENDARY));
-        basic.addItem(new CaseItem(new ItemStack(Material.CYAN_CANDLE), "§3Warptoken +1", "§egives you one more warptoken", Type.USERWARP, 1, Rarity.LEGENDARY));
-
+        basic.addItem(new CaseItem(new ItemStack(Material.GOLD_INGOT), "§3Medium amount of money", "§egives you 100 Coins", Type.MONEY, 100d, Rarity.UNCOMMON));
+        basic.addItem(new CaseItem(new ItemStack(Material.RAW_GOLD_BLOCK), "§3Big amount of money", "§egives you 1.000 Coins", Type.MONEY, 1000d, Rarity.RARE));
+        basic.addItem(new CaseItem(new ItemStack(Material.GOLD_BLOCK), "§3HUGE amount of money", "§egives you 5.000 Coins", Type.MONEY, 5000d, Rarity.EPIC));
+        basic.addItem(new CaseItem(new ItemStack(Material.OAK_HANGING_SIGN), "§3Maxland +3", "§egives you three more land", Type.LAND, 3, Rarity.LEGENDARY));
+        basic.addItem(new CaseItem(new ItemBuilder(Material.GOLD_BLOCK).addEnchantment(Enchantment.CHANNELING, 1).hideEnchant().getItemStack(), "§3INSANE amount of money", "§egives 50.000 Coins", Type.MONEY, 50000d, Rarity.LEGENDARY));
 
         table = new Table("cases", new Column("uuid", ColumnType.VARCHAR, 200));
         for(Case c : Case.cases) {

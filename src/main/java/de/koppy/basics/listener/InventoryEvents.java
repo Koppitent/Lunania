@@ -13,6 +13,9 @@ import de.koppy.nick.NickSystem;
 import de.koppy.nick.api.NickManager;
 import de.koppy.nick.api.NickUI;
 import de.koppy.nick.commands.Nick;
+import de.koppy.quest.api.QuestUI;
+import de.koppy.warp.api.WarpManager;
+import de.koppy.warp.api.WarpUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -73,6 +76,28 @@ public class InventoryEvents implements Listener {
                 }else if(e.getCurrentItem().getType() == Material.PAPER) {
                     e.getWhoClicked().closeInventory();
                     e.getWhoClicked().sendMessage("brah brah, oh junge!");
+                }
+            }else if(ui instanceof QuestUI) {
+                if(e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                    QuestUI questui = (QuestUI) ui;
+                    questui.getMenu(Integer.parseInt(e.getCurrentItem().getItemMeta().getLocalizedName()));
+                }
+            }else if(ui instanceof WarpUI) {
+                WarpUI warpui = (WarpUI) ui;
+                if(e.getSlot() == 46 && e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                    warpui.getMainMenu();
+                }else if(e.getSlot() == 47 && e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                    int page = Integer.parseInt(e.getCurrentItem().getItemMeta().getLocalizedName());
+                    warpui.getUserWarps(page);
+                }else if(e.getSlot() == 51 && e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
+                    int page = Integer.parseInt(e.getCurrentItem().getItemMeta().getLocalizedName());
+                    warpui.getUserWarps(page);
+                }else if(e.getSlot() == 53 && e.getCurrentItem().getType() == Material.SPRUCE_HANGING_SIGN) {
+                    warpui.getUserWarps(1);
+                }else if(e.getCurrentItem().getType() != Material.BLACK_STAINED_GLASS_PANE) {
+                    String warpname = e.getCurrentItem().getItemMeta().getLocalizedName();
+                    e.getWhoClicked().closeInventory();
+                    ((Player) e.getWhoClicked()).performCommand("warp " + warpname);
                 }
             }
         }

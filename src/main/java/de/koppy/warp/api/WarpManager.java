@@ -8,6 +8,7 @@ import de.koppy.mysql.api.Table;
 import de.koppy.warp.WarpSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 public class WarpManager {
 
@@ -39,6 +40,10 @@ public class WarpManager {
         table.setValue(acceptedc, false, namec, name);
         table.setValue(locationc, LocToString(location), namec, name);
         table.setValue(serverc, server, namec, name);
+    }
+
+    public Material getMaterial() {
+        return Material.BOOK;
     }
 
     public void accept() {

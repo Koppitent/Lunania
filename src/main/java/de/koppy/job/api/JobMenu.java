@@ -14,8 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class JobMenu {
 
-    //* Finish JobMenu
-
     private UUID uuid;
     public JobMenu(UUID uuid) {
         this.uuid = uuid;
@@ -125,28 +123,31 @@ public class JobMenu {
             ItemStack lvlup = new ItemStack(Material.RED_CONCRETE_POWDER);
             ItemMeta lvlupM = lvlup.getItemMeta();
             lvlupM.setDisplayName("§7Level "+(i+1));
+            ArrayList<String> lore2 = new ArrayList<String>();
             if(i < level) {
                 lvlup.setType(Material.LIME_CONCRETE_POWDER);
-                ArrayList<String> lore2 = new ArrayList<String>();
                 lore2.add(" ");
                 lore2.add("§7XP "+getXpPercent(2, 1)+" §7(100%) §3Completed!");
                 lore2.add("§c§mold extramoney: "+((i)/10d)+"% -> new extrafee: " + ((i+1)/10d)+"%");
-                lvlupM.setLore(lore2);
             }else if(i == level) {
                 lvlup.setType(Material.YELLOW_CONCRETE_POWDER);
-                ArrayList<String> lore2 = new ArrayList<String>();
                 lore2.add(" ");
                 lore2.add("§7XP "+getXpPercent(xp, xplevel.xpNeededForLevelup(i))+" §c"+pj.getXP(job)+"§7/"+xplevel.xpNeededForLevelup(i) + " §7(" + (int) (((double) xp / (double) xplevel.xpNeededForLevelup(level)) * 100) + "%§7)");
                 lore2.add("§cold extramoney: §7"+((i)/10d)+"% §8-> §anew extrafee: §7" + ((i+1)/10d)+"%");
-                lvlupM.setLore(lore2);
             }else {
-                ArrayList<String> lore2 = new ArrayList<String>();
                 lore2.add(" ");
                 lore2.add("§cnot unlocked yet!");
                 lore2.add(" ");
                 lore2.add("§cold extramoney: §7"+((i)/10d)+"% §8-> §anew extrafee: §7" + ((i+1)/10d)+"%");
-                lvlupM.setLore(lore2);
             }
+
+            if(i == 9) {
+                lvlup.setType(Material.GOLD_BLOCK);
+                lore2.add("§3+5 Lands");
+                lore2.add("§3+1 Home");
+            }
+
+            lvlupM.setLore(lore2);
             lvlup.setItemMeta(lvlupM);
             inventory.addItem(lvlup);
         }
