@@ -2,6 +2,7 @@ package de.koppy.basics.api;
 
 import de.koppy.basics.BasicSystem;
 import de.koppy.basics.api.scoreboard.DefaultScoreboard;
+import de.koppy.basics.api.scoreboard.ServerBossBar;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.job.JobSystem;
 import de.koppy.job.api.JobType;
@@ -13,6 +14,7 @@ import de.koppy.mission.api.MissionHandler;
 import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
+import de.koppy.quest.api.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -43,10 +45,13 @@ public class PlayerProfile {
     private final static Column uidc = new Column("uid", ColumnType.VARCHAR, 200);
     private final static Column maxlandsc = new Column("maxlands", ColumnType.INT, 200);
     private final static Column landsc = new Column("lands", ColumnType.TEXT, 40000);
+    private final static Column trackedquestc = new Column("trackedquest", ColumnType.VARCHAR, 200);
     private int sessionplaytime = 0;
     private TaskAmount taskamount;
     private DefaultScoreboard scoreboard;
+    private ServerBossBar serverBossBar;
     private Language language;
+    private Quest trackedQuest;
 
     /**
      * Rules:
@@ -73,7 +78,22 @@ public class PlayerProfile {
         new MissionHandler().checkWeeklies(player);
         new MissionHandler().checkSeasonal(player);
 
+        serverBossBar = new ServerBossBar(player.getUniqueId());
+        serverBossBar.setServerInfo();
+
         run();
+    }
+
+    public ServerBossBar getServerBossBar() {
+        return serverBossBar;
+    }
+
+    public Quest getTrackedQuest() {
+        if(table.existEntry(trackedquestc, uuidc, uuid.toString())) {
+            return Quest.getQuest((String) table.getValue(trackedquestc, uuidc, uuid.toString()));
+        }else {
+            return null;
+        }
     }
 
     private void run() {
@@ -85,6 +105,7 @@ public class PlayerProfile {
                 if(Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).getScoreboard() != null) {
                     scoreboard.updateRank();
                 }
+                serverBossBar.trackQuest(trackedQuest);
             }
         }.runTaskTimer(LunaniaSystem.getPlugin(), 20, 20);
     }

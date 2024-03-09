@@ -59,4 +59,13 @@ public abstract class Quest {
         return stages;
     }
 
+    public static Quest getQuest(String questidname) {
+        for(Quest quest : list) {
+            if(quest.getIdentifierName().equalsIgnoreCase(questidname)) {
+                return quest;
+            }
+        }
+        return null;
+    }
+
 }

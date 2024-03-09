@@ -191,29 +191,29 @@ public class Case {
                     int amount = (Integer) winitem.getRewardObject();
                     int maxhomes = profile.getMaxhomes();
                     profile.setMaxhomes(maxhomes+amount);
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've §awon §e"+amount+" §7more homes.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've §awon §e"+amount+" §7more homes.");
                 }else if(winitem.getType() == Type.ITEM) {
                     ItemStack item = (ItemStack) winitem.getRewardObject();
                     player.getInventory().addItem(item);
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've §awon§7 an Item!");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've §awon§7 an Item!");
                 }else if(winitem.getType() == Type.LAND) {
                     int amount = (Integer) winitem.getRewardObject();
                     int maxlands = profile.getMaxhomes();
                     profile.setMaxLands(maxlands+amount);
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+amount+" §7more Lands.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+amount+" §7more Lands.");
                 }else if(winitem.getType() == Type.MONEY) {
                     double money = (Double) winitem.getRewardObject();
                     new PlayerAccount(player.getUniqueId()).addMoney(money, "Server", "Won in Case.");
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+new DecimalFormat("#,###.##").format(money)+ EconomySystem.getEcosymbol() +"§7.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+new DecimalFormat("#,###.##").format(money)+ EconomySystem.getEcosymbol() +"§7.");
                 }else if(winitem.getType() == Type.PERMISSION) {
                     String perm = (String) winitem.getRewardObject();
                     //TODO: set permissions
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won the permission §e"+perm+"§7.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won the permission §e"+perm+"§7.");
                 }else if(winitem.getType() == Type.USERWARP) {
                     int amount = (Integer) winitem.getRewardObject();
                     int warptokens = profile.getWarptokens();
                     profile.setWarptokens(warptokens+amount);
-                    player.sendMessage(CaseSystem.getPrefix() + "§7You've won §e"+amount+" §7more WarpTokens.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+amount+" §7more WarpTokens.");
                 }
             }
         }, 96);

@@ -253,6 +253,7 @@ public class BankMenu {
                 SkullMeta istackM = (SkullMeta) istack.getItemMeta();
                 String name = Bukkit.getOfflinePlayer(UUID.fromString(members.get(i))).getName();
                 istackM.setDisplayName("§7"+name);
+                istackM.setCustomModelData(2200);
                 istackM.setOwner(name);
                 istack.setItemMeta(istackM);
                 inventory.setItem(istart, istack);

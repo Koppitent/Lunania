@@ -36,7 +36,7 @@ public class LandEvents implements Listener {
     }
 
     @EventHandler
-    public void onItemFrame(PlayerInteractAtEntityEvent e) {
+    public void onItemFrame(PlayerInteractEntityEvent e) {
         if(e.getRightClicked() instanceof ItemFrame || e.getRightClicked() instanceof GlowItemFrame) {
             Land land = new Land(e.getRightClicked().getLocation().getChunk());
             if(land.isClaimed()) {
@@ -148,6 +148,11 @@ public class LandEvents implements Listener {
                 if(land.getFlag(Flag.PVE) == false) {
                     if(e.getDamager().hasPermission("server.admin") == false && land.isOwner(e.getDamager().getUniqueId()) == false && land.isMember(e.getDamager().getUniqueId()) == false) e.setCancelled(true);
                 }
+            }
+        }else if(e.getEntity() instanceof ItemFrame || e.getEntity() instanceof ArmorStand) {
+            Land land = new Land(e.getEntity().getLocation().getChunk());
+            if(land.isClaimed()) {
+                if(e.getDamager().hasPermission("server.admin") == false && land.isOwner(e.getDamager().getUniqueId()) == false && land.isMember(e.getDamager().getUniqueId()) == false) e.setCancelled(true);
             }
         }
     }

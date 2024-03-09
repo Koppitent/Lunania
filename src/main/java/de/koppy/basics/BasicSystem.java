@@ -67,6 +67,7 @@ public class BasicSystem implements SubSystem {
         table.addColumn(new Column("maxlands", ColumnType.INT, 200));
         table.addColumn(new Column("uid", ColumnType.VARCHAR, 200));
         table.addColumn(new Column("lands", ColumnType.TEXT, 40000));
+        table.addColumn(new Column("trackedquest", ColumnType.VARCHAR, 200));
         table.createTable();
 
         langtable = new Table("language", new Column("abbreviation", ColumnType.VARCHAR, 200));
