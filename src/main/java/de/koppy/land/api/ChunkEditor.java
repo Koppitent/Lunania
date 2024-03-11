@@ -21,6 +21,10 @@ public class ChunkEditor {
         this.chunk = chunk;
     }
 
+    public ChunkEditor(LunaniaChunk chunk) {
+        this.chunk = Bukkit.getWorld("world").getChunkAt(chunk.getX(), chunk.getZ());
+    }
+
     public void setEcken(Material material) {
         int y = chunk.getWorld().getHighestBlockYAt(chunk.getBlock(0, 0, 0).getLocation())+1;
         if(y>=300) y = 0;

@@ -45,7 +45,6 @@ public class Home implements CommandExecutor {
                     return false;
                 }
                 de.koppy.basics.api.Home home = profile.getHome(homename);
-                //TODO: change server if server != this server
                 player.teleport(home.getLocation());
                 player.sendMessage(BasicSystem.getPrefix() + "§7Du wurdest zu deinem home §e" + homename + " §7teleportiert.");
                 return false;

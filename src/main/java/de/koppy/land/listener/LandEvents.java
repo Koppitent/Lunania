@@ -8,6 +8,7 @@ import de.koppy.land.api.Flag;
 import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
@@ -17,9 +18,7 @@ import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -61,6 +60,16 @@ public class LandEvents implements Listener {
     }
 
     @EventHandler
+    public void onTeleport(PlayerTeleportEvent e) {
+        PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getScoreboard().updateLand(new Land(e.getTo().getChunk()));
+    }
+
+    @EventHandler
+    public void onTeleport(PlayerChangedWorldEvent e) {
+        PlayerProfile.getProfile(e.getPlayer().getUniqueId()).getScoreboard().updateLand(new Land(e.getPlayer().getLocation().getChunk()));
+    }
+
+    @EventHandler
     public void BlockPlace(BlockPlaceEvent e) {
         if(e.getBlock().getLocation().getWorld().getName().equals("world")) {
             Land land = new Land(e.getBlock().getLocation().getChunk());
@@ -85,6 +94,13 @@ public class LandEvents implements Listener {
                     if(e.getPlayer().hasPermission("server.admin") == false) e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void BlockPlace(BlockExplodeEvent e) {
+        if(e.getBlock().getType() == Material.RESPAWN_ANCHOR) {
+            e.setCancelled(true);
         }
     }
 
@@ -114,6 +130,24 @@ public class LandEvents implements Listener {
                 }
             }
             e.blockList().removeAll(blocknotexplode);
+        }
+    }
+
+    @EventHandler
+    public void onSpreadEvent(BlockSpreadEvent e) {
+        Land land = new Land(e.getSource().getLocation().getChunk());
+        if(!land.isClaimed()) return;
+        if(land.getOwnerName().equalsIgnoreCase("Server")) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onGrowEvent(BlockGrowEvent e) {
+        Land land = new Land(e.getBlock().getLocation().getChunk());
+        if(!land.isClaimed()) return;
+        if(land.getOwnerName().equalsIgnoreCase("Server")) {
+            e.setCancelled(true);
         }
     }
 

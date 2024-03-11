@@ -3,9 +3,13 @@ package de.koppy.basics.listener;
 import de.koppy.basics.api.PlayerProfile;
 import de.koppy.basics.api.Rank;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -15,8 +19,15 @@ import org.bukkit.event.world.WorldInitEvent;
 public class ServerManageListener implements Listener {
 
     @EventHandler
-    public void onJoinEvent(PortalCreateEvent e) {
+    public void onPortalEvent(PortalCreateEvent e) {
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onShitSpreading(BlockSpreadEvent e) {
+        if(e.getSource().getType() == Material.VINE || e.getSource().getType() == Material.TWISTING_VINES || e.getSource().getType() == Material.WEEPING_VINES) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -49,7 +60,8 @@ public class ServerManageListener implements Listener {
             e.getCommands().add("shop");
             e.getCommands().add("help");
             e.getCommands().add("mission");
-            e.getCommands().add("invsee");
+            e.getCommands().add("quest");
+            e.getCommands().add("store");
             if(p.hasPermission("server.gamemode")) e.getCommands().add("gamemode");
         }
     }

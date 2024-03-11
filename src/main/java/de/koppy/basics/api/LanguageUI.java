@@ -21,7 +21,6 @@ public class LanguageUI extends UI {
         for(int i=9; i<inventory.getSize(); i++) {
             inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayname("§c").getItemStack());
         }
-        //TODO: then inventory click event and opening on command call
         inventory.setItem(0, new ItemBuilder(Material.PAPER).setDisplayname("§eGerman").setLocalizedName("german").setCustomModelData(1020).getItemStack());
         inventory.setItem(1, new ItemBuilder(Material.PAPER).setDisplayname("§eEnglish").setLocalizedName("english").setCustomModelData(1021).getItemStack());
         inventory.setItem(2, new ItemBuilder(Material.PAPER).setDisplayname("§eBaguette").setLocalizedName("french").setCustomModelData(1022).getItemStack());

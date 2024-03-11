@@ -28,6 +28,5 @@ public interface LandInterface {
     List<String> getBannedUUIDs();
     String getOwnerUUID();
     String getOwnerName();
-    Chunk getChunk();
 
 }

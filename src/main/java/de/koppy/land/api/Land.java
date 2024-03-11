@@ -18,16 +18,26 @@ public class Land implements LandInterface {
     private static final Column memberc = new Column("member", ColumnType.TEXT, 10000);
     private static final Column bannedc = new Column("banned", ColumnType.TEXT, 10000);
     private static final Column ownerc = new Column("owner", ColumnType.VARCHAR, 200);
+    private static final Column idc = new Column("id", ColumnType.INT, 200);
+
     private static final Table table = LandSystem.getTable();
 
-    private Chunk chunk;
+    private LunaniaChunk chunk;
 
     public Land(Chunk chunk) {
+        this.chunk = new LunaniaChunk(chunk.getX(), chunk.getZ());
+    }
+
+    public Land(LunaniaChunk chunk) {
         this.chunk = chunk;
     }
 
+    public Land(int chunkx, int chunkz) {
+        this.chunk = new LunaniaChunk(chunkx, chunkz);
+    }
+
     public static Land fromString(String format) {
-        return new Land(Bukkit.getWorld("world").getChunkAt(Integer.parseInt(format.split("I")[0]), Integer.parseInt(format.split("I")[1])));
+        return new Land(Integer.parseInt(format.split("I")[0]), Integer.parseInt(format.split("I")[1]));
     }
 
     @Override
@@ -38,11 +48,17 @@ public class Land implements LandInterface {
         table.setValue(memberc, ListToString(new ArrayList<>()), landc, getChunkString());
         table.setValue(bannedc, ListToString(new ArrayList<>()), landc, getChunkString());
         for(Flag flag : Flag.values()) { table.setValue(new Column(flag.toString().toLowerCase(), ColumnType.BOOL, 200), flag.getDefault(), landc, getChunkString()); }
+        table.setValue(idc, DynmapHelper.setDynmapArea(chunk, Bukkit.getOfflinePlayer(uuid).getName()), landc, getChunkString());
+    }
+
+    public int getID() {
+        return (int) table.getValue(idc, landc, getChunkString());
     }
 
     @Override
     public void unclaim() {
         PlayerProfile.removeLand(chunk, getOwnerUUID());
+        DynmapHelper.deleteDynmapAreaByID(getID());
         table.delete(landc, getChunkString());
     }
 
@@ -161,11 +177,6 @@ public class Land implements LandInterface {
         }
     }
 
-    @Override
-    public Chunk getChunk() {
-        return chunk;
-    }
-
     private String getChunkString() {
         return chunk.getX()+"I"+chunk.getZ();
     }
@@ -232,5 +243,9 @@ public class Land implements LandInterface {
         List<String> memberlist = getMemberUUIDs();
         memberlist.remove(s);
         table.setValue(memberc, ListToString(memberlist), landc, getChunkString());
+    }
+
+    public LunaniaChunk getChunk() {
+        return chunk;
     }
 }

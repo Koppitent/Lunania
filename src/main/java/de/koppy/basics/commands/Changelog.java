@@ -177,6 +177,16 @@ public class Changelog implements CommandExecutor {
         lore12.add("§a-§r §7fixed ServerSystem issues");
         changelogitems.add(new ChangelogItem(title12, date12, lore12));
 
+        String title13 = "§3Changelog-Update (#13)";
+        String date13 = "§7§o11.03.2024 11:45";
+        ArrayList<String> lore13 = new ArrayList<String>();
+        lore13.add(" ");
+        lore13.add("§a+§r §7trrack Quests");
+        lore13.add("§a-§r §7improved LandSystem load time");
+        lore13.add("§a-§r §7rebuild LandUI-System (shipped to new UI-System)");
+        lore13.add("§a-§r §7A LOT of Bug-Fixes and QOL-Changes");
+        changelogitems.add(new ChangelogItem(title13, date13, lore13));
+
         return changelogitems;
     }
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import de.koppy.basics.api.ItemBuilder;
 import de.koppy.economy.EconomySystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,17 +58,10 @@ public class ShopItem {
     }
 
     public Inventory getInventory(int slot) {
-        Inventory inventory = Bukkit.createInventory(null, 3*9, slot + " " + getTitle());
+        Inventory inventory = Bukkit.createInventory(null, 3*9, slot + " " + getTitle().replace("&", "§"));
 
         ItemStack istack = getShopItem().clone();
         istack.setAmount(1);
-
-        ItemStack buy = new ItemStack(Material.GREEN_CONCRETE_POWDER);
-        buy.setAmount(amount1);
-        ItemStack buy2 = buy.clone();
-        buy2.setAmount(amount2);
-        ItemStack buy3 = buy.clone();
-        buy3.setAmount(amount3);
 
         ItemStack sell = new ItemStack(Material.RED_CONCRETE_POWDER);
         sell.setAmount(amount1);
@@ -76,15 +70,22 @@ public class ShopItem {
         ItemStack sell3 = sell.clone();
         sell3.setAmount(amount3);
 
-        inventory.setItem(10, buy3);
-        inventory.setItem(11, buy2);
-        inventory.setItem(12, buy);
+        String currency = EconomySystem.getEcosymbol();
+        inventory.setItem(10, new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setAmount(amount3).setDisplayname("§7Buy "+amount3).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getBuyPriceperpiece()*amount3)) + currency).getItemStack());
+        inventory.setItem(11, new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setAmount(amount2).setDisplayname("§7Buy "+amount2).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getBuyPriceperpiece()*amount2)) + currency).getItemStack());
+        inventory.setItem(12, new ItemBuilder(Material.GREEN_CONCRETE_POWDER).setAmount(amount1).setDisplayname("§7Buy "+amount1).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getBuyPriceperpiece()*amount1)) + currency).getItemStack());
 
         inventory.setItem(13, istack);
 
-        inventory.setItem(14, sell);
-        inventory.setItem(15, sell2);
-        inventory.setItem(16, sell3);
+        inventory.setItem(14, new ItemBuilder(Material.RED_CONCRETE_POWDER).setAmount(amount1).setDisplayname("§7Sell "+amount1).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getSellPriceperpiece()*amount1)) + currency).getItemStack());
+        inventory.setItem(15, new ItemBuilder(Material.RED_CONCRETE_POWDER).setAmount(amount2).setDisplayname("§7Sell "+amount2).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getSellPriceperpiece()*amount2)) + currency).getItemStack());
+        inventory.setItem(16, new ItemBuilder(Material.RED_CONCRETE_POWDER).setAmount(amount3).setDisplayname("§7Sell "+amount3).addLore("§7Price: §e"+new DecimalFormat("#,###.##").format((getSellPriceperpiece()*amount3)) + currency).getItemStack());
+
+        for(int i=0; i<inventory.getSize(); i++) {
+            if(inventory.getItem(i) == null) {
+                inventory.setItem(i, new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayname("§d").getItemStack());
+            }
+        }
 
         return inventory;
     }
@@ -152,12 +153,12 @@ public class ShopItem {
             if(this.shop.getType() == ShopType.DIRECTBUY) {
                 lore.add("§d");
                 if(getBuyPriceperpiece() > 0) {
-                    lore.add("§7Buy: §e" + new DecimalFormat("#.##").format(getBuyPriceperpiece()) + currency);
+                    lore.add("§7Buy: §e" + new DecimalFormat("#,###.##").format(getBuyPriceperpiece()) + currency);
                 }else {
                     lore.add("§7Buy: §c-/-");
                 }
                 if(getSellPriceperpiece() > 0) {
-                    lore.add("§7Sell: §e" + new DecimalFormat("#.##").format(getSellPriceperpiece()) + currency);
+                    lore.add("§7Sell: §e" + new DecimalFormat("#,###.##").format(getSellPriceperpiece()) + currency);
                 }else {
                     lore.add("§7Sell: §c-/-");
                 }
@@ -171,12 +172,12 @@ public class ShopItem {
             }else {
                 lore.add("§b");
                 if(getBuyPriceperpiece() > 0) {
-                    lore.add("§7Buyprice/stk: §e" + new DecimalFormat("#.##").format(getBuyPriceperpiece()) + currency);
+                    lore.add("§7Buyprice/stk: §e" + new DecimalFormat("#,###.##").format(getBuyPriceperpiece()) + currency);
                 }else {
                     lore.add("§7Buyprice/stk: §c-/-");
                 }
                 if(getSellPriceperpiece() > 0) {
-                    lore.add("§7Sellprice/stk: §e" + new DecimalFormat("#.##").format(getSellPriceperpiece()) + currency);
+                    lore.add("§7Sellprice/stk: §e" + new DecimalFormat("#,###.##").format(getSellPriceperpiece()) + currency);
                 }else {
                     lore.add("§7Sellprice/stk: §c-/-");
                 }

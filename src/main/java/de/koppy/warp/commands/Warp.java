@@ -10,6 +10,7 @@ import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import de.koppy.warp.WarpSystem;
+import de.koppy.warp.api.WarpAdminUI;
 import de.koppy.warp.api.WarpManager;
 import de.koppy.warp.api.WarpUI;
 import org.bukkit.Bukkit;
@@ -79,12 +80,12 @@ public class Warp implements CommandExecutor, TabCompleter {
         }
 
         if(args.length == 0) {
-            PlayerProfile profile = PlayerProfile.getProfile(p.getUniqueId());
-            p.sendMessage("§7You currently have §e"+profile.getWarptokens()+" §7Warp-Tokens.");
-            p.sendMessage("§7Create Warp - §e3 Tokens");
-            p.sendMessage("§7Edit Warp - §e1 Token");
-            p.sendMessage(" ");
-            p.sendMessage("§7/warp create <name> <description>");
+
+            //* Creating list
+            WarpUI ui = new WarpUI();
+            ui.getMainMenu();
+            p.openInventory(ui.getInventory());
+
         }else if(args.length == 1) {
             if(args[0].equalsIgnoreCase("list")) {
 
@@ -93,6 +94,20 @@ public class Warp implements CommandExecutor, TabCompleter {
                 ui.getMainMenu();
                 p.openInventory(ui.getInventory());
 
+            }else if(args[0].equalsIgnoreCase("listrequested") || args[0].equalsIgnoreCase("admin")) {
+                if(p.hasPermission("server.admin.warp")) {
+                    //* Creating list
+                    WarpAdminUI ui = new WarpAdminUI();
+                    ui.getPage(1);
+                    p.openInventory(ui.getInventory());
+                }
+            }else if(args[0].equalsIgnoreCase("info")) {
+                PlayerProfile profile = PlayerProfile.getProfile(p.getUniqueId());
+                p.sendMessage("§7You currently have §e"+profile.getWarptokens()+" §7Warp-Tokens.");
+                p.sendMessage("§7Create Warp - §e3 Tokens");
+                p.sendMessage("§7Edit Warp - §e1 Token");
+                p.sendMessage(" ");
+                p.sendMessage("§7/warp create <name> <description>");
             }else {
                 String warpname = args[0];
                 WarpManager warp = new WarpManager(warpname);

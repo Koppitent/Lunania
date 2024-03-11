@@ -37,6 +37,7 @@ public class PlayerJob {
             if(xp >= xpneeded) {
                 xp = xp - xpneeded;
                 level++;
+                Bukkit.getPlayer(uuid).sendMessage("§e§l"+job.toString().toUpperCase()+" §r§7You reached §aLevel "+level+"§7! Congratulations!");
             }
             if(level == 10) {
                 Bukkit.getPlayer(uuid).sendMessage(JobSystem.getPrefix() + "§7You reached max Level on §e"+job.toString().toLowerCase() + "§7.");

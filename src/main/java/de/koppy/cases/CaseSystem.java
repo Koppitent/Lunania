@@ -42,6 +42,7 @@ public class CaseSystem implements SubSystem {
         beta.addItem(new CaseItem(new ItemStack(Material.RED_SHULKER_BOX, 2), "§3two more homes", "§eGives you two more homes", Type.HOME, 2, Rarity.RARE));
         beta.addItem(new CaseItem(new ItemStack(Material.GREEN_BANNER), "§3one more Warptoken", "§eGives you one more warptoken", Type.USERWARP, 2, Rarity.LEGENDARY));
         beta.addItem(new CaseItem(new ItemStack(Material.OAK_HANGING_SIGN), "§3Maxland +1", "§eGives you one more maxland", Type.LAND, 1, Rarity.LEGENDARY));
+        beta.addItem(new CaseItem(new ItemStack(Material.GOLDEN_BOOTS), "§3Some perm", "§erandom perm", Type.PERMISSION, "test.permi", Rarity.COMMON));
 
         Case basic = new Case("Basic", new CaseItem(new ItemStack(Material.GOLD_NUGGET), "§3Small amount of money", "§egives you 25 Coins", Type.MONEY, 25d, Rarity.COMMON), false);
         basic.addItem(new CaseItem(new ItemStack(Material.OAK_LOG, 32), "§3Oak_Logs x32", "§egives you 32 Oak_Logs", Type.ITEM, new ItemStack(Material.OAK_LOG, 32), Rarity.COMMON));

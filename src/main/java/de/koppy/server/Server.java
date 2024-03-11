@@ -61,6 +61,7 @@ public class Server {
     private List<String> activesystems = new ArrayList<>();
     private boolean consoledebug = false;
     private Location spawnloc;
+    private boolean customRanks = false;
 
     public Server() {
         this.name = "main";
@@ -164,6 +165,9 @@ public class Server {
         }
     }
 
+    public boolean isCustomRanks() {
+        return customRanks;
+    }
 
     public Location getSpawnloc() {
         return spawnloc;
@@ -308,6 +312,8 @@ public class Server {
             else this.spawnloc = cfg.getLocation("spawnloc");
             if(!cfg.contains("consoledebug")) cfg.set("consoledebug", this.consoledebug);
             else this.consoledebug = cfg.getBoolean("consoledebug");
+            if(!cfg.contains("customranks")) cfg.set("customranks", this.customRanks);
+            else this.customRanks = cfg.getBoolean("customranks");
             try {
                 cfg.save(file);
             } catch (IOException e) {

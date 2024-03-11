@@ -28,7 +28,7 @@ public class Unmute implements CommandExecutor, TabCompleter {
                 MuteManager userban = new MuteManager(uuid);
                 if(!userban.isMuted()) { player.sendMessage("§cDieser Spieler ist nicht gemutet."); return false; }
                 userban.unmute(false);
-                player.sendMessage(BanSystem.getPrefix() + "§7Der Spieler §e" + op.getName() + " §7wurde gemutet.");
+                player.sendMessage(BanSystem.getPrefix() + "§7Der Spieler §e" + op.getName() + " §7wurde unmutet.");
             }
         }else {
             if(args.length == 1) {

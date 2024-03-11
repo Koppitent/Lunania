@@ -37,6 +37,10 @@ public class WarpSystem implements SubSystem {
         loadListener();
     }
 
+    public static String getPrefix() {
+        return "§2Warp §8| §r";
+    }
+
     public static Table getTable() {
         return table;
     }

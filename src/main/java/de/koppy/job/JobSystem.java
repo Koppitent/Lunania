@@ -14,8 +14,6 @@ import de.koppy.mysql.api.Table;
 
 public class JobSystem implements SubSystem {
 
-    //TODO: add more jobs and do small improvements on the UI
-    //TODO: balancing
     private static Table table;
     @Override
     public void loadListener() {

@@ -231,7 +231,9 @@ public class Shop implements CommandExecutor, TabCompleter {
                     }else if(args[0].equalsIgnoreCase("setdescription")) {
                         check.add("§cGive slot where item is located.");
                     }else if(args[0].equalsIgnoreCase("settype")) {
-                        check.add("§cGive the Shoptype.");
+                        for(ShopType type : ShopType.values()) {
+                            check.add(type.toString());
+                        }
                     }else if(args[0].equalsIgnoreCase("setbuyprice") || args[0].equalsIgnoreCase("setsellprice")) {
                         check.add("§cGive slot where item is located.");
                     }

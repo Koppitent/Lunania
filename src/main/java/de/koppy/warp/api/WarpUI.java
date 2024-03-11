@@ -27,10 +27,10 @@ public class WarpUI extends UI {
     public void getUserWarps(int page) {
         inventory.clear();
         setGlassRand(new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayname("§d").getItemStack());
-        //* 21 pro Seite
+        //* 28 pro Seite
         List<String> warplist = Warp.getWarpList(true);
-        int maxpage = warplist.size() / 21;
-        if(warplist.size() % 21 != 0) maxpage++;
+        int maxpage = warplist.size() / 28;
+        if(warplist.size() % 28 != 0) maxpage++;
         if(page > maxpage) page = maxpage;
         page--;
         for(int i=0+(page*28); i<28+(page*27); i++) {

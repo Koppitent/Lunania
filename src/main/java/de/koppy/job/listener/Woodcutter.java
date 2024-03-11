@@ -6,6 +6,7 @@ import de.koppy.economy.api.PlayerAccount;
 import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
 import de.koppy.job.api.Task;
+import de.koppy.job.api.TaskAchievedEvent;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,6 +52,7 @@ public class Woodcutter implements Listener {
             pj.addXp(cuttask.getXpgain(), JobType.WOODCUTTER);
             double payout = cuttask.getPayoutamount(pj.getLevel(JobType.WOODCUTTER));
             new PlayerAccount(player.getUniqueId()).addMoney(payout, "from Server", "Cutted Wood");
+            Bukkit.getServer().getPluginManager().callEvent(new TaskAchievedEvent(player, JobType.WOODCUTTER, payout, cuttask.getXpgain()));
         }else {
             pj.getTaskAmount().setTaskAmount(taskid, cuttedoak);
         }

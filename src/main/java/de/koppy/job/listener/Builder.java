@@ -6,7 +6,10 @@ import de.koppy.economy.api.PlayerAccount;
 import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
 import de.koppy.job.api.Task;
+import de.koppy.job.api.TaskAchievedEvent;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import de.koppy.npc.api.Action;
+import de.koppy.npc.api.NpcHitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -37,6 +40,7 @@ public class Builder implements Listener {
                 pj.addXp(diamondtask.getXpgain(), JobType.BUILDER);
                 double payout = diamondtask.getPayoutamount(pj.getLevel(JobType.BUILDER));
                 new PlayerAccount(e.getPlayer().getUniqueId()).addMoney(payout, "from Server", "Placed 100 Blocks");
+                Bukkit.getServer().getPluginManager().callEvent(new TaskAchievedEvent(e.getPlayer(), JobType.BUILDER, payout, diamondtask.getXpgain()));
             }else {
                 pj.getTaskAmount().setTaskAmount(taskid, mineddiamonds);
             }

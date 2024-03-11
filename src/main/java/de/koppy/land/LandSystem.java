@@ -13,8 +13,8 @@ import de.koppy.server.SubSystem;
 
 public class LandSystem implements SubSystem {
 
-    //TODO Events ItemFrames etc.
     private static Table table;
+    public static final String PREFIX = "§2Land §8| §r";
     @Override
     public void loadListener() {
         LunaniaSystem.registerListener(new LandEvents());
@@ -34,6 +34,7 @@ public class LandSystem implements SubSystem {
         table.addColumn(new Column("member", ColumnType.TEXT, 10000));
         table.addColumn(new Column("banned", ColumnType.TEXT, 10000));
         table.addColumn(new Column("owner", ColumnType.VARCHAR, 200));
+        table.addColumn(new Column("id", ColumnType.INT, 200));
 
         for(Flag flag : Flag.values()) {
             table.addColumn(new Column(flag.toString().toLowerCase(), ColumnType.BOOL, 200));

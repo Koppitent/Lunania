@@ -50,3 +50,6 @@ commands:
   ping:
   debug:
   world:
+  invsee:
+  fly:
+  profile:

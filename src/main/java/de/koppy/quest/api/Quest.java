@@ -60,6 +60,7 @@ public abstract class Quest {
     }
 
     public static Quest getQuest(String questidname) {
+        if(questidname.trim().isEmpty()) return null;
         for(Quest quest : list) {
             if(quest.getIdentifierName().equalsIgnoreCase(questidname)) {
                 return quest;

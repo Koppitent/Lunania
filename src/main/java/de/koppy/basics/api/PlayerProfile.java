@@ -9,12 +9,14 @@ import de.koppy.job.api.JobType;
 import de.koppy.job.api.PlayerJob;
 import de.koppy.job.api.TaskAmount;
 import de.koppy.land.api.Land;
+import de.koppy.land.api.LunaniaChunk;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.mission.api.MissionHandler;
 import de.koppy.mysql.api.Column;
 import de.koppy.mysql.api.ColumnType;
 import de.koppy.mysql.api.Table;
 import de.koppy.quest.api.Quest;
+import de.koppy.quest.api.QuestUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -46,6 +48,7 @@ public class PlayerProfile {
     private final static Column maxlandsc = new Column("maxlands", ColumnType.INT, 200);
     private final static Column landsc = new Column("lands", ColumnType.TEXT, 40000);
     private final static Column trackedquestc = new Column("trackedquest", ColumnType.VARCHAR, 200);
+    private final static Column casesopenedc = new Column("casesopened", ColumnType.INT, 200);
     private int sessionplaytime = 0;
     private TaskAmount taskamount;
     private DefaultScoreboard scoreboard;
@@ -96,6 +99,29 @@ public class PlayerProfile {
         }
     }
 
+    public void setTrackedQuest(String questidentifiername) {
+        table.setValue(trackedquestc, questidentifiername, uuidc, uuid.toString());
+    }
+
+    public int getCasesOpened() {
+        if(table.existEntry(casesopenedc, uuidc, uuid.toString())) {
+            return (int) table.getValue(casesopenedc, uuidc, uuid.toString());
+        }else {
+            return 0;
+        }
+    }
+
+    public void setCasesOpened(int amount) {
+        table.setValue(casesopenedc, amount, uuidc, uuid.toString());
+    }
+
+    public void addCaseOpened() {
+        int amount = getCasesOpened();
+        amount = amount + 1;
+        setCasesOpened(amount);
+    }
+
+
     private void run() {
         new BukkitRunnable(){
             @Override
@@ -105,7 +131,7 @@ public class PlayerProfile {
                 if(Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).getScoreboard() != null) {
                     scoreboard.updateRank();
                 }
-                serverBossBar.trackQuest(trackedQuest);
+                serverBossBar.trackQuest(getTrackedQuest());
             }
         }.runTaskTimer(LunaniaSystem.getPlugin(), 20, 20);
     }
@@ -293,8 +319,26 @@ public class PlayerProfile {
         }
     }
 
+    public String getMessage(String abbreviation, String[]... replacements) {
+        Column langcolumn = new Column(language.toString().toLowerCase(), ColumnType.VARCHAR, 200);
+        Column abbreviationc = new Column("abbreviation", ColumnType.VARCHAR, 200);
+        if(BasicSystem.getLangtable().getValue(langcolumn, abbreviationc, abbreviation) != null) {
+            String message = ((String) BasicSystem.getLangtable().getValue(langcolumn, abbreviationc, abbreviation)).replace("&", "§");
+            for(String[] r : replacements) {
+                message = message.replace(r[0], r[1]);
+            }
+            return message;
+        }else {
+            return "§cno message set for language "+language.toString().toLowerCase()+". ("+abbreviation+")";
+        }
+    }
+
     public void sendMessage(String prefix, String abbreviation) {
         Bukkit.getPlayer(uuid).sendMessage(prefix + getMessage(abbreviation));
+    }
+
+    public void sendMessage(String prefix, String abbreviation, String[]... replacements) {
+        Bukkit.getPlayer(uuid).sendMessage(prefix + getMessage(abbreviation, replacements));
     }
 
     public void sendMessage(String abbreviation) {
@@ -323,11 +367,11 @@ public class PlayerProfile {
         }
     }
 
-    public void addLand(Chunk chunk) {
+    public void addLandUser(LunaniaChunk chunk) {
         addLand(chunk, uuid.toString());
     }
 
-    public void removeLand(Chunk chunk) {
+    public void removeLandUser(LunaniaChunk chunk) {
         removeLand(chunk, uuid.toString());
     }
 
@@ -444,14 +488,14 @@ public class PlayerProfile {
         setWarptokens(uuid, a);
     }
 
-    public static void addLand(Chunk chunk, String uuid) {
+    public static void addLand(LunaniaChunk chunk, String uuid) {
         String chunkstring = chunk.getX()+"I"+chunk.getZ();
         List<String> lands = getLands(uuid);
         if(!lands.contains(chunkstring)) lands.add(chunkstring);
         saveLands(lands, uuid);
     }
 
-    public static void removeLand(Chunk chunk, String uuid) {
+    public static void removeLand(LunaniaChunk chunk, String uuid) {
         String chunkstring = chunk.getX()+"I"+chunk.getZ();
         List<String> lands = getLands(uuid);
         lands.remove(chunkstring);

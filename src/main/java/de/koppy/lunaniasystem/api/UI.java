@@ -45,7 +45,7 @@ public abstract class UI {
 
     public void fillGlass(ItemStack itemStack) {
         for(int i=0; i<inventory.getSize(); i++) {
-            inventory.setItem(i, itemStack);
+            if(inventory.getItem(i) == null)  inventory.setItem(i, itemStack);
         }
     }
 

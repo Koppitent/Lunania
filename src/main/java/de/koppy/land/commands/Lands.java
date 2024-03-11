@@ -23,8 +23,8 @@ import org.bukkit.entity.Player;
 public class Lands implements CommandExecutor, TabCompleter {
 
     public static double PRICE_PER_LAND = 10000d;
-    public static ArrayList<org.bukkit.Chunk> sellconfirmation = new ArrayList<org.bukkit.Chunk>();
-    public static HashMap<Player, ArrayList<org.bukkit.Chunk>> chunkselected = new HashMap<Player, ArrayList<org.bukkit.Chunk>>();
+    public static ArrayList<LunaniaChunk> sellconfirmation = new ArrayList<LunaniaChunk>();
+    public static HashMap<Player, ArrayList<LunaniaChunk>> chunkselected = new HashMap<Player, ArrayList<LunaniaChunk>>();
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!(sender instanceof Player))
@@ -34,8 +34,10 @@ public class Lands implements CommandExecutor, TabCompleter {
 
         if(player.getLocation().getWorld().getName().equals("world")) {
             if(args.length == 0) {
-                InventoryEvents.ininv.add(player);
-                player.openInventory(new LandMenu("§3LandMenu").getMainPage());
+                Land land = new Land((int) player.getLocation().getX()/16, (int) player.getLocation().getZ()/16);
+                LandUI landui = new LandUI(player.getUniqueId(), land.getChunk());
+                landui.getMainPage();
+                player.openInventory(landui.getInventory());
             }else if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("test")) {
                     player.sendMessage("Maxlands: "+profile.getMaxLands());
@@ -91,7 +93,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                 }else if(args[0].equalsIgnoreCase("claimselected")) {
 
                     if(!chunkselected.containsKey(player)) { profile.sendMessage("nochunksselected"); return false; }
-                    ArrayList<org.bukkit.Chunk> chunks = chunkselected.get(player);
+                    ArrayList<LunaniaChunk> chunks = chunkselected.get(player);
                     if(!isUnclaimed(chunks)) { profile.sendMessage("somechunksclaimed"); return false; }
                     if(profile.getLands().size()+chunks.size()-1 >= profile.getMaxLands() && player.hasPermission("server.admin.land.bypass") == false) { profile.sendMessage("maxlandsreached"); return false; }
                     PlayerAccount pa = new PlayerAccount(player.getUniqueId());
@@ -152,8 +154,8 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                     if(!player.hasPermission("server.land.claimserver")) { profile.sendMessage("noperms"); return false; }
                     if(!chunkselected.containsKey(player)) { profile.sendMessage("nochunksselected"); return false; }
-                    List<org.bukkit.Chunk> chunks = chunkselected.get(player);
-                    for(org.bukkit.Chunk chunk : chunks) {
+                    List<LunaniaChunk> chunks = chunkselected.get(player);
+                    for(LunaniaChunk chunk : chunks) {
                         Land land = new Land(chunk);
                         land.claimServer();
                     }
@@ -185,6 +187,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     land.resetBanned();
                     land.resetMember();
                     player.sendMessage("§7"+op.getName()+" §7is now the new owner of that plot.");
+                    profile.getScoreboard().updateLand(land);
 
                 }
             }else if(args.length == 3) {
@@ -270,8 +273,8 @@ public class Lands implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public boolean isUnclaimed(ArrayList<org.bukkit.Chunk> chunks) {
-        for(org.bukkit.Chunk chunk : chunks) {
+    public boolean isUnclaimed(ArrayList<LunaniaChunk> chunks) {
+        for(LunaniaChunk chunk : chunks) {
             Land land = new Land(chunk);
             if(land.isClaimed()) {
                 return false;
@@ -280,8 +283,8 @@ public class Lands implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    public void claimAll(ArrayList<org.bukkit.Chunk> chunks, Player player) {
-        for(org.bukkit.Chunk chunk : chunks) {
+    public void claimAll(ArrayList<LunaniaChunk> chunks, Player player) {
+        for(LunaniaChunk chunk : chunks) {
             Land land = new Land(chunk);
             land.claim(player.getUniqueId());
 //			new ChunkEditor(chunk).setEcken(Material.TORCH);
@@ -290,12 +293,12 @@ public class Lands implements CommandExecutor, TabCompleter {
         }
     }
 
-    public double countPrice(ArrayList<org.bukkit.Chunk> chunks) {
+    public double countPrice(ArrayList<LunaniaChunk> chunks) {
         return ((double) chunks.size()) * PRICE_PER_LAND;
     }
 
-    public ArrayList<org.bukkit.Chunk> getChunks(Player player, int xi, int zi) {
-        ArrayList<org.bukkit.Chunk> chunks = new ArrayList<org.bukkit.Chunk>();
+    public ArrayList<LunaniaChunk> getChunks(Player player, int xi, int zi) {
+        ArrayList<LunaniaChunk> chunks = new ArrayList<LunaniaChunk>();
         Direction direction = getDirectionNESW(player);
         int x = player.getLocation().getChunk().getX();
         int z = player.getLocation().getChunk().getZ();
@@ -304,7 +307,7 @@ public class Lands implements CommandExecutor, TabCompleter {
             //x +
             for(int xs=0;xs<xi;xs++) {
                 for(int zs=0;zs<zi;zs++) {
-                    org.bukkit.Chunk chunk = player.getLocation().getWorld().getChunkAt(x+xs, z-zs);
+                    LunaniaChunk chunk = new LunaniaChunk(x+xs, z-zs);
                     chunks.add(chunk);
                     new ChunkEditor(chunk).showSlime(player);
                 }
@@ -314,7 +317,7 @@ public class Lands implements CommandExecutor, TabCompleter {
             //x -
             for(int xs=0;xs<xi;xs++) {
                 for(int zs=0;zs<zi;zs++) {
-                    org.bukkit.Chunk chunk = player.getLocation().getWorld().getChunkAt(x-xs, z+zs);
+                    LunaniaChunk chunk = new LunaniaChunk(x-xs, z+zs);
                     chunks.add(chunk);
                     new ChunkEditor(chunk).showSlime(player);
                 }
@@ -324,7 +327,7 @@ public class Lands implements CommandExecutor, TabCompleter {
             //x -
             for(int xs=0;xs<xi;xs++) {
                 for(int zs=0;zs<zi;zs++) {
-                    org.bukkit.Chunk chunk = player.getLocation().getWorld().getChunkAt(x-xs, z-zs);
+                    LunaniaChunk chunk = new LunaniaChunk(x-xs, z-zs);
                     chunks.add(chunk);
                     new ChunkEditor(chunk).showSlime(player);
                 }
@@ -334,7 +337,7 @@ public class Lands implements CommandExecutor, TabCompleter {
             //x +
             for(int xs=0;xs<xi;xs++) {
                 for(int zs=0;zs<zi;zs++) {
-                    org.bukkit.Chunk chunk = player.getLocation().getWorld().getChunkAt(x+xs, z+zs);
+                    LunaniaChunk chunk = new LunaniaChunk(x+xs, z+zs);
                     chunks.add(chunk);
                     new ChunkEditor(chunk).showSlime(player);
                 }

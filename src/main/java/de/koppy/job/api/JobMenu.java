@@ -128,17 +128,17 @@ public class JobMenu {
                 lvlup.setType(Material.LIME_CONCRETE_POWDER);
                 lore2.add(" ");
                 lore2.add("§7XP "+getXpPercent(2, 1)+" §7(100%) §3Completed!");
-                lore2.add("§c§mold extramoney: "+((i)/10d)+"% -> new extrafee: " + ((i+1)/10d)+"%");
+                lore2.add("§c§mold extramoney: "+i+"% -> new extrafee: " + (i+1)+"%");
             }else if(i == level) {
                 lvlup.setType(Material.YELLOW_CONCRETE_POWDER);
                 lore2.add(" ");
                 lore2.add("§7XP "+getXpPercent(xp, xplevel.xpNeededForLevelup(i))+" §c"+pj.getXP(job)+"§7/"+xplevel.xpNeededForLevelup(i) + " §7(" + (int) (((double) xp / (double) xplevel.xpNeededForLevelup(level)) * 100) + "%§7)");
-                lore2.add("§cold extramoney: §7"+((i)/10d)+"% §8-> §anew extrafee: §7" + ((i+1)/10d)+"%");
+                lore2.add("§cold extramoney: §7"+i+"% §8-> §anew extrafee: §7" + (i+1)+"%");
             }else {
                 lore2.add(" ");
                 lore2.add("§cnot unlocked yet!");
                 lore2.add(" ");
-                lore2.add("§cold extramoney: §7"+((i)/10d)+"% §8-> §anew extrafee: §7" + ((i+1)/10d)+"%");
+                lore2.add("§cold extramoney: §7"+i+"% §8-> §anew extrafee: §7" + (i+1)+"%");
             }
 
             if(i == 9) {

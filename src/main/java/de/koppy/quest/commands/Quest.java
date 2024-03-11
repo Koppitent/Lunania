@@ -32,11 +32,14 @@ public class Quest implements CommandExecutor, TabCompleter {
                     new PlayerQuest(t.getUniqueId()).setStage(qname, num);
                     player.sendMessage("§7Quest progress set.");
                 }
-            }else if(args.length == 0) {
-                QuestUI questui = new QuestUI(player.getUniqueId());
-                questui.getMenu(1);
-                player.openInventory(questui.getInventory());
+                return false;
             }
+        }
+
+        if(args.length == 0) {
+            QuestUI questui = new QuestUI(player.getUniqueId());
+            questui.getMenu(1);
+            player.openInventory(questui.getInventory());
         }
 
         return false;

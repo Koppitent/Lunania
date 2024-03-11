@@ -61,24 +61,24 @@ public enum JobType {
     public List<Task> getTasksFromJob() {
         List<Task> tasks = new ArrayList<Task>();
         if(this == JobType.MINER) {
-            Task task1 = new Task("Mine Diamonds", "Mine Diamonds in the farmworld for money and xp.", 4, 5d, 15, this);
-            Task task2 = new Task("Mine Iron/Gold", "Mine Iron/Gold in the farmworld for money and xp.", 32, 10d, 15, this);
-            Task task3 = new Task("Mine Redstone/Lapis", "Mine Redstone/Lapis in the farmworld for money and xp.", 32, 5d, 15, this);
-            Task task4 = new Task("Mine Coal/Copper", "Mine Coal/Copper in the farmworld for money and xp.", 25, 6.5d, 15, this);
-            Task task5 = new Task("Mine Emeralds", "Mine Emeralds in the farmworld for money and xp.", 2, 5d, 15, this);
+            Task task1 = new Task("Mine Diamonds", "Mine Diamonds in the farmworld for money and xp.", 4, 50d, 15, this);
+            Task task2 = new Task("Mine Iron/Gold", "Mine Iron/Gold in the farmworld for money and xp.", 32, 100d, 15, this);
+            Task task3 = new Task("Mine Redstone/Lapis", "Mine Redstone/Lapis in the farmworld for money and xp.", 32, 50d, 15, this);
+            Task task4 = new Task("Mine Coal/Copper", "Mine Coal/Copper in the farmworld for money and xp.", 25, 65d, 15, this);
+            Task task5 = new Task("Mine Emeralds", "Mine Emeralds in the farmworld for money and xp.", 2, 50d, 15, this);
             tasks.add(task1);
             tasks.add(task2);
             tasks.add(task3);
             tasks.add(task4);
             tasks.add(task5);
         }else if(this == JobType.BUILDER) {
-            Task task1 = new Task("Place Blocks", "Place unique blocks on your land.", 100, 5d, 10, this);
+            Task task1 = new Task("Place Blocks", "Place unique blocks on your land.", 100, 25d, 10, this);
             tasks.add(task1);
         }else if(this == JobType.WOODCUTTER) {
-            Task task1 = new Task("Cut Oak/Birch-Logs", "Cut Oak or Birch-Logs", 32, 5d, 15, this);
-            Task task2 = new Task("Cut Acacia/Spruce-Logs", "Cut Acacia/Spruce-Logs", 32, 5d, 15, this);
-            Task task3 = new Task("Cut DarkOak/Jungle-Logs", "Cut DarkOak/Jungle-Logs", 32, 5d, 15, this);
-            Task task4 = new Task("Cut Mangrove/Cherry-Logs", "Cut Mangrove/Cherry-Logs", 32, 5d, 20, this);
+            Task task1 = new Task("Cut Oak/Birch-Logs", "Cut Oak or Birch-Logs", 32, 50d, 15, this);
+            Task task2 = new Task("Cut Acacia/Spruce-Logs", "Cut Acacia/Spruce-Logs", 32, 50d, 15, this);
+            Task task3 = new Task("Cut DarkOak/Jungle-Logs", "Cut DarkOak/Jungle-Logs", 32, 50d, 15, this);
+            Task task4 = new Task("Cut Mangrove/Cherry-Logs", "Cut Mangrove/Cherry-Logs", 32, 50d, 20, this);
             tasks.add(task1);
             tasks.add(task2);
             tasks.add(task3);

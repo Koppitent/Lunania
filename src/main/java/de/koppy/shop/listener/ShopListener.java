@@ -251,9 +251,10 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent e) {
+        if(e.getCurrentItem() == null) return;
         if(inbulkinv.contains(e.getWhoClicked())) {
             e.setCancelled(true);
-            if(e.getCurrentItem() != null) {
+            if(e.getCurrentItem().getType() == Material.GRAY_STAINED_GLASS_PANE) return;
                 if(e.getCurrentItem().getType() == Material.GREEN_CONCRETE_POWDER) {
                     String shopname = e.getInventory().getItem(13).getItemMeta().getLocalizedName();
                     Adminshop shop = Adminshop.getAdminshop(shopname);
@@ -262,8 +263,8 @@ public class ShopListener implements Listener {
                     double buyprice = si.getBuyPriceperpiece();
                     if(buyprice > 0) {
                         PlayerAccount pa = new PlayerAccount(e.getWhoClicked().getUniqueId());
-                        if(pa.getMoney() >= buyprice) {
-                            pa.removeMoney(buyprice, "Server", "bought an item");
+                        if(pa.getMoney() >= (buyprice*amount)) {
+                            pa.removeMoney((buyprice*amount), "Server", "bought an item");
                             ItemStack item = si.getItem().clone();
                             item.setAmount(amount);
                             e.getWhoClicked().getInventory().addItem(item);
@@ -284,7 +285,7 @@ public class ShopListener implements Listener {
 
                             removeItems(si.getItem(), amount, e.getWhoClicked().getInventory());
                             PlayerAccount pa = new PlayerAccount(e.getWhoClicked().getUniqueId());
-                            pa.addMoney(sellprice, "Server", "sold item/s");
+                            pa.addMoney((sellprice*amount), "Server", "sold item/s");
                             e.getWhoClicked().sendMessage("§cYouve sold those items.");
 
                         }else {
@@ -294,10 +295,9 @@ public class ShopListener implements Listener {
                         e.getWhoClicked().sendMessage("§cThis Item is not sellable here.");
                     }
                 }
-            }
         }else if(Shop.inshop.contains(e.getWhoClicked())) {
             e.setCancelled(true);
-            if(e.getCurrentItem() != null) {
+            if(e.getCurrentItem().getType() == Material.GRAY_STAINED_GLASS_PANE) return;
                 Player p = (Player) e.getWhoClicked();
                 if(e.getCurrentItem().getItemMeta().getLore().get(0).equals("§d")) {
                     //* Directbuy
@@ -343,7 +343,6 @@ public class ShopListener implements Listener {
                     inbulkinv.add(p);
                     p.openInventory(si.getInventory(e.getSlot()));
                 }
-            }
         }
     }
 

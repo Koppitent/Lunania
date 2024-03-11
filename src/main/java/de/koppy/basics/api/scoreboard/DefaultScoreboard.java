@@ -51,27 +51,17 @@ public class DefaultScoreboard extends ScoreboardBuilder {
     }
 
     public void updateLand(Land land) {
-        if(!land.isClaimed()) {
-            String landout = "§7"+player.getLocation().getWorld().getName();
-            if(player.getLocation().getWorld().getName().equals("world")) {
-                if(land.isClaimed()) {
-                    landout = "§7" + land.getOwnerName();
-                }else {
-                    landout = "§cunclaimed";
-                }
+        String landout;
+        if(player.getLocation().getWorld().getName().equals("world")) {
+            if(land.isClaimed()) {
+                landout = "§7" + land.getOwnerName();
+            }else {
+                landout = "§cunclaimed";
             }
-            setScore(landout, 5);
         }else {
-            String landout = "§7"+player.getLocation().getWorld().getName();
-            if(player.getLocation().getWorld().getName().equals("world")) {
-                if(land.isClaimed()) {
-                    landout = "§7" + land.getOwnerName();
-                }else {
-                    landout = "§cunclaimed";
-                }
-            }
-            setScore(landout, 5);
+            landout = "§7" + player.getLocation().getWorld().getName();
         }
+        setScore(landout, 5);
     }
 
     public void updateJob() {

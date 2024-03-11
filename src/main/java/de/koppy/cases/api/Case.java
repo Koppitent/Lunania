@@ -11,6 +11,10 @@ import de.koppy.cases.listener.CaseEvents;
 import de.koppy.economy.EconomySystem;
 import de.koppy.economy.api.PlayerAccount;
 import de.koppy.lunaniasystem.LunaniaSystem;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -21,6 +25,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class Case {
 
@@ -184,6 +189,7 @@ public class Case {
     public void open(final Player player) {
         final CaseItem winitem = getRandomCaseItem();
         final PlayerProfile profile = PlayerProfile.getProfile(player.getUniqueId());
+        profile.addCaseOpened();
 
         Bukkit.getScheduler().runTaskLater(LunaniaSystem.getPlugin(), new Runnable() {
             public void run() {
@@ -191,29 +197,38 @@ public class Case {
                     int amount = (Integer) winitem.getRewardObject();
                     int maxhomes = profile.getMaxhomes();
                     profile.setMaxhomes(maxhomes+amount);
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've §awon §e"+amount+" §7more homes.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + " §7You've §awon §e"+amount+" §7more homes.");
                 }else if(winitem.getType() == Type.ITEM) {
                     ItemStack item = (ItemStack) winitem.getRewardObject();
                     player.getInventory().addItem(item);
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've §awon§7 an Item!");
+                    player.sendMessage(winitem.getRarity().toFormatString() + " §7You've §awon§7 an Item!");
                 }else if(winitem.getType() == Type.LAND) {
                     int amount = (Integer) winitem.getRewardObject();
                     int maxlands = profile.getMaxhomes();
                     profile.setMaxLands(maxlands+amount);
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+amount+" §7more Lands.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + " §7You've won §e"+amount+" §7more Lands.");
                 }else if(winitem.getType() == Type.MONEY) {
                     double money = (Double) winitem.getRewardObject();
                     new PlayerAccount(player.getUniqueId()).addMoney(money, "Server", "Won in Case.");
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+new DecimalFormat("#,###.##").format(money)+ EconomySystem.getEcosymbol() +"§7.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + " §7You've won §e"+new DecimalFormat("#,###.##").format(money)+ EconomySystem.getEcosymbol() +"§7.");
                 }else if(winitem.getType() == Type.PERMISSION) {
                     String perm = (String) winitem.getRewardObject();
-                    //TODO: set permissions
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won the permission §e"+perm+"§7.");
+                    if(player.hasPermission(perm)) {
+                        player.sendMessage(winitem.getRarity().toFormatString() + " §7You've won the permission §e" + perm + "§7.");
+                        player.sendMessage("§7Because you already have the permission, you receive money depending on the rarity.");
+                        new PlayerAccount(player.getUniqueId()).addMoney(winitem.getRewardCompensation(), "Server", "Won in Case (Compensation for perms).");
+                    }else {
+                        LuckPerms api = LuckPermsProvider.get();
+                        User user = api.getUserManager().getUser(player.getUniqueId());
+                        user.data().add(Node.builder(perm).build());
+                        api.getUserManager().saveUser(user);
+                        player.sendMessage(winitem.getRarity().toFormatString() + " §7You've won the permission §e" + perm + "§7.");
+                    }
                 }else if(winitem.getType() == Type.USERWARP) {
                     int amount = (Integer) winitem.getRewardObject();
                     int warptokens = profile.getWarptokens();
                     profile.setWarptokens(warptokens+amount);
-                    player.sendMessage(winitem.getRarity().toFormatString() + "§7You've won §e"+amount+" §7more WarpTokens.");
+                    player.sendMessage(winitem.getRarity().toFormatString() + " §7You've won §e"+amount+" §7more WarpTokens.");
                 }
             }
         }, 96);

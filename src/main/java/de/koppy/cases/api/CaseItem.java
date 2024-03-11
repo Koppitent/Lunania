@@ -54,6 +54,23 @@ public class CaseItem {
         return rarity;
     }
 
+    public double getRewardCompensation() {
+        switch (this.rarity) {
+            case LEGENDARY:
+                return 50000;
+            case EPIC:
+                return 10000;
+            case RARE:
+                return 5000;
+            case UNCOMMON:
+                return 1000;
+            case COMMON:
+                return 100;
+            default:
+                return 100;
+        }
+    }
+
     public Type getType() {
         return type;
     }

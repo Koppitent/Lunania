@@ -31,7 +31,7 @@ public class Task {
     }
 
     public double getPayoutamount(double level) {
-        double bonus = (level/10d) * payoutamount;
+        double bonus = (level/100D) * payoutamount;
         return (bonus + payoutamount);
     }
 

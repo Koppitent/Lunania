@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.koppy.basics.api.PlayerProfile;
+import de.koppy.land.api.Land;
 import de.koppy.lunaniasystem.LunaniaSystem;
 import de.koppy.npc.api.Packet;
 import de.koppy.server.WorldManager;
@@ -67,6 +68,9 @@ public class Debug implements CommandExecutor, TabCompleter {
                     }else if(args[1].equalsIgnoreCase("show")) {
                         PlayerProfile profile = PlayerProfile.getProfile(p.getUniqueId());
                         profile.getScoreboard().showScoreboard();
+                    }else if(args[1].equalsIgnoreCase("update")) {
+                        PlayerProfile profile = PlayerProfile.getProfile(p.getUniqueId());
+                        profile.getScoreboard().updateLand(new Land(p.getLocation().getChunk()));
                     }
                 }else if(args[0].equalsIgnoreCase("console")) {
                     if(args[1].equalsIgnoreCase("on")) {

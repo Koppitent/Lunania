@@ -60,7 +60,7 @@ public class NpcEvents implements Listener {
                 }
                 for(int i=0; i<inventory.getSize(); i++) {
                     if(inventory.getItem(i) == null) {
-                        inventory.setItem(i, new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setDisplayname("§d").getItemStack());
+                        inventory.setItem(i, new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayname("§d").getItemStack());
                     }
                 }
                 Shop.inshop.add(e.getPlayer());

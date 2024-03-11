@@ -52,7 +52,7 @@ public class JoinListener implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){
+    public void onQuit(PlayerQuitEvent e) {
         e.setQuitMessage(null);
         PlayerProfile profile = PlayerProfile.getProfile(e.getPlayer().getUniqueId());
         profile.saveHearts(e.getPlayer());
