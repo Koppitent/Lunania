@@ -1,5 +1,6 @@
 package de.koppy.basics;
 
+import de.koppy.basics.api.menu.MenuClickListener;
 import de.koppy.basics.commands.*;
 import de.koppy.basics.listener.*;
 import de.koppy.lunaniasystem.LunaniaSystem;
@@ -21,6 +22,7 @@ public class BasicSystem implements SubSystem {
         LunaniaSystem.registerListener(new InventoryEvents());
         LunaniaSystem.registerListener(new ServerManageListener());
         LunaniaSystem.registerListener(new FarmworldListener());
+        LunaniaSystem.registerListener(new MenuClickListener());
     }
 
     @Override

@@ -243,7 +243,7 @@ public class LandEvents implements Listener {
             if(land.isOwner(e.getPlayer().getUniqueId()) || land.isMember(e.getPlayer().getUniqueId())) return;
             e.setCancelled(true);
             if(e.getClickedBlock().getState() instanceof Chest || e.getClickedBlock().getState() instanceof Barrel) {
-                e.getPlayer().spawnParticle(Particle.SMOKE_NORMAL, e.getClickedBlock().getLocation().add(0.5, 1.1, 0.5), 10, 0.01D, 0.01D, 0.01D, 0.02D);
+                e.getPlayer().spawnParticle(Particle.SMOKE, e.getClickedBlock().getLocation().add(0.5, 1.1, 0.5), 10, 0.01D, 0.01D, 0.01D, 0.02D);
                 if(scur.contains(e.getPlayer())) return;
                 scur.add(e.getPlayer());
                 e.getPlayer().sendMessage("§cYou cant use this Chest!");

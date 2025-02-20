@@ -5,16 +5,16 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.Optionull;
-import net.minecraft.network.chat.RemoteChatSession;
+import net.minecraft.server.level.ServerEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -59,6 +59,7 @@ public class Npc {
     private NpcType type;
     private String typecontent;
     private boolean isLooking = false;
+    private ServerEntity serverEntity;
     private ClientboundSetEntityDataPacket packettest;
 
     public Npc(String name, Location location) {
@@ -78,6 +79,7 @@ public class Npc {
         SynchedEntityData dw = npc.getEntityData();
         dw.set(new EntityDataAccessor<Byte>(17, EntityDataSerializers.BYTE), (byte) 0x7F);
         this.packettest = new ClientboundSetEntityDataPacket(npc.getId(), dw.packDirty());
+        this.serverEntity = new ServerEntity(world, npc, 0, false, null, Set.of());
 
         String[] skinname = Npc.getSkin("Koppitent");
         setSkin(skinname[0], skinname[1]);
@@ -193,7 +195,7 @@ public class Npc {
         Reflections.setValue(npc, "c", ((CraftPlayer) player).getHandle().connection);
 
         connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc));
-        connection.send(new ClientboundAddEntityPacket(npc));
+        connection.send(new ClientboundAddEntityPacket(npc, serverEntity));
         connection.send(new ClientboundEntityEventPacket(npc, (byte) (npc.getBukkitYaw() * 256 * 360)));
         connection.send(packettest);
 

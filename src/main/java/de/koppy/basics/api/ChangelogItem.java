@@ -1,6 +1,7 @@
 package de.koppy.basics.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +11,7 @@ public class ChangelogItem {
 
     private String title;
     private String date;
-    private ItemStack book;
+    private List<String> items = new ArrayList<>();
 
     public ChangelogItem(String title, String date) {
         this.title = title;
@@ -20,20 +21,11 @@ public class ChangelogItem {
     public ChangelogItem(String title, String date, ArrayList<String> lores) {
         this.title = title;
         this.date = date;
-        setBook(lores);
+        items.addAll(lores);
     }
 
-    public void setBook(ItemStack book) {
-        this.book = book;
-    }
-
-    public void setBook(ArrayList<String> lores) {
-        ItemStack update1 = new ItemStack(Material.BOOK);
-        ItemMeta update1M = update1.getItemMeta();
-        update1M.setDisplayName(this.title + "§7, " + this.date);
-        update1M.setLore(lores);
-        update1.setItemMeta(update1M);
-        this.book = update1;
+    public void addItem(String item) {
+        this.items.add(item);
     }
 
     public void setTitle(String title) {
@@ -49,7 +41,7 @@ public class ChangelogItem {
     }
 
     public ItemStack getBook() {
-        return book;
+        return new ItemBuilder(Material.BOOK).setLore(items).setDisplayname(this.title + "§7, " + this.date).getItemStack();
     }
 
     public String getTitle() {

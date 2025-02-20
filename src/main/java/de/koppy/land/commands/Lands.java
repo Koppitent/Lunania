@@ -54,7 +54,7 @@ public class Lands implements CommandExecutor, TabCompleter {
 
                     land.unclaim();
                     profile.sendMessage("landdeleted");
-                    new ChunkEditor(land.getChunk()).setRandParticle(Particle.VILLAGER_ANGRY, 7, player, 5);
+                    new ChunkEditor(land.getChunk()).setRandParticle(Particle.ANGRY_VILLAGER, 7, player, 5);
 
                 }else if(args[0].equalsIgnoreCase("sell")) {
 
@@ -69,7 +69,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     pa.addMoney((PRICE_PER_LAND * 0.1), "from Server", "Land "+land.getChunk().getX()+":"+land.getChunk().getZ()+" sold");
                     player.sendMessage("§7You sold ur land for " + new DecimalFormat("#").format((PRICE_PER_LAND * 0.1)) + EconomySystem.getEcosymbol() + "§7.");
                     PlayerProfile.getProfile(player.getUniqueId()).getScoreboard().updateLand(land);
-                    new ChunkEditor(land.getChunk()).setRandParticle(Particle.VILLAGER_ANGRY, 7, player, 5);
+                    new ChunkEditor(land.getChunk()).setRandParticle(Particle.ANGRY_VILLAGER, 7, player, 5);
                     new ChunkEditor(land.getChunk()).reset();
 
                 }else if(args[0].equalsIgnoreCase("claim")) {
@@ -83,7 +83,7 @@ public class Lands implements CommandExecutor, TabCompleter {
                     if(amount < PRICE_PER_LAND) { player.sendMessage(profile.getMessage("notenoughmoney").replace("%missing%", new DecimalFormat("#").format((PRICE_PER_LAND -amount)))); return false; }
 
 //				new ChunkEditor(player.getLocation().getChunk()).setEcken(Material.TORCH);
-                    new ChunkEditor(player.getLocation().getChunk()).setRandParticle(Particle.VILLAGER_HAPPY, 7, player, 5);
+                    new ChunkEditor(player.getLocation().getChunk()).setRandParticle(Particle.ANGRY_VILLAGER, 7, player, 5);
                     new ChunkEditor(player.getLocation().getChunk()).showSlime(player);
                     pa.removeMoney(PRICE_PER_LAND, "sendto Server", "bought Land "+land.getChunk().getX()+":"+land.getChunk().getZ());
                     land.claim(player.getUniqueId());
@@ -288,7 +288,7 @@ public class Lands implements CommandExecutor, TabCompleter {
             Land land = new Land(chunk);
             land.claim(player.getUniqueId());
 //			new ChunkEditor(chunk).setEcken(Material.TORCH);
-            new ChunkEditor(chunk).setRandParticle(Particle.VILLAGER_HAPPY, 7, player, 5);
+            new ChunkEditor(chunk).setRandParticle(Particle.HAPPY_VILLAGER, 7, player, 5);
             new ChunkEditor(chunk).showSlime(player);
         }
     }

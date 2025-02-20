@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import de.koppy.lunaniasystem.LunaniaSystem;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public enum JobType {
 
@@ -26,7 +29,8 @@ public enum JobType {
     public ItemStack getItem(UUID uuid) {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta itemM = item.getItemMeta();
-        itemM.setLocalizedName(this.toString());
+        NamespacedKey key = new NamespacedKey(LunaniaSystem.getPlugin(), "item_custom_data");
+        itemM.getPersistentDataContainer().set(key, PersistentDataType.STRING, this.toString());
 
         switch (this) {
             case WOODCUTTER:
@@ -50,7 +54,7 @@ public enum JobType {
         }
 
         if(new PlayerJob(uuid).getJob() == this) {
-            itemM.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
+            itemM.addEnchant(Enchantment.AQUA_AFFINITY, 2, true);
             itemM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
 

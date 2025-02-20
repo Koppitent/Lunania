@@ -1,6 +1,7 @@
 package de.koppy.basics.listener;
 
 import de.koppy.bansystem.BanSystem;
+import de.koppy.basics.KEY;
 import de.koppy.basics.api.*;
 import de.koppy.basics.commands.Changelog;
 import de.koppy.basics.commands.Collect;
@@ -24,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -197,7 +199,8 @@ public class InventoryEvents implements Listener {
         } else if (ininv.contains(e.getWhoClicked())) {
             e.setCancelled(true);
             if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
-                Integer page = Integer.parseInt(e.getCurrentItem().getItemMeta().getLocalizedName());
+                Integer page = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(KEY.CUSTOM_ITEM, PersistentDataType.INTEGER);
+                System.out.println(page);
                 Changelog.getChangelogInv(e.getInventory(), Changelog.getChangelogItems(), page);
                 ((Player) e.getWhoClicked()).updateInventory();
             }

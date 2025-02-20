@@ -15,16 +15,14 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class Case {
@@ -98,7 +96,8 @@ public class Case {
         ItemStack istack = new ItemStack(Material.END_CRYSTAL);
         ItemMeta istackM = istack.getItemMeta();
         istackM.setDisplayName("§7Open Case");
-        istackM.setLocalizedName(name);
+        NamespacedKey key = new NamespacedKey(LunaniaSystem.getPlugin(), "item_custom_data");
+        istackM.getPersistentDataContainer().set(key, PersistentDataType.STRING, name);
         istack.setItemMeta(istackM);
         inventory.setItem(inventory.getSize()-2, istack);
 
@@ -137,11 +136,12 @@ public class Case {
         ItemStack istack = new ItemStack(Material.TRIPWIRE_HOOK);
 
         ItemMeta istackM = istack.getItemMeta();
-        istackM.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
+        istackM.addEnchant(Enchantment.AQUA_AFFINITY, 2, true);
         istackM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         istackM.setDisplayName("§8§ §r§3"+name+"§7-Key");
         Random rndm = new Random();
-        istackM.setLocalizedName(""+rndm.nextInt(1000000));
+        NamespacedKey key = new NamespacedKey(LunaniaSystem.getPlugin(), "item_custom_data");
+        istackM.getPersistentDataContainer().set(key, PersistentDataType.STRING, ""+rndm.nextInt(100000));
         istack.setItemMeta(istackM);
 
         return istack;
@@ -158,7 +158,8 @@ public class Case {
         ItemMeta istackM = istack.getItemMeta();
         istackM.setDisplayName("§8§ §r§3"+name);
         Random rndm = new Random();
-        istackM.setLocalizedName(""+rndm.nextInt(1000000));
+        NamespacedKey key = new NamespacedKey(LunaniaSystem.getPlugin(), "item_custom_data");
+        istackM.getPersistentDataContainer().set(key, PersistentDataType.STRING, ""+rndm.nextInt(100000));
         istack.setItemMeta(istackM);
 
         return istack;

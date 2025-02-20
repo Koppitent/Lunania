@@ -152,6 +152,10 @@ public class Server {
         systemController.addOption(new Option("World", true, "Enable/Disable the WorldSystem", true));
 
 
+        loadOptions();
+    }
+
+    public void loadOptions() {
         for(Option option : systemController.getOptions()) {
             if(option.isSystem()) {
                 if((boolean)systemController.getValue(option)) {
@@ -268,8 +272,7 @@ public class Server {
     }
 
     public void setPlayerListHeaderFooter(Player player) {
-        player.setPlayerListHeader("\n\n"+lunaniasymbol+"\n");
-        player.setPlayerListFooter("\n"+"§7Discord: §e"+discordlink+"\n"+"§7Website: §elunania.net"+"\n");
+        player.setPlayerListHeaderFooter("Lunania", "Willkommen");
     }
 
     public String getDiscordlink() {

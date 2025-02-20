@@ -3,10 +3,13 @@ package de.koppy.basics.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.koppy.basics.KEY;
 import de.koppy.basics.api.ChangelogItem;
+import de.koppy.basics.inventories.ChangelogInv;
 import de.koppy.basics.listener.InventoryEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class Changelog implements CommandExecutor {
 
@@ -23,12 +27,8 @@ public class Changelog implements CommandExecutor {
         if(!(sender instanceof Player))
             return false;
 
-        Inventory inventory = Bukkit.createInventory(null, 9*3, "§eChangelog");
-        Player player = (Player) sender;
-        player.openInventory(inventory);
-        getChangelogInv(inventory, getChangelogItems(), 1);
-        player.updateInventory();
-        InventoryEvents.ininv.add(player);
+        ChangelogInv changelogInv = new ChangelogInv(getChangelogItems());
+        changelogInv.open((Player) sender);
 
         return false;
     }
@@ -236,7 +236,7 @@ public class Changelog implements CommandExecutor {
             ItemStack arrowleft = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta arrowleftM = (SkullMeta) arrowleft.getItemMeta();
             arrowleftM.setDisplayName("§3Next Page");
-            arrowleftM.setLocalizedName(""+(page+1));
+            arrowleftM.getPersistentDataContainer().set(KEY.CUSTOM_ITEM, PersistentDataType.INTEGER, (page+1));
             arrowleftM.setOwner("MHF_ArrowRight");
             arrowleft.setItemMeta(arrowleftM);
             inventory.setItem(26, arrowleft);
@@ -247,7 +247,7 @@ public class Changelog implements CommandExecutor {
             ItemStack arrowleft = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta arrowleftM = (SkullMeta) arrowleft.getItemMeta();
             arrowleftM.setDisplayName("§3Previous Page");
-            arrowleftM.setLocalizedName(""+(page-1));
+            arrowleftM.getPersistentDataContainer().set(KEY.CUSTOM_ITEM, PersistentDataType.INTEGER, (page-1));
             arrowleftM.setOwner("MHF_ArrowLeft");
             arrowleft.setItemMeta(arrowleftM);
             inventory.setItem(18, arrowleft);

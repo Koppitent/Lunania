@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.koppy.lunaniasystem.LunaniaSystem;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public abstract class Mission {
 
@@ -38,7 +41,8 @@ public abstract class Mission {
     public ItemStack getShowItem(Player player) {
         ItemStack istack = itemshown.clone();
         ItemMeta istackM = istack.getItemMeta();
-        istackM.setLocalizedName(identifier);
+        NamespacedKey key = new NamespacedKey(LunaniaSystem.getPlugin(), "item_custom_data");
+        istackM.getPersistentDataContainer().set(key, PersistentDataType.STRING, identifier);
         istackM.setDisplayName("§3"+name);
         List<String> lore = new ArrayList<String>();
         lore.add("");
@@ -47,7 +51,7 @@ public abstract class Mission {
         int urstage = new MissionHandler().getStage(player, identifier, missiontype);
         if(urstage == getStages()) {
             lore.add("§3Progress: claimable!");
-            istackM.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
+            istackM.addEnchant(Enchantment.AQUA_AFFINITY, 2, true);
             istackM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }else if(urstage > getStages()) {
             lore.add("§c§mProgress: finsihed");
